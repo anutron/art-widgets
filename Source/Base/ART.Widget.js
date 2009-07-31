@@ -33,7 +33,7 @@ ART.Widget = new Class({
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
 		this.pseudos = [];
-		this.childWidgets = [];
+		this.childWidgets = this.childWidgets || [];
 
 		// initial render
 		this.render();
