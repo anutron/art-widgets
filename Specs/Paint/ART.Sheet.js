@@ -6,27 +6,26 @@ License:
 	MIT-style license.
 */
 
-describe('ART.Sheet.lookupStyle - no rules defined.', {
+describe('ART.Sheet.lookupStyle - no rules defined.', function(){
 
-	'should return an empty object when no rule is found': function(){
-		value_of(ART.Sheet.lookupStyle('*')).should_be({});
-		value_of(ART.Sheet.lookupStyle('foo')).should_be({});
-	}
-
+	it('should return an empty object when no rule is found', function(){
+		expect(ART.Sheet.lookupStyle('*')).toEqual({});
+		expect(ART.Sheet.lookupStyle('foo')).toEqual({});
+	});
 });
 
-describe('ART.Sheet.defineStyle', {
+describe('ART.Sheet.defineStyle', function(){
 
-	'should define multiple rules for comma seperated selectors': function(){
+	it('should define multiple rules for comma seperated selectors', function(){
 		ART.Sheet.defineStyle('multiA, multiB', {m: 1});
-		value_of(ART.Sheet.lookupStyle('multiA')).should_be({m: 1});
-		value_of(ART.Sheet.lookupStyle('multiB')).should_be({m: 1});
-		value_of(ART.Sheet.lookupStyle('multiC')).should_be({});
-	},
+		expect(ART.Sheet.lookupStyle('multiA')).toEqual({m: 1});
+		expect(ART.Sheet.lookupStyle('multiB')).toEqual({m: 1});
+		expect(ART.Sheet.lookupStyle('multiC')).toEqual({});
+	});
 
-	'should define some rules': function(){
+	it('should define some rules', function(){
 		ART.Sheet.defineStyle('*', {base: 1, asterix: 1});
-		value_of(ART.Sheet.lookupStyle('*')).should_be({base: 1, asterix: 1});
+		expect(ART.Sheet.lookupStyle('*')).toEqual({base: 1, asterix: 1});
 		
 		ART.Sheet.defineStyle('foo', {base: 2, extended: 1});
 		ART.Sheet.defineStyle('foo.classA', {extended: 2});
@@ -35,32 +34,30 @@ describe('ART.Sheet.defineStyle', {
 		ART.Sheet.defineStyle('foo.classA', {'class': 'a'});
 
 		ART.Sheet.defineStyle('nested rule', {'x': 1});
-	}
-
+	});
 });
 
-describe('ART.Sheet.lookupStyle - rules defined', {
+describe('ART.Sheet.lookupStyle - rules defined', function(){
 
-	'should merge with *': function(){
-		value_of(ART.Sheet.lookupStyle('*')).should_be({base: 1, asterix: 1});
-		value_of(ART.Sheet.lookupStyle('madeup')).should_be({base: 1, asterix: 1});
-		value_of(ART.Sheet.lookupStyle('foo')).should_be({base: 2, extended: 1, asterix: 1});
-	},
+	it('should merge with *', function(){
+		expect(ART.Sheet.lookupStyle('*')).toEqual({base: 1, asterix: 1});
+		expect(ART.Sheet.lookupStyle('madeup')).toEqual({base: 1, asterix: 1});
+		expect(ART.Sheet.lookupStyle('foo')).toEqual({base: 2, extended: 1, asterix: 1});
+	});
 	
-	'should find the class': function(){
-		value_of(ART.Sheet.lookupStyle('.classA')).should_be({asterix: 1, base: 1});
-		value_of(ART.Sheet.lookupStyle('foo.classA')).should_be({asterix: 1, base: 2, extended: 2, 'class': 'a'});
-		value_of(ART.Sheet.lookupStyle('foo.classA')).should_be({asterix: 1, base: 2, extended: 2, 'class': 'a'});
-		value_of(ART.Sheet.lookupStyle('foo.classB.classA.madeup')).should_be({asterix: 1, base: 2, extended: 2, 'class': 'a and b', tag: 'foo'});
-	},
+	it('should find the class', function(){
+		expect(ART.Sheet.lookupStyle('.classA')).toEqual({asterix: 1, base: 1});
+		expect(ART.Sheet.lookupStyle('foo.classA')).toEqual({asterix: 1, base: 2, extended: 2, 'class': 'a'});
+		expect(ART.Sheet.lookupStyle('foo.classA')).toEqual({asterix: 1, base: 2, extended: 2, 'class': 'a'});
+		expect(ART.Sheet.lookupStyle('foo.classB.classA.madeup')).toEqual({asterix: 1, base: 2, extended: 2, 'class': 'a and b', tag: 'foo'});
+	});
 
-	'should match nested rules': function(){
-		value_of(ART.Sheet.lookupStyle('rule')).should_be({asterix: 1, base: 1});
-		value_of(ART.Sheet.lookupStyle('rule nested')).should_be({asterix: 1, base: 1});
-		value_of(ART.Sheet.lookupStyle('nested rule')).should_be({asterix: 1, base: 1, x: 1});
-		value_of(ART.Sheet.lookupStyle('xxx nested xxx xxx rule')).should_be({asterix: 1, base: 1, x: 1});
-		value_of(ART.Sheet.lookupStyle('xxx nested xxx xxx rule xxx')).should_be({asterix: 1, base: 1});
-		value_of(ART.Sheet.lookupStyle('nested.foo rule')).should_be({asterix: 1, base: 1, x: 1});
-	}
-
+	it('should match nested rules', function(){
+		expect(ART.Sheet.lookupStyle('rule')).toEqual({asterix: 1, base: 1});
+		expect(ART.Sheet.lookupStyle('rule nested')).toEqual({asterix: 1, base: 1});
+		expect(ART.Sheet.lookupStyle('nested rule')).toEqual({asterix: 1, base: 1, x: 1});
+		expect(ART.Sheet.lookupStyle('xxx nested xxx xxx rule')).toEqual({asterix: 1, base: 1, x: 1});
+		expect(ART.Sheet.lookupStyle('xxx nested xxx xxx rule xxx')).toEqual({asterix: 1, base: 1});
+		expect(ART.Sheet.lookupStyle('nested.foo rule')).toEqual({asterix: 1, base: 1, x: 1});
+	});
 });
