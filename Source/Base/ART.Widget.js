@@ -55,9 +55,15 @@ ART.Widget = new Class({
 		this.pseudos.erase(pseudo);
 	},
 
+	addChild: function(widget){
+		this.childWidgets.include(widget);
+		return this;
+	},
+	
 	setParent: function(widget){
 		this.parentWidget = widget;
-		widget.childWidgets.include(this);
+		widget.addChild(this);
+		return this;
 	},
 
 	// render
