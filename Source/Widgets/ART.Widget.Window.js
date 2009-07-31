@@ -120,9 +120,9 @@ ART.WM = {
 		this.instances.push(instance);
 	},
 	
-	cascade: function(noAnim){
+	cascade: function(noAnim, x, y){
 		this.instances.each(function(current, i){
-			var styles = {top: 20 * i, left: 10 * i};
+			var styles = {top: (20 * i) + y, left: (10 * i) + x};
 			(noAnim) ? current.element.setStyles(styles) : current.morph.start(styles);
 		});
 	},
