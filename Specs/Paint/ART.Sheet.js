@@ -1,9 +1,17 @@
 /*
-Script: Core.js
-	Examples for Core.js
+Script: ART.Sheet.js
 
 License:
 	MIT-style license.
+
+Requires:
+	@require '../Assets/Scripts/jasmine.js'
+	@require '../Assets/Scripts/TrivialReporter.js'
+	@require '../Assets/Scripts/mootools.js'
+	@require '../Assets/Scripts/slickparser.js'
+	@require '../../Source/Base/ART.js'
+	@require '../../Source/Paint/ART.Sheet.js'
+	@require '../Assets/Scripts/jasmine-run.js'
 */
 
 describe('ART.Sheet', function(){
