@@ -46,4 +46,27 @@ describe('ART.Widget', {
 		value_of( container.contains($(w)) ).should_be_true();
 	}
 	
+	,'should get ART.Sheet Selector': function(){
+		ART.Widget.SubClass = new Class({
+			Extends: ART.Widget,
+			ns: 'mynamespace',
+			name: 'mywidgetsubclass'
+		});
+		
+		w = new ART.Widget.SubClass();
+		value_of( w.getSelector() ).should_be( 'mywidgetsubclass' );
+	}
+	
+	,'should set classname of root node': function(){
+		ART.Widget.SubClass = new Class({
+			Extends: ART.Widget,
+			ns: 'mynamespace',
+			name: 'mywidgetsubclass'
+		});
+		
+		w = new ART.Widget.SubClass();
+		value_of( $(w).hasClass('mynamespace') ).should_be_true();
+		value_of( $(w).hasClass('mynamespace-mywidgetsubclass') ).should_be_true();
+	}
+	
 });
