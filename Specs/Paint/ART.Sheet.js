@@ -3,6 +3,13 @@ Script: ART.Sheet.js
 
 License:
 	MIT-style license.
+
+Requires:
+	@require 'jsspec'
+	@require '../Assets/Scripts/mootools.js'
+	@require '../Assets/Scripts/slickparser.js'
+	@require '../../Source/Base/ART.js'
+	@require '../../Source/Paint/ART.Sheet.js'
 */
 
 describe('ART.Sheet.lookupStyle - no rules defined.', {
