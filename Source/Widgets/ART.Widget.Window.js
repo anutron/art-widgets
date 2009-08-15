@@ -27,6 +27,8 @@ ART.Sheet.defineStyle('window', {
 	'button-spacing': 20,
 	'header-padding-top': 4,
 	
+	'content-overflow': 'auto',
+	
 	'corner-radius': 4,
 	'header-height': 24,
 	'footer-height': 17,
@@ -258,7 +260,7 @@ ART.Widget.Window = new Class({
 		this.contents.adopt(this.header, this.content, this.footer);
 		
 		if (this.options.close){
-			this.close = new ART.Widget.Button({classes: ['close']});
+			this.close = new ART.Widget.Button({className: 'close'});
 			this.close.setParent(this);
 			$(this.close).setStyles(absolute).inject(this.header);
 			this.close.addEvent('press', function(){
@@ -268,7 +270,7 @@ ART.Widget.Window = new Class({
 		}
 		
 		if (this.options.maximize){
-			this.maximize = new ART.Widget.Button({classes: ['maximize']});
+			this.maximize = new ART.Widget.Button({className: 'maximize'});
 			this.maximize.setParent(this);
 			$(this.maximize).setStyles(absolute).inject(this.header);
 			this.maximize.addEvent('press', function(){
@@ -278,7 +280,7 @@ ART.Widget.Window = new Class({
 		}
 		
 		if (this.options.minimize){
-			this.minimize = new ART.Widget.Button({classes: ['minimize']});
+			this.minimize = new ART.Widget.Button({className: 'minimize'});
 			this.minimize.setParent(this);
 			$(this.minimize).setStyles(absolute).inject(this.header);
 			this.minimize.addEvent('press', function(){
@@ -301,7 +303,7 @@ ART.Widget.Window = new Class({
 		return this;
 	},
 	
-	resize: function(height, width){
+	resize: function(width, height){
 		this.render({'height': height, 'width': width});
 		return this;
 	},
@@ -345,12 +347,16 @@ ART.Widget.Window = new Class({
 			'width': style.width
 		});
 		
+		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
+		var contentWidth = style.width -2;
+		
 		this.content.setStyles({
 			'top': 2,
 			'left': 1,
-			'height': style.height - style.footerHeight - style.headerHeight - 2,
-			'width': style.width -2,
-			'background-color': style.contentBackgroundColor
+			'height': contentHeight,
+			'width': contentWidth,
+			'background-color': style.contentBackgroundColor,
+			'overflow': style.contentOverflow
 		});
 		
 		// border layer
@@ -462,6 +468,8 @@ ART.Widget.Window = new Class({
 		this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
 		
 		this.paint.restore();
+		
+		this.fireEvent('resize', [contentWidth, contentHeight]);
 	}
 	
 });
