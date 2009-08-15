@@ -12,6 +12,7 @@ ART.Sheet.defineStyle('button', {
 	'font-size': 11,
 	'font-color': hsb(0, 100, 10),
 	'padding': [5, 5, 3, 5],
+	'cursor': 'pointer',
 
 	'height': false,
 	'width': false,
@@ -55,27 +56,33 @@ ART.Widget.Button = new Class({
 		this.paint = new ART.Paint();
 		$(this.paint).inject(this.element);
 
-		var self = this;
-		
-		this.element.addEvent('mousedown', function(e){
-			e.stopPropagation();
+		this.element.addEvents({
+			mouseover: function(e) {
+				this.focus();
+			}.bind(this),
+			mouseout: function(){
+				this.blur();
+			}.bind(this),
+			mousedown: function(e) {
+				e.stopPropagation();
+			}
 		});
 		
 		var click = new Touch(this.element);
 		
-		click.addEvent('start', function(){
-			self.activate();
+		click.addEvents({
+			start: function(){
+				this.activate();
+			}.bind(this),
+			end: function(){
+				this.deactivate();
+			}.bind(this),
+			cancel: function(){
+				this.deactivate();
+				this.fireEvent('press');
+			}.bind(this)
 		});
 		
-		click.addEvent('end', function(){
-			self.deactivate();
-		});
-		
-		click.addEvent('cancel', function(){
-			self.deactivate();
-			self.fireEvent('press');
-		});
-
 		this.render();
 	},
 
@@ -90,7 +97,11 @@ ART.Widget.Button = new Class({
 		if (!style.height) style.height = (fontBounds.y + style.padding[0] + style.padding[2] + 2).round();
 
 		this.paint.resize({x: style.width, y: style.height + 1});
-		this.element.setStyles({width: style.width, height: style.height + 1});
+		this.element.setStyles({
+			width: style.width, 
+			height: style.height + 1,
+			cursor: style.cursor
+		});
 
 		var shape = (style.pill) ? (style.width > style.height) ? 'horizontal-pill' : 'vertical-pill' : 'rounded-rectangle';
 
