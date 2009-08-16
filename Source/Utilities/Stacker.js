@@ -1,15 +1,21 @@
-Stacker = new Class({
+var Stacker = new Class({
 
-	instances: [],
-	
-	zIndexBase: 0,
+	Implements: [Options, Events],
 
-	intialize: function(zIndexBase) {
-		if (zIndexBase) this.zIndexBase = zIndexBase;
+	options: {
+		zIndexBase: 0,
+		offset: {
+			x: 20,
+			y: 10
+		}
+	},
+
+	initialize: function(options) {
+		this.setOptions(options);
+		this.instances = [];
 	},
 
 	register: function(instance){
-		
 		if (this.instances.contains(instance)) return;
 		
 		$(instance).addEvent('mousedown', function(){
@@ -19,12 +25,12 @@ Stacker = new Class({
 		this.instances.push(instance);
 	},
 	
-	cascade: function(noAnim, x, y, offsetx, offsety){
-		offsetx = $pick(offsetx, 20);
-		offsety = $pick(offsety, 10);
+	cascade: function(noAnim, x, y){
+		x = $pick(x, this.options.offset.x);
+		y = $pick(y, this.options.offset.y);
 		this.instances.each(function(current, i){
-			var styles = {top: (offsety * i) + y, left: (offsetx * i) + x};
-			(noAnim) ? current.element.setStyles(styles) : current.morph.start(styles);
+			var styles = {top: (y * i) + y, left: (x * i) + x};
+			(noAnim || !current.morph) ? $(current).setStyles(styles) : current.morph.start(styles);
 		});
 	},
 	
@@ -34,12 +40,25 @@ Stacker = new Class({
 	
 	focus: function(instance){
 		if (instance) this.instances.erase(instance).push(instance);
-		
 		this.instances.each(function(current, i){
-			$(current).setStyle('z-index', this.zIndexBase + i);
-			if (current === instance) current.focus();
+			$(current).setStyle('z-index', this.options.zIndexBase + i);
+			if (current === instance) current.focus(true);
 			else current.blur();
 		}, this);
+		this.focused = instance;
+	},
+
+	positionNew: function(instance){
+		if (this.instances.length < 2) return false;
+		var focused = this.focused;
+		this.focus(instance);
+		$(instance).position({
+			relativeTo: $(focused),
+			offset: this.options.offset,
+			edge: 'upperLeft',
+			position: 'upperLeft'
+		});
+		return true;
 	}
 	
 });
