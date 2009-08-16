@@ -38,7 +38,8 @@ ART.StickyWin = new Class({
 		showNow: true,
 		useIframeShim: true,
 		fade: true,
-		fadeDuration: 150
+		fadeDuration: 150,
+		cascaded: false
 	},
 
 	initialize: function(options) {
@@ -136,19 +137,24 @@ ART.StickyWin = new Class({
 	position: function(options){
 		this.positioned = true;
 		this.setOptions(options);
-		if ($defined(this.options.top) && $defined(this.options.left)) {
-			this.element.setStyles({
-				top: this.options.top,
-				left: this.options.left
-			});
-		} else {
-			this.element.position({
-				allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
-				relativeTo: this.options.relativeTo,
-				position: this.options.position,
-				offset: this.options.offset,
-				edge: this.options.edge
-			});
+		var pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo', 'allowNegative'].some(function(opt){
+			return $defined(this.options[opt]);
+		}, this);
+		if (pos || (this.options.cascaded && !this.windowManager.positionNew(this)) ) {
+			if ($defined(this.options.top) && $defined(this.options.left)) {
+				this.element.setStyles({
+					top: this.options.top,
+					left: this.options.left
+				});
+			} else {
+				this.element.position({
+					allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
+					relativeTo: this.options.relativeTo,
+					position: this.options.position,
+					offset: this.options.offset,
+					edge: this.options.edge
+				});
+			}
 		}
 		if (this.shim) this.shim.position();
 		return this;

@@ -143,7 +143,9 @@ ART.Window = new Class({
 			this.resize(w, h);
 		},
 		resizable: true,
-		draggable: true
+		draggable: true,
+		shadow: Browser.Engine.webkit,
+		cascaded: true
 	},
 
 	initialize: function(options) {
@@ -170,13 +172,7 @@ ART.Window = new Class({
 		this.paint = new ART.Paint();
 		$(this.paint).setStyles(absolute).inject(this.element);
 		
-		this.contents = new Element('div', {
-			styles: {
-				position: 'relative',
-				top: 5, 
-				left: 10
-			}
-		}).inject(this.element);
+		this.contents = new Element('div').inject(this.element);
 		
 		this.header = new Element('div', {
 			'class': 'art-window-header',
@@ -189,7 +185,8 @@ ART.Window = new Class({
 		this.content = new Element('div', {
 			'class': 'art-window-content',
 			styles: $merge(relative, {
-				overflow: 'auto'
+				overflow: 'auto',
+				position: 'relative'
 			})
 		});
 		this.footer = new Element('div', {
@@ -259,6 +256,10 @@ ART.Window = new Class({
 		}.bind(this));
 	},
 
+	makeDraggable: function(){
+		this.parent(this.header);
+	},
+
 	setContent: function(){
 		$(this.content).adopt(arguments);
 		return this;
@@ -281,6 +282,11 @@ ART.Window = new Class({
 		};
 	},
 
+	show: function(){
+		if (!this.positioned) this.position();
+		this.parent();
+	},
+
 	render: function(override){
 		if (!this.paint) return;
 		
@@ -300,12 +306,9 @@ ART.Window = new Class({
 		
 		this.currentHeight = style.height;
 		this.currentWidth = style.width;
-		this.paint.resize({x: style.width + 20, y: style.height + 20});
-		
-		this.contents.setStyles({
-			'height': style.height + 20,
-			'width': style.width + 20
-		});
+		var padding = 0;
+		if (this.options.shadow) padding = 20;
+		this.paint.resize({x: style.width + padding, y: style.height + padding});
 		
 		this.contents.setStyles({
 			'height': style.height,
@@ -316,8 +319,8 @@ ART.Window = new Class({
 		var contentWidth = style.width -2;
 		
 		this.content.setStyles({
-			'top': 2,
-			'left': 1,
+			'top': 1,
+			'left': 0,
 			'height': contentHeight,
 			'width': contentWidth,
 			'background-color': style.contentBackgroundColor,
@@ -327,14 +330,14 @@ ART.Window = new Class({
 		// border layer
 		this.paint.save();
 		
-		this.paint.shift({x: 10, y: 5});
+		if (this.options.shadow) this.paint.shift({x: 10, y: 5});
 		
 		this.paint.start();
 		this.paint.shape('rounded-rectangle', {x: style.width, y: style.height}, style.cornerRadius + 1);
 		
 		var border = {'fill': true, 'fill-color': style.borderColor};
 		
-		if (Browser.Engine.webkit) $mixin(border, {
+		if (this.options.shadow) $mixin(border, {
 			'shadow-color': hsb(0, 0, 0),
 			'shadow-blur': 8,
 			'shadow-offset-x': 0,
@@ -431,6 +434,10 @@ ART.Window = new Class({
 		this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
 		
 		this.paint.restore();
+		$(this.paint).setStyles({
+			top: this.options.shadow ? -6 : -1,
+			left: this.options.shadow ? -11 : -1
+		});
 		if (this.shim) this.shim.position();
 		this.fireEvent('resize', [contentWidth, contentHeight]);
 	}
