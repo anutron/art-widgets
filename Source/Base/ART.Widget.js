@@ -21,15 +21,18 @@ ART.Widget = new Class({
 		// onBlur: $empty,
 		// onEnable: $empty,
 		// onDisable: $empty,
-		className: '',
-		style: null
+		// id: null,
+		// style: null,
+		className: ''
 	},
 	
 	initialize: function(options){
 		if (options) this.setOptions(options);
 
 		this.prefix = this.ns + '-' + this.name;
-		this.element = new Element('div');
+		this.element = new Element('div', {
+			id: this.options.id || this.prefix+new Date().getTime()
+		});
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
