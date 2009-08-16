@@ -30,7 +30,10 @@ ART.Widget.SplitView = new Class({
 	Extends: ART.Widget,
 	
 	options: {
-		fixed: 'left', resizable: true, foldable: true
+		fixed: 'left', 
+		resizable: true, 
+		foldable: true,
+		hideSplitterOnFullFold: false
 	},
 	
 	name: 'splitview',
@@ -147,28 +150,36 @@ ART.Widget.SplitView = new Class({
 		this.left.setStyle('width', this.leftWidth);
 	},
 	
-	foldLeft: function(to){
+	fold: function(side, to, hideSplitter) {
+		hideSplitter = $pick(hideSplitter, this.options.hideSplitterOnFullFold);
 		var self = this;
+		var other = side == 'left' ? 'right' : 'left';
 		this.fx.set = function(now){
-			self.resizeLeft(now);
+			self['resize' + side.capitalize()](now);
 		};
-		
-		this.fx.start(this.leftWidth, to);
-		
+		if (to > 0 && this[side + 'Width'] && this.splitterHidden) {
+			var style = ART.Sheet.lookupStyle(self.getSelector());
+			self.splitter.setStyle('width', style.splitterWidth);
+			self[other].setStyle('width', self[other + 'Width'] - style.splitterWidth);
+			this.splitterHidden = false;
+		}
+		this.fx.start(this[side + 'Width'], to).chain(function(){
+			if (hideSplitter) {
+				['left', 'right'].each(function(side) {
+					var other = side == 'left' ? 'right' : 'left';
+					if (self[side + 'Width'] == 0) {
+						var style = ART.Sheet.lookupStyle(self.getSelector());
+						self.splitter.setStyle('width', 0);
+						self[other].setStyle('width', self[other + 'Width'] + style.splitterWidth);
+						self[other + 'Width'] = self[other + 'Width'] + style.splitterWidth;
+					}
+				});
+				this.splitterHidden = true;
+			}
+		});
 		return this;
 	},
-	
-	foldRight: function(to){
-		var self = this;
-		this.fx.set = function(now){
-			self.resizeRight(now);
-		};
-		
-		this.fx.start(this.rightWidth, to);
-		
-		return this;
-	},
-	
+
 	setLeftContent: function(){
 		$(this.left).adopt(arguments);
 		return this;
