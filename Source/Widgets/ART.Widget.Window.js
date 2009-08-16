@@ -107,191 +107,158 @@ ART.Sheet.defineStyle('window button.maximize', {
 	'glyph-left': 4
 });
 
-ART.WM = {
-
-	instances: [],
-	
-	register: function(instance){
-		
-		if (this.instances.contains(instance)) return;
-		
-		$(instance).addEvent('mousedown', function(){
-			if (!instance.focused) ART.WM.focus(instance);
-		});
-		
-		this.instances.push(instance);
-	},
-	
-	cascade: function(noAnim, x, y){
-		this.instances.each(function(current, i){
-			var styles = {top: (20 * i) + y, left: (10 * i) + x};
-			(noAnim) ? current.element.setStyles(styles) : current.morph.start(styles);
-		});
-	},
-	
-	unregister: function(instance){
-		this.instances.erase(instance);
-	},
-	
-	focus: function(instance){
-		if (instance) this.instances.erase(instance).push(instance);
-		
-		this.instances.each(function(current, i){
-			$(current).setStyle('z-index', i);
-			if (current === instance) current.focus();
-			else current.blur();
-		});
-	}
-	
-};
-
 ART.Widget.Window = new Class({
 	
-	Extends: ART.Widget,
+	Extends: ART.StickyWin,
 	
 	name: 'window',
 	
-	options: {
+	options: { 
+		/*
 		caption: null,
+		*/
 		close: true,
-		minimize: true,
-		maximize: true,
+		minimize: function(){
+			var style = ART.Sheet.lookupStyle('window');
+			var w = style['minWidth'], h = style['minHeight'];
+			if (this.beforeMinimize) {
+				w = this.beforeMinimize.width;
+				h = this.beforeMinimize.height;
+				this.beforeMinimize = null;
+			} else {
+				this.beforeMinimize = this.getSize();
+			}
+			this.resize(w, h);
+		},
+		maximize: function(){
+			var style = ART.Sheet.lookupStyle('window');
+			var w = style['maxWidth'], h = style['maxHeight'];
+			if (this.beforeMaximize) {
+				w = this.beforeMaximize.width;
+				h = this.beforeMaximize.height;
+				this.beforeMaximize = null;
+			} else {
+				this.beforeMaximize = this.getSize();
+			}
+			this.resize(w, h);
+		},
 		resizable: true,
 		draggable: true
 	},
-	
-	initialize: function(options){
+
+	initialize: function(options) {
 		this.parent(options);
+		if (this.options.resizable) this.makeResizeable();
+	},
+
+	build: function(){
+		this.parent();
 		var self = this;
+		var relative = {
+			position: 'relative', 
+			top: 0, 
+			left: 0
+		};
+		var absolute = {
+			position: 'absolute', 
+			top: 0, 
+			left: 0
+		};
 		
-		var relative = {'position': 'relative', 'top': 0, 'left': 0};
-		var absolute = {'position': 'absolute', 'top': 0, 'left': 0};
-		
-		var style = ART.Sheet.lookupStyle(this.getSelector());
-		
-		this.currentHeight = style.height;
-		this.currentWidth = style.width;
-		
-		this.element.setStyles({'position': 'absolute', 'top': style.top, 'left': style.left});
 		this.morph = new Fx.Morph(this.element);
 		
 		this.paint = new ART.Paint();
 		$(this.paint).setStyles(absolute).inject(this.element);
 		
-		this.contents = new Element('div').inject(this.element);
-		this.contents.setStyles({'position': 'absolute', 'top': 5, 'left': 10});
+		this.contents = new Element('div', {
+			styles: {
+				position: 'relative',
+				top: 5, 
+				left: 10
+			}
+		}).inject(this.element);
 		
-		ART.WM.register(this);
-		
-		this.header = new Element('div', {'class': 'art-window-header'});
-		this.content = new Element('div', {'class': 'art-window-content'});
-		this.footer = new Element('div', {'class': 'art-window-footer'});
-		this.resizeHandle = new Element('div', {'class': 'art-window-resize-handle'});
-		
-		this.header.setStyles(relative);
-		this.content.setStyles(relative);
-		this.footer.setStyles(relative);
-
-		this.resizeHandle.setStyles({
-			'position': 'absolute',
-			'height': 17,
-			'width': 17,
-			'right': 0,
-			'bottom': 0
+		this.header = new Element('div', {
+			'class': 'art-window-header',
+			styles: $merge(relative, {
+				top: 1,
+				left: 1,
+				overflow: 'hidden'
+			})
 		});
-		
-		this.footer.setStyles({
-			'top': 1,
-			'left': 1,
-			'overflow': 'hidden'
+		this.content = new Element('div', {
+			'class': 'art-window-content',
+			styles: $merge(relative, {
+				overflow: 'auto'
+			})
 		});
-		
-		this.header.setStyles({
-			'top': 1,
-			'left': 1,
-			'overflow': 'hidden'
+		this.footer = new Element('div', {
+			'class': 'art-window-footer',
+			styles: $merge(relative, {
+				top: 1,
+				left: 1,
+				overflow: 'hidden'
+			})
 		});
-		
-		this.content.setStyles({
-			'overflow': 'auto'
-		});
-		
-		// this.footer.setStyles({'background-color': 'green', 'opacity': 0.5});
-		// this.header.setStyles({'background-color': 'green', 'opacity': 0.5});
-		// this.element.setStyles({'background-color': 'red', 'opacity': 0.5});
-		
-		this.resizeHandle.inject(this.footer);
-		
-		if (this.options.resizable){
-			
-			this.touchResize = new Touch(this.resizeHandle);
-			
-			this.touchResize.addEvent('start', function(){
-				self.startHeight = self.contents.offsetHeight;
-				self.startWidth = self.contents.offsetWidth;
-			});
-			
-			this.touchResize.addEvent('move', function(dx, dy){
-				self.resize(self.startHeight + dy, self.startWidth + dx);
-			});
-		}
-		
-		if (this.options.draggable){
-			
-			this.touchDrag = new Touch(this.header);
-			
-			this.touchDrag.addEvent('start', function(){
-				self.startTop = self.element.offsetTop;
-				self.startLeft = self.element.offsetLeft;
-			});
-			
-			this.touchDrag.addEvent('move', function(dx, dy){
-				var top = self.startTop + dy;
-				var left = self.startLeft + dx;
-				if (top < 0) top = 0;
-				if (left < 0) left = 0;
-				self.element.setStyles({
-					'top': top,
-					'left': left
-				});
-			});
-		}
-		
-		this.contents.adopt(this.header, this.content, this.footer);
-		
+		this.buttons = {};
 		if (this.options.close){
-			this.close = new ART.Widget.Button({className: 'close'});
-			this.close.setParent(this);
-			$(this.close).setStyles(absolute).inject(this.header);
-			this.close.addEvent('press', function(){
-				ART.WM.focus(self);
-				self.fireEvent('close');
-			});
+			this.buttons.close = new ART.Widget.Button({className: 'close'});
+			this.buttons.close.setParent(this);
+			$(this.buttons.close).setStyles(absolute).inject(this.header);
+			this.buttons.close.addEvent('press', this.hide.bind(this));
 		}
 		
 		if (this.options.maximize){
-			this.maximize = new ART.Widget.Button({className: 'maximize'});
-			this.maximize.setParent(this);
-			$(this.maximize).setStyles(absolute).inject(this.header);
-			this.maximize.addEvent('press', function(){
-				ART.WM.focus(self);
-				self.fireEvent('maximize');
-			});
+			this.buttons.maximize = new ART.Widget.Button({className: 'maximize'});
+			this.buttons.maximize.setParent(this);
+			$(this.buttons.maximize).setStyles(absolute).inject(this.header);
+			this.buttons.maximize.addEvent('press', this.maximize.bind(this));
 		}
 		
 		if (this.options.minimize){
-			this.minimize = new ART.Widget.Button({className: 'minimize'});
-			this.minimize.setParent(this);
-			$(this.minimize).setStyles(absolute).inject(this.header);
-			this.minimize.addEvent('press', function(){
-				ART.WM.focus(self);
-				self.fireEvent('minimize');
-			});
+			this.buttons.minimize = new ART.Widget.Button({className: 'minimize'});
+			this.buttons.minimize.setParent(this);
+			$(this.buttons.minimize).setStyles(absolute).inject(this.header);
+			this.buttons.minimize.addEvent('press', this.minimize.bind(this));
 		}
 		
 		this.render();
+		this.contents.adopt(this.header, this.content, this.footer);
 	},
-	
+
+	maximize: function(){
+		this.focus();
+		this.options.maximize.apply(this);
+	},
+
+	minimize: function(){
+		this.focus();
+		this.options.minimize.apply(this);
+	},
+
+	makeResizeable: function(){
+		this.resizeHandle = new Element('div', {'class': 'art-window-resize-handle'});
+		this.resizeHandle.setStyles({
+			position: 'absolute',
+			height: 17,
+			width: 17,
+			right: 0,
+			bottom: 0
+		});
+		this.resizeHandle.inject(this.footer);
+		
+		this.touchResize = new Touch(this.resizeHandle);
+		
+		this.touchResize.addEvent('start', function(){
+			this.startHeight = this.contents.offsetHeight;
+			this.startWidth = this.contents.offsetWidth;
+		}.bind(this));
+		
+		this.touchResize.addEvent('move', function(dx, dy){
+			this.resize(this.startWidth + dx, this.startHeight + dy);
+		}.bind(this));
+	},
+
 	setContent: function(){
 		$(this.content).adopt(arguments);
 		return this;
@@ -302,39 +269,37 @@ ART.Widget.Window = new Class({
 		this.render();
 		return this;
 	},
-	
-	resize: function(width, height){
-		this.render({'height': height, 'width': width});
-		return this;
+
+	makeIframeShim: function(){
+		return this.parent(this.contents);
 	},
-	
-	destroy: function(){
-		ART.WM.unregister(this);
-		this.element.dispose();
-		return this;
+
+	getSize: function(){
+		return {
+			width: this.currentWidth,
+			height: this.currentHeight
+		};
 	},
-	
+
 	render: function(override){
-		this.parent();
 		if (!this.paint) return;
 		
 		var style = ART.Sheet.lookupStyle(this.getSelector());
-		
+		var h = style.height, w = style.width;
 		// height / width management
 		
 		delete style.height;
 		delete style.width;
 
 		$mixin(style, override);
-		if (style.height == null) style.height = this.currentHeight;
-		if (style.width == null) style.width = this.currentWidth;
-		
+		if (style.height == null) style.height = this.currentHeight || h;
+		if (style.width == null) style.width = this.currentWidth || w;
+
 		style.height = style.height.limit(style.minHeight, style.maxHeight);
 		style.width = style.width.limit(style.minWidth, style.maxWidth);
 		
 		this.currentHeight = style.height;
 		this.currentWidth = style.width;
-		
 		this.paint.resize({x: style.width + 20, y: style.height + 20});
 		
 		this.contents.setStyles({
@@ -433,43 +398,47 @@ ART.Widget.Window = new Class({
 		
 		var baseLeft = 8;
 		var oneLeft = baseLeft + style.buttonSpacing;
-		var twoLeft = oneLeft + oneLeft - baseLeft;		
-		if (this.close){
-			$(this.close).setStyles({top: style.headerPaddingTop, left: baseLeft});
+		var twoLeft = oneLeft + oneLeft - baseLeft;
+		if (this.buttons.close){
+			$(this.buttons.close).setStyles({top: style.headerPaddingTop, left: baseLeft});
 		}
 		
-		if (this.minimize){
-			$(this.minimize).setStyles({
+		if (this.buttons.minimize){
+			$(this.buttons.minimize).setStyles({
 				'top': style.headerPaddingTop,
-				'left': (this.close) ? oneLeft : baseLeft
+				'left': (this.buttons.close) ? oneLeft : baseLeft
 			});
 		}
 		
-		if (this.maximize){
-			$(this.maximize).setStyles({
+		if (this.buttons.maximize){
+			$(this.buttons.maximize).setStyles({
 				'top': style.headerPaddingTop,
-				'left': (this.close && this.maximize) ? twoLeft : (this.close || this.maximize) ? oneLeft : baseLeft
+				'left': (this.buttons.close && this.buttons.maximize) ? twoLeft : (this.buttons.close || this.buttons.maximize) ? oneLeft : baseLeft
 			});
 		}
-		
-		if (this.options.caption == null) return;
 		
 		// font
 		
 		var font = ART.Paint.lookupFont(style.captionFont);
-		var fontBounds = font.measure(style.captionFontSize, this.options.caption);
+		var fontBounds = font.measure(style.captionFontSize, this.options.caption || '');
 		
 		// header text
 		
 		var spare = (style.width - fontBounds.x) / 2;
 		
 		this.paint.start({x: spare, y: style.headerPaddingTop + 3});
-		this.paint.text(font, style.captionFontSize, this.options.caption);
+		this.paint.text(font, style.captionFontSize, this.options.caption || "");
 		this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
 		
 		this.paint.restore();
-		
+		if (this.shim) this.shim.position();
 		this.fireEvent('resize', [contentWidth, contentHeight]);
 	}
-	
+
 });
+
+/* 
+TODO
+ * header can overlap buttons
+ * drag options, resize options; touch doesn't have the same features...
+*/
