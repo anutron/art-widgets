@@ -1,5 +1,5 @@
 /*
-Script: ART.Widget.Button.js
+Script: ART.Button.js
 
 License:
 	MIT-style license.
@@ -40,7 +40,7 @@ ART.Sheet.defineStyle('button:active', {
 	'reflection-color': {0: hsb(0, 0, 30, 1), 1: hsb(0, 0, 0, 0)}
 });
 
-ART.Widget.Button = new Class({
+ART.Button = new Class({
 
 	Extends: ART.Widget,
 

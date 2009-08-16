@@ -1,5 +1,5 @@
 /*
-Script: ART.Widget.SplitView.js
+Script: ART.SplitView.js
 
 License:
 	MIT-style license.
@@ -25,7 +25,7 @@ ART.Sheet.defineStyle('splitview:focus', {
 	'left-background-color': '#d6dde5'
 });
 
-ART.Widget.SplitView = new Class({
+ART.SplitView = new Class({
 	
 	Extends: ART.Widget,
 	

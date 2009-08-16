@@ -1,5 +1,5 @@
 /*
-Script: ART.Widget.Window.js
+Script: ART.Window.js
 
 License:
 	MIT-style license.
@@ -107,7 +107,7 @@ ART.Sheet.defineStyle('window button.maximize', {
 	'glyph-left': 4
 });
 
-ART.Widget.Window = new Class({
+ART.Window = new Class({
 	
 	Extends: ART.StickyWin,
 	
@@ -202,21 +202,21 @@ ART.Widget.Window = new Class({
 		});
 		this.buttons = {};
 		if (this.options.close){
-			this.buttons.close = new ART.Widget.Button({className: 'close'});
+			this.buttons.close = new ART.Button({className: 'close'});
 			this.buttons.close.setParent(this);
 			$(this.buttons.close).setStyles(absolute).inject(this.header);
 			this.buttons.close.addEvent('press', this.hide.bind(this));
 		}
 		
 		if (this.options.maximize){
-			this.buttons.maximize = new ART.Widget.Button({className: 'maximize'});
+			this.buttons.maximize = new ART.Button({className: 'maximize'});
 			this.buttons.maximize.setParent(this);
 			$(this.buttons.maximize).setStyles(absolute).inject(this.header);
 			this.buttons.maximize.addEvent('press', this.maximize.bind(this));
 		}
 		
 		if (this.options.minimize){
-			this.buttons.minimize = new ART.Widget.Button({className: 'minimize'});
+			this.buttons.minimize = new ART.Button({className: 'minimize'});
 			this.buttons.minimize.setParent(this);
 			$(this.buttons.minimize).setStyles(absolute).inject(this.header);
 			this.buttons.minimize.addEvent('press', this.minimize.bind(this));
