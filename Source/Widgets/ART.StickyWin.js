@@ -4,7 +4,7 @@ ART.StickyWin = new Class({
 	
 	Extends: ART.Widget,
 	
-	name: 'box',
+	name: 'stickywin',
 	
 	options: { 
 		/*
@@ -20,6 +20,7 @@ ART.StickyWin = new Class({
 		closeOnClickOut: false,
 		closeOnEsc: false,
 		fadeTransition: 'sine:in:out',
+		windowManager: instanceOfStacker,
 
 		//these are the defaults for Element.position anyway
 		************************************************
@@ -33,9 +34,9 @@ ART.StickyWin = new Class({
 		*/
 		close: true,
 		draggable: false,
+		dragHandle: false,
 		showNow: true,
 		useIframeShim: true,
-		windowManager: ART.WM,
 		fade: true,
 		fadeDuration: 150
 	},
@@ -45,9 +46,8 @@ ART.StickyWin = new Class({
 			target: document.body,
 			where: 'bottom' 
 		};
+		this.windowManager = this.options.windowManager || ART.WM;
 		this.parent(options);
-		this.windowManager = this.options.windowManager;
-		delete this.options.windowManager;
 		this.build();
 		this.windowManager.register(this);
 		if (this.options.content) this.setContent(this.options.content);
@@ -103,9 +103,9 @@ ART.StickyWin = new Class({
 	show: function(){
 		this.parent();
 		this.element.setStyle('display', 'block');
-		this.position();
+		if (!this.positioned) this.position();
 		this.fade(1);
-		this.focus();
+		this.windowManager.focus(this);
 		if (this.options.useIframeShim) this.showIframeShim();
 	},
 
@@ -134,25 +134,23 @@ ART.StickyWin = new Class({
 	},
 
 	position: function(options){
-		if (!this.positioned || options) {
-			this.positioned = true;
-			this.setOptions(options);
-			if ($defined(this.options.top) && $defined(this.options.left)) {
-				this.element.setStyles({
-					top: this.options.top,
-					left: this.options.left
-				});
-			} else {
-				this.element.position({
-					allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
-					relativeTo: this.options.relativeTo,
-					position: this.options.position,
-					offset: this.options.offset,
-					edge: this.options.edge
-				});
-			}
-			if (this.shim) this.shim.position();
+		this.positioned = true;
+		this.setOptions(options);
+		if ($defined(this.options.top) && $defined(this.options.left)) {
+			this.element.setStyles({
+				top: this.options.top,
+				left: this.options.left
+			});
+		} else {
+			this.element.position({
+				allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
+				relativeTo: this.options.relativeTo,
+				position: this.options.position,
+				offset: this.options.offset,
+				edge: this.options.edge
+			});
 		}
+		if (this.shim) this.shim.position();
 		return this;
 	},
 
@@ -172,9 +170,10 @@ ART.StickyWin = new Class({
 		return this.pin(!this.pinned);
 	},
 
-	makeDraggable: function(){
-		this.touchDrag = new Touch(this.header);
-		
+	makeDraggable: function(handle){
+		handle = handle || this.options.dragHandle || this.element;
+		this.touchDrag = new Touch(handle);
+		handle.setStyle('cursor', 'move');
 		this.touchDrag.addEvent('start', function(){
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
@@ -200,6 +199,11 @@ ART.StickyWin = new Class({
 	resize: function(width, height){
 		this.render({'height': height, 'width': width});
 		return this;
+	},
+
+	focus: function(callParent){
+		if (callParent) this.parent();
+		else this.windowManager.focus(this);
 	},
 
 	destroy: function(){
