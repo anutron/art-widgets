@@ -28,13 +28,17 @@ ART.Sheet.defineStyle('button', {
 	'pill': false,
 
 	'corner-radius': 3,
-	'fill-color': {0: hsb(0, 0, 100), 1: hsb(0, 0, 70)},
-	'border-color': hsb(0, 0, 0, 0.7),
-	'shadow-color': hsb(0, 0, 100, 0.6)
+	//'fill-color': {0: hsb(0, 0, 90), 1: hsb(0, 0, 50)},
+	'background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
+	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'border-color': hsb(0, 0, 0, 0.8)
 });
 
 ART.Sheet.defineStyle('button:active', {
-	'fill-color': {0: hsb(0, 0, 70), 1: hsb(0, 0, 30, 0)},
+	//'fill-color': {0: hsb(0, 0, 70), 1: hsb(0, 0, 30, 0)},
+	'background-color': hsb(0, 0, 40),
+	'reflection-color': {0: hsb(0, 0, 30, 1), 1: hsb(0, 0, 0, 0)},
+
 	'border-color': hsb(0, 0, 0, 0.8)
 });
 
@@ -106,7 +110,7 @@ ART.Button = new Class({
 		});
 
 		//make border
-		var shape = 'rounded-rectangle';
+		var shape = (style.pill) ? (style.width > style.height) ? 'horizontal-pill' : 'vertical-pill' : 'rounded-rectangle';
 		this.paint.start({x: 0, y: 0});
 
 
@@ -125,7 +129,14 @@ ART.Button = new Class({
 		//main button fill
 		this.paint.start({x: 1, y: 1});
 		this.paint.shape(shape, {x: style.width - 2, y: style.height - 2}, rad);
-		this.paint.end({'fill': true, 'fill-color': style.fillColor});
+		this.paint.end({'fill': true, 'fill-color': style.reflectionColor || style.fillColor});
+		
+		//background
+		if (style.backgroundColor) {
+			this.paint.start({x: 1, y: 2});
+			this.paint.shape(shape, {x: style.width - 2, y: style.height - 3}, rad);
+			this.paint.end({'fill': true, 'fill-color': style.backgroundColor});
+		}
 
 		if (style.glyph) this.makeGlyph();
 	
