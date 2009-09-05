@@ -28,16 +28,14 @@ ART.Sheet.defineStyle('button', {
 	'pill': false,
 
 	'corner-radius': 3,
-	'background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
+	'fill-color': {0: hsb(0, 0, 100), 1: hsb(0, 0, 70)},
 	'border-color': hsb(0, 0, 0, 0.7),
-	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
 	'shadow-color': hsb(0, 0, 100, 0.6)
 });
 
 ART.Sheet.defineStyle('button:active', {
-	'background-color': hsb(0, 0, 40),
-	'border-color': hsb(0, 0, 0, 0.8),
-	'reflection-color': {0: hsb(0, 0, 30, 1), 1: hsb(0, 0, 0, 0)}
+	'fill-color': {0: hsb(0, 0, 70), 1: hsb(0, 0, 30, 0)},
+	'border-color': hsb(0, 0, 0, 0.8)
 });
 
 ART.Button = new Class({
@@ -45,9 +43,11 @@ ART.Button = new Class({
 	Extends: ART.Widget,
 
 	name: 'button',
-
+	
 	options: {
-		label: ''
+	/*
+		text: ''
+	*/
 	},
 
 	initialize: function(options){
@@ -91,47 +91,65 @@ ART.Button = new Class({
 		if (!this.paint) return this;
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var font = ART.Paint.lookupFont(style.font);
-		var fontBounds = font.measure(style.fontSize, this.options.label);
+		if (this.options.text) {
+			var fontBounds = font.measure(style.fontSize, this.options.text);
+			if (!style.width) style.width = (fontBounds.x + style.padding[1] + style.padding[3] + 2).round();
+			if (!style.height) style.height = (fontBounds.y + style.padding[0] + style.padding[2] + 2).round();
+		}
 
-		if (!style.width) style.width = (fontBounds.x + style.padding[1] + style.padding[3] + 2).round();
-		if (!style.height) style.height = (fontBounds.y + style.padding[0] + style.padding[2] + 2).round();
+		this.paint.resize({x: style.width, y: style.height});
 
-		this.paint.resize({x: style.width, y: style.height + 1});
 		this.element.setStyles({
 			width: style.width, 
-			height: style.height + 1,
+			height: style.height,
 			cursor: style.cursor
 		});
 
-		var shape = (style.pill) ? (style.width > style.height) ? 'horizontal-pill' : 'vertical-pill' : 'rounded-rectangle';
-
+		//make border
+		var shape = 'rounded-rectangle';
 		this.paint.start({x: 0, y: 0});
-		this.paint.shape(shape, {x: style.width, y: style.height + 1}, style.cornerRadius + 1);
-		this.paint.end({'fill': true, 'fill-color': style.shadowColor});
 
-		this.paint.start({x: 0, y: 0});
-		this.paint.shape(shape, {x: style.width, y: style.height}, style.cornerRadius + 1);
+
+		['Top', 'Bottom'].each(function(side, i){
+			['Left', 'Right'].each(function(dir, i) {
+				if (style['cornerRadius'+side+dir] == null) style['cornerRadius'+side+dir] = style.cornerRadius;
+			});
+		});
+		var rad = [style.cornerRadiusTopLeft, style.cornerRadiusTopRight, style.cornerRadiusBottomRight, style.cornerRadiusBottomLeft];
+		
+
+		//make the border
+		this.paint.shape(shape, {x: style.width, y: style.height}, rad);
 		this.paint.end({'fill': true, 'fill-color': style.borderColor});
 
+		//main button fill
 		this.paint.start({x: 1, y: 1});
-		this.paint.shape(shape, {x: style.width - 2, y: style.height - 2}, style.cornerRadius);
-		this.paint.end({'fill': true, 'fill-color': style.reflectionColor});
+		this.paint.shape(shape, {x: style.width - 2, y: style.height - 2}, rad);
+		this.paint.end({'fill': true, 'fill-color': style.fillColor});
 
-		this.paint.start({x: 1, y: 2});
-		this.paint.shape(shape, {x: style.width - 2, y: style.height - 3}, style.cornerRadius);
-		this.paint.end({'fill': true, 'fill-color': style.backgroundColor});
-
-		if (style.glyph){
-			this.paint.start({x: style.glyphLeft, y: style.glyphTop});
-			this.paint.shape(style.glyph, {x: style.glyphWidth, y: style.glyphHeight});
-			this.paint.end({'stroke': true, 'stroke-width': style.glyphStroke, 'stroke-color': style.glyphColor});
-		}
-
-		this.paint.start({x: style.padding[3] + 1, y: style.padding[0] + 1});
-		this.paint.text(font, style.fontSize, this.options.label);
-		this.paint.end({'fill': true, 'fill-color': style.fontColor});
+		if (style.glyph) this.makeGlyph();
+	
+		if (this.options.text) this.makeText(this.options.text);
 
 		return this;
+
+	},
+
+	makeGlyph: function(){
+		var style = ART.Sheet.lookupStyle(this.getSelector());
+		this.paint.start({x: style.glyphLeft, y: style.glyphTop});
+		this.paint.shape(style.glyph, {x: style.glyphWidth, y: style.glyphHeight});
+		if (style.glyphStroke) this.paint.end({'stroke': true, 'stroke-width': style.glyphStroke, 'stroke-color': style.glyphColor});
+		else if (style.glyphFill) this.paint.end({fill: true, fillColor: style.glyphColor});
+		else this.paint.end();
+	},
+	
+	makeText: function(text){
+		var style = ART.Sheet.lookupStyle(this.getSelector());
+		var font = ART.Paint.lookupFont(style.font);
+		this.paint.start({x: style.padding[3] + 1, y: style.padding[0] + 1});
+		this.paint.text(font, style.fontSize, this.options.text);
+		this.paint.end({'fill': true, 'fill-color': style.fontColor});
 	}
 
 });
