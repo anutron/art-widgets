@@ -58,6 +58,7 @@ ART.Sheet.defineStyle('window button', {
 	'pill': true,
 	'height': 14,
 	'width': 14,
+	'cursor': 'pointer',
 	'background-color': {0: hsb(0, 0, 100, 0.6), 1: hsb(0, 0, 100, 0.6)},
 	'reflection-color': {0: hsb(0, 0, 100), 1: hsb(0, 0, 0, 0)},
 	'shadow-color': hsb(0, 0, 100, 0.2),
