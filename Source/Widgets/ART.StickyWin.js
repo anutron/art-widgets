@@ -21,6 +21,7 @@ ART.StickyWin = new Class({
 		closeOnEsc: false,
 		fadeTransition: 'sine:in:out',
 		windowManager: instanceOfStacker,
+		destroyOnClose: false,
 
 		//these are the defaults for Element.position anyway
 		************************************************
@@ -43,10 +44,12 @@ ART.StickyWin = new Class({
 	},
 
 	initialize: function(options) {
-		this.options.inject = {
-			target: document.body,
-			where: 'bottom' 
-		};
+		if (!this.options.inject) {
+			this.options.inject = {
+				target: document.body,
+				where: 'bottom' 
+			};
+		}
 		this.windowManager = this.options.windowManager || ART.WM;
 		this.parent(options);
 		this.build();
@@ -88,7 +91,7 @@ ART.StickyWin = new Class({
 		this.element.setStyles({
 			display: 'none',
 			position: 'absolute'
-		}).inject(this.options.inject.target, this.options.inject.where);
+		}).inject(this.options.inject.target, this.options.inject.where).store('StickyWin', this);;
 	},
 
 	hide: function(noFade){
@@ -137,10 +140,7 @@ ART.StickyWin = new Class({
 	position: function(options){
 		this.positioned = true;
 		this.setOptions(options);
-		var pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo', 'allowNegative'].some(function(opt){
-			return $defined(this.options[opt]);
-		}, this);
-		if (pos || (this.options.cascaded && !this.windowManager.positionNew(this)) ) {
+		if (this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
 			if ($defined(this.options.top) && $defined(this.options.left)) {
 				this.element.setStyles({
 					top: this.options.top,
