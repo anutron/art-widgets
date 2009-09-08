@@ -118,9 +118,11 @@ ART.Window = new Class({
 		/*
 		caption: null,
 		*/
+		min: {/* height: null, width: null */},
+		max: {/* height: null, width: null */},
 		close: true,
 		minimize: function(){
-			var style = ART.Sheet.lookupStyle('window');
+			var style = this.getSizeRange();
 			var w = style['minWidth'], h = style['minHeight'];
 			if (this.beforeMinimize) {
 				w = this.beforeMinimize.width;
@@ -132,7 +134,7 @@ ART.Window = new Class({
 			this.resize(w, h);
 		},
 		maximize: function(){
-			var style = ART.Sheet.lookupStyle('window');
+			var style = this.getSizeRange();
 			var w = style['maxWidth'], h = style['maxHeight'];
 			if (this.beforeMaximize) {
 				w = this.beforeMaximize.width;
@@ -226,12 +228,32 @@ ART.Window = new Class({
 
 	maximize: function(){
 		this.focus();
-		this.options.maximize.apply(this);
+		var style = this.getSizeRange();
+		var w = style['maxWidth'], h = style['maxHeight'];
+		if (this.beforeMaximize) {
+			w = this.beforeMaximize.width;
+			h = this.beforeMaximize.height;
+			this.beforeMaximize = null;
+		} else {
+			this.beforeMaximize = this.getSize();
+		}
+		this.resize(w, h);
+		this.fireEvent('minimize', [w, h]);
 	},
 
 	minimize: function(){
 		this.focus();
-		this.options.minimize.apply(this);
+		var style = this.getSizeRange();
+		var w = style['minWidth'], h = style['minHeight'];
+		if (this.beforeMinimize) {
+			w = this.beforeMinimize.width;
+			h = this.beforeMinimize.height;
+			this.beforeMinimize = null;
+		} else {
+			this.beforeMinimize = this.getSize();
+		}
+		this.resize(w, h);
+		this.fireEvent('maximize', [w, h]);
 	},
 
 	makeResizeable: function(){
@@ -261,8 +283,9 @@ ART.Window = new Class({
 		this.parent(this.header);
 	},
 
-	setContent: function(){
-		$(this.content).adopt(arguments);
+	setContent: function(content){
+		if (document.id(content) || $type(content) == "array") this.content.adopt(content);
+		else if ($type(content) == "string") this.content.set('html', content);
 		return this;
 	},
 	
@@ -288,6 +311,22 @@ ART.Window = new Class({
 		this.parent();
 	},
 
+	getSizeRange: function(override) {
+		var style = ART.Sheet.lookupStyle(this.getSelector());
+		var ret = {};
+		['min', 'max'].each(function(extreme) {
+			['width', 'height'].each(function(axis) {
+				var str = extreme + axis.capitalize();
+				var opt = this.options[extreme][axis];
+				if ((override && !$defined(override[extreme + axis.capitalize()]) && $defined(opt)) || (!override && $defined(opt))) 
+					ret[str] = opt;
+				else
+					ret[str] = style[str];
+			}, this);
+		}, this);
+		return ret;
+	},
+
 	render: function(override){
 		if (!this.paint) return;
 		
@@ -302,11 +341,14 @@ ART.Window = new Class({
 		if (style.height == null) style.height = this.currentHeight || h;
 		if (style.width == null) style.width = this.currentWidth || w;
 
-		style.height = style.height.limit(style.minHeight, style.maxHeight);
-		style.width = style.width.limit(style.minWidth, style.maxWidth);
+		var ranges = this.getSizeRange(override);
+
+		style.height = style.height.limit(ranges.minHeight, ranges.maxHeight);
+		style.width = style.width.limit(ranges.minWidth, ranges.maxWidth);
 		
 		this.currentHeight = style.height;
 		this.currentWidth = style.width;
+
 		var padding = 0;
 		if (this.options.shadow) padding = 20;
 		this.paint.resize({x: style.width + padding, y: style.height + padding});
@@ -318,12 +360,11 @@ ART.Window = new Class({
 		
 		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
 		var contentWidth = style.width -2;
-		
 		this.content.setStyles({
 			'top': 1,
 			'left': 0,
-			'height': contentHeight,
-			'width': contentWidth,
+			'height': contentHeight < 0 ? 0 : contentHeight,
+			'width': contentWidth < 0 ? 0 : contentWidth,
 			'background-color': style.contentBackgroundColor,
 			'overflow': style.contentOverflow
 		});
@@ -354,7 +395,7 @@ ART.Window = new Class({
 		this.paint.start({x: 1, y: 1});
 		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 2}, [style.cornerRadius, style.cornerRadius, 0, 0]);
 		this.paint.end({'fill': true, 'fill-color': style.headerReflectionColor});
-		
+
 		this.paint.start({x: 1, y: 2});
 		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 3}, [style.cornerRadius, style.cornerRadius, 0, 0]);
 		this.paint.end({'fill': true, 'fill-color': style.headerBackgroundColor});
