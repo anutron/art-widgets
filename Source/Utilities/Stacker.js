@@ -48,8 +48,13 @@ var Stacker = new Class({
 		this.focused = instance;
 	},
 
-	positionNew: function(instance){
-		if (this.instances.length < 2) return false;
+	positionNew: function(instance, options){
+		if (options) {
+			var pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo'].every(function(opt){
+				return options[opt] == null || (this.focused.options[opt] == options[opt]);
+			}, this);
+		}
+		if (this.instances.length < 2 || !pos) return false;
 		var focused = this.focused;
 		this.focus(instance);
 		$(instance).position({
