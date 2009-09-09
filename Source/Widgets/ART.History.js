@@ -135,7 +135,10 @@ ART.History = new Class({
 		onSelectManual: $empty(path),
 		onShowEditor: $empty,
 		onHideEditor: $empty,
-		onSelect: $empty(path, title)
+		onSelect: $empty(path, title),
+		onBack: $empty,
+		onForward: $empty,
+		onRefresh: $empty,
 		*/
 		maxToShow: 4,
 		editable: false,
@@ -269,17 +272,23 @@ ART.History = new Class({
 		this.element.setStyles(ART.Sheet.lookupStyle(this.getSelector()));
 		
 		this.nav_back.render();
-		$(this.nav_back).setStyles(ART.Sheet.lookupStyle(this.nav_back.getSelector()));
+		$(this.nav_back).setStyles(ART.Sheet.lookupStyle(this.nav_back.getSelector())).addEvent('click', function(){
+			this.fireEvent('back');
+		}.bind(this));
 
 		this.nav_next.render();
-		$(this.nav_next).setStyles(ART.Sheet.lookupStyle(this.nav_next.getSelector()));
+		$(this.nav_next).setStyles(ART.Sheet.lookupStyle(this.nav_next.getSelector())).addEvent('click', function(){
+			this.fireEvent('forward');
+		}.bind(this));
 
 		this.location.render();
 		this.location_text.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' div.location_text'));
 		$(this.location).setStyles(ART.Sheet.lookupStyle(this.location.getSelector()));
 
 		this.refresher.render();
-		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector()));
+		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector())).addEvent('click', function(){
+			this.fireEvent('refresh');
+		}.bind(this));
 
 		this.resize();
 		this.nav.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' ul'));
@@ -288,8 +297,7 @@ ART.History = new Class({
 		this.divot.shape('triangle', {x: 9, y: 5}, 'down');
 		var divotStyles = ART.Sheet.lookupStyle(this.getSelector() + ' divot');
 		this.divot.end({fill: true, fillColor: divotStyles.color});
-		
-		dbug.log(this.getSelector() + (this.history.length ? ' input': ' input.disabled'));
+
 		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input.disabled')));
 		this.resize();
 	},
@@ -301,10 +309,11 @@ ART.History = new Class({
 	
 	attach: function(attach) {
 		var method = $pick(attach, true) ? 'addEvents' : 'removeEvents';
-		$(document)[method]({
-			click: function(e){
+		this.outClick = this.outClick || function(e){
 			if (!this.element.hasChild(e.target) && this.element != e.target) this.hide();
-			}.bind(this)
+		}.bind(this);
+		$(document)[method]({
+			click: this.outClick
 		});
 	},
 	
