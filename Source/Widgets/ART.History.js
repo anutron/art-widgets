@@ -92,27 +92,22 @@ ART.Sheet.defineStyle('history ul li.hovered a', {
 	'background-color': '#d5dee5',
 	'color': '#000'
 });
-(function(){
-	var input = {
-		'display': 'none',
-		'position': 'absolute',
-		'height': 9,
-		'left': 56,
-		'top': 1,
-		'background-color': 'transparent',
-		'border': 'none',
-		'font-family':'"Lucida Grande","Lucida Sans Unicode","Trebuchet MS",Helvetica,Arial,sans-serif',
-		'font-size': 12,
-		'height': 14,
-		'position': 'absolute',
-		'width': 300,
-		'color': '#fff'
-	};
-	ART.Sheet.defineStyle('history input', input);
-	ART.Sheet.defineStyle('history input.disabled', $merge(input, {
-		'color': hsb(0, 0, 33)
-	}));
-})();
+ART.Sheet.defineStyle('history input', {
+	'display': 'none',
+	'position': 'absolute',
+	'height': 9,
+	'left': 54,
+	'top': 0,
+	'background-color': 'transparent',
+	'border': 'none',
+	'font-family':'"Lucida Grande","Lucida Sans Unicode","Trebuchet MS",Helvetica,Arial,sans-serif',
+	'font-size': 12,
+	'height': 14,
+	'position': 'absolute',
+	'width': 300,
+	'color': '#fff'
+});
+
 ART.Sheet.defineStyle('history divot', {
 	'position': 'absolute',
 	'right': 5,
@@ -151,7 +146,6 @@ ART.History = new Class({
 		this.build();
 		this.render();
 		this.setHistory(this.options.history);
-		//this.location_text.set('html', this.history[this.selected]);
 		this.setNavState();
 		this.attach();
 	},
@@ -185,12 +179,14 @@ ART.History = new Class({
 
 		this.divot = new ART.Paint().resize({x: 10, y: 10});
 		$(this.divot).inject(this.location).setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' divot'));
-		
 
 		this.refresher = new ART.Button({
 			className: 'refresh'
 		}).setParent(this);
-		$(this.refresher).inject(this.element);
+
+		$(this.refresher).inject(this.element).addEvent('click', function(){
+			this.fireEvent('refresh');
+		}.bind(this));
 
 		//create the list for the history
 		this.nav = new Element('ul').inject(this.location);
@@ -239,7 +235,7 @@ ART.History = new Class({
 					}
 					if (target) {
 						target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-						this.editor.set('value', target.getElement('a').get('html'));
+						this.editor.set('value', target.getElement('a').get('html')).select();
 					}
 				}.bind(this),
 				enter: function(e) {
@@ -258,9 +254,12 @@ ART.History = new Class({
 				keyup: function(e) {
 					if (e.key == "enter") {
 						this.fireEvent('selectManual', this.editor.get('value'));
-						this.editor.setStyle('display', 'none');
+						this.hide();
 					}
-				}.bind(this)
+				}.bind(this),
+				mousedown: function(e){
+					e.stopPropagation();
+				}
 			}
 		}).inject(this.element);
 
@@ -272,23 +271,17 @@ ART.History = new Class({
 		this.element.setStyles(ART.Sheet.lookupStyle(this.getSelector()));
 		
 		this.nav_back.render();
-		$(this.nav_back).setStyles(ART.Sheet.lookupStyle(this.nav_back.getSelector())).addEvent('click', function(){
-			this.fireEvent('back');
-		}.bind(this));
+		$(this.nav_back).setStyles(ART.Sheet.lookupStyle(this.nav_back.getSelector()));
 
 		this.nav_next.render();
-		$(this.nav_next).setStyles(ART.Sheet.lookupStyle(this.nav_next.getSelector())).addEvent('click', function(){
-			this.fireEvent('forward');
-		}.bind(this));
+		$(this.nav_next).setStyles(ART.Sheet.lookupStyle(this.nav_next.getSelector()));
 
 		this.location.render();
 		this.location_text.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' div.location_text'));
 		$(this.location).setStyles(ART.Sheet.lookupStyle(this.location.getSelector()));
 
 		this.refresher.render();
-		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector())).addEvent('click', function(){
-			this.fireEvent('refresh');
-		}.bind(this));
+		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector()));
 
 		this.resize();
 		this.nav.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' ul'));
@@ -388,6 +381,7 @@ ART.History = new Class({
 		var liCurrentAnchorStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a.current');
 		var hoveredStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li.hovered a');
 		var nav = this.nav;
+
 		var lis = this.history.map(function(hist, index){
 			if (index < this.selected - this.options.maxToShow || index > this.selected + this.options.maxToShow) return;
 			var current = this.selected == index;
@@ -476,15 +470,22 @@ ART.History = new Class({
 			this.location.enable();
 			this.refresher.enable();
 		}
-		
 	},
 
 	back: function(){
-		if (this.selected > 0) this.select(this.history[this.selected - 1]);
+		var hist = this.history[this.selected - 1];
+		if (hist) {
+			this.select(hist);
+			this.fireEvent('back');
+		}
 	},
 
 	next: function(){
-		if (this.history[this.selected + 1]) this.select(this.history[this.selected + 1]);
+		var hist = this.history[this.selected + 1];
+		if (hist) {
+			this.select(hist);
+			this.fireEvent('forward');
+		}
 	},
 
 	setEditable: function(editable) {
@@ -517,5 +518,5 @@ ART.History = new Class({
 	getSelected: function(){
 		return this.history[this.selected];
 	}
+
 });
-	
