@@ -31,7 +31,8 @@ ART.Widget = new Class({
 
 		this.prefix = this.ns + '-' + this.name;
 		this.element = new Element('div', {
-			id: this.options.id || this.prefix+new Date().getTime()
+			id: this.options.id || this.prefix+new Date().getTime(),
+			'class': this.options.className
 		});
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
@@ -62,6 +63,7 @@ ART.Widget = new Class({
 	setParent: function(widget){
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
+		return this;
 	},
 
 	// render
