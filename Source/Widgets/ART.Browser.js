@@ -20,15 +20,16 @@ ART.Browser = new Class({
 	Extends: ART.Window,
 
 	options: {
-		className: 'browser'
+		className: 'browser',
+		historyOptions: {
+			className: 'browser',
+			editable: false
+		}
 	},
 	
 	build: function(){
 		this.parent.apply(this, arguments);
-		this.history = new ART.History({
-			className: 'browser',
-			editable: true
-		});
+		this.history = new ART.History(this.options.historyOptions);
 		$(this.history).inject(this.header);
 		this.history.resize();
 	},
