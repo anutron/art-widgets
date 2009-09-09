@@ -38,8 +38,14 @@ ART.Sheet.defineStyle('button:active', {
 	//'fill-color': {0: hsb(0, 0, 70), 1: hsb(0, 0, 30, 0)},
 	'background-color': hsb(0, 0, 40),
 	'reflection-color': {0: hsb(0, 0, 30, 1), 1: hsb(0, 0, 0, 0)},
-
 	'border-color': hsb(0, 0, 0, 0.8)
+});
+
+ART.Sheet.defineStyle('button:disabled', {
+	'background-color': {0: hsb(0, 0, 90), 1: hsb(0, 0, 80)},
+	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'border-color': hsb(0, 0, 0, 0.5),
+	'glyph-color': hsb(0, 0, 0, 0.3)
 });
 
 ART.Button = new Class({
@@ -87,14 +93,17 @@ ART.Button = new Class({
 			}.bind(this)
 		});
 		
-		this.render();
+		this.render(this.options);
 	},
 
-	render: function(){
+	render: function(options){
 		this.parent();
+		this.setOptions(options);
 		if (!this.paint) return this;
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var font = ART.Paint.lookupFont(style.font);
+		if (this.options.width) style.width = this.options.width;
+		if (this.options.height) style.height = this.options.height;
 		if (this.options.text) {
 			var fontBounds = font.measure(style.fontSize, this.options.text);
 			if (!style.width) style.width = (fontBounds.x + style.padding[1] + style.padding[3] + 2).round();
