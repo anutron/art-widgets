@@ -27,6 +27,14 @@ var nav = {
 };
 //TODO: how can I mixin styles?
 ART.Sheet.defineStyle('button.navLeft', nav);
+ART.Sheet.defineStyle('button.navUp', $merge(nav, {
+	'glyph-height': 8,
+	'glyph-width': 9
+}));
+ART.Sheet.defineStyle('button.navDown', $merge(nav, {
+	'glyph-height': 8,
+	'glyph-width': 9
+}));
 ART.Sheet.defineStyle('button.navRight', $merge(nav, {
 	'glyph-left': 10,
 	
@@ -49,7 +57,7 @@ ART.Sheet.defineStyle('button.navRight:active', {
 
 ART.Button.Nav = {};
 
-['left', 'right'].each(function(dir) {
+['left', 'right', 'up', 'down'].each(function(dir) {
 
 	var upper = dir.capitalize();
 	
