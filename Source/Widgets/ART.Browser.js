@@ -1,5 +1,6 @@
 ART.Sheet.defineStyle('window.browser', {
-	'header-height': 60
+	'header-height': 60,
+	'header-overflow': 'visible'
 });
 
 ART.Sheet.defineStyle('history.browser', {
@@ -32,6 +33,10 @@ ART.Browser = new Class({
 		this.history = new ART.History(this.options.historyOptions);
 		$(this.history).inject(this.header);
 		this.history.resize();
+		var styles = ART.Sheet.lookupStyle(this.getSelector());
+		this.header.setStyles({
+			'overflow': styles.headerOverflow
+		});
 	},
 	
 	render: function(){
