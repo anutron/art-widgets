@@ -146,6 +146,7 @@ ART.History = new Class({
 		onForward: $empty(item, index),
 		onRefresh: $empty,
 		*/
+		pathFilter: $lambda,
 		maxToShow: 4,
 		editable: false,
 		history: []
@@ -206,48 +207,31 @@ ART.History = new Class({
 		var nonHovered = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a');
 		var currentHovered = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a.current');
 
+		var arrow = function(e, polarity){
+			e.preventDefault();
+			//hover the next item
+			var hovered = this.nav.getElement('li.hovered');
+			var target;
+			if (!hovered) {
+				target = this.nav.getElement('li');
+			} else {
+				var lis = this.nav.getElements('li');
+				target = lis[lis.indexOf(hovered) + (polarity*1)];
+				if (!target) return;
+				hovered.removeClass('hovered');
+				var a = hovered.getElement('a');
+				if (a.hasClass('current')) a.setStyles(currentHovered);
+				else a.setStyles(nonHovered);
+			}
+			if (target) {
+				target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
+				this.editor.set('value', this.options.pathFilter(target.getElement('a').get('href'))).setCaretPosition('end');
+			}
+		};
+
 		this.attachKeys({
-			down: function(e) {
-				e.preventDefault();
-				//hover the next item
-				var hovered = this.nav.getElement('li.hovered');
-				var target;
-				if (!hovered) {
-					target = this.nav.getElement('li');
-				} else {
-					var lis = this.nav.getElements('li');
-					target = lis[lis.indexOf(hovered) + 1];
-					if (!target) return;
-					hovered.removeClass('hovered');
-					var a = hovered.getElement('a');
-					if (a.hasClass('current')) a.setStyles(currentHovered);
-					else a.setStyles(nonHovered);
-				}
-				if (target) {
-					target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-					this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
-				}
-			}.bind(this),
-			up: function(e) {
-				//hover the previous item
-				e.preventDefault();
-				var hovered = this.nav.getElement('li.hovered');
-				var target;
-				if (!hovered) {
-					target = this.nav.getElement('li');
-				} else {
-					var lis = this.nav.getElements('li');
-					target = lis[lis.indexOf(hovered) - 1];
-					if (!target) return;
-					var a = hovered.removeClass('hovered').getElement('a');
-					if (a.hasClass('current')) a.setStyles(currentHovered);
-					else a.setStyles(nonHovered);
-				}
-				if (target) {
-					target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-					this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
-				}
-			}.bind(this),
+			down: arrow.bindWithEvent(this, 1),
+			up: arrow.bindWithEvent(this, -1),
 			enter: function(e) {
 				var hovered = this.nav.getElement('li.hovered a');
 				if (hovered) hovered.fireEvent('click');
@@ -369,7 +353,7 @@ ART.History = new Class({
 
 	showEditor: function(show){
 		if ($pick(show, true) && this.history.length) {
-			this.editor.setStyle('display', 'block').set('value', this.history[this.selected].path).select();
+			this.editor.setStyle('display', 'block').set('value', this.options.pathFilter(this.history[this.selected].path)).select();
 			this.editor.setStyle('width', $(this.location).getSize().x - 30);
 			this.location_text.setStyle('display', 'none');
 		} else {
@@ -430,7 +414,7 @@ ART.History = new Class({
 			});
 			if (hist.path != hist.title) {
 				link.adopt(new Element('span', {
-					html: hist.path
+					html: this.options.pathFilter(hist.path)
 				}).setStyles(urlStyles));
 			}
 			return new Element('li').adopt(link).setStyles(liStyles);
