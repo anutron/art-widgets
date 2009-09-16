@@ -6,22 +6,26 @@
 
 		initialize: function(){
 			this.parent.apply(this, arguments);
-			this.keyboard = new Keyboard();
+			this.keyboard = new Keyboard({
+				active: true
+			});
+			this.keyboard.widget = 'window manager';
 		},
 
 		register: function(instance){
 			this.parent.apply(this, arguments);
-			this.keyboard.manages(instance.keyboard);
+			this.keyboard.manage(instance.keyboard);
 		},
 
 		focus: function() {
 			this.parent.apply(this, arguments);
+			this.keyboard.enable();
 			this.focused.keyboard.enable();
 		},
 
 		unregister: function(instance) {
 			this.parent.apply(this, arguments);
-			Keyboard.manager.manages(instance.keyboard);
+			Keyboard.manager.manage(instance.keyboard);
 		}
 
 	});

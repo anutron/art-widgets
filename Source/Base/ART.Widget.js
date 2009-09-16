@@ -24,7 +24,9 @@ ART.Widget = new Class({
 		// id: null,
 		// style: null,
 		className: '',
-		keyboardOptions: {}
+		keyboardOptions: {
+			active: true
+		}
 	},
 	
 	initialize: function(options){
@@ -40,7 +42,8 @@ ART.Widget = new Class({
 		this.pseudos = [];
 		this.childWidgets = [];
 		// initial render
-		this.keyboard = new KeyBoard(this.options.keyboardOptions);
+		this.keyboard = new Keyboard(this.options.keyboardOptions);
+		this.keyboard.widget = this;
 		this.render();
 	},
 
@@ -63,7 +66,8 @@ ART.Widget = new Class({
 	setParent: function(widget){
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
-		this.parentWidget.keyboard.manages(this.keyboard);
+		this.parentWidget.keyboard.manage(this.keyboard);
+		this.render();
 		return this;
 	},
 
@@ -110,7 +114,9 @@ ART.Widget = new Class({
 			this.keyboard.activate();
 			if (this.parentWidget) {
 				this.parentWidget.childWidgets.each(function(child) {
-					if (child != this) child.blur();
+					if (child != this) {
+						child.blur();
+					}
 				}, this);
 			}
 			this.render();
@@ -181,11 +187,11 @@ ART.Widget = new Class({
 		return this;
 	},
 
-	addKeys: function(events){
+	attachKeys: function(events){
 		this.keyboard.addEvents(events);
 	},
 
-	removeKeys: function(events) {
+	detachKeys: function(events) {
 		this.keyboard.removeEvents(events);
 	},
 
