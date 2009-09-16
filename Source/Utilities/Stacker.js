@@ -10,21 +10,70 @@ var Stacker = new Class({
 		}
 	},
 
+	layers: {},
+
 	initialize: function(options) {
 		this.setOptions(options);
-		this.instances = [];
+		this.addLayer(name, this.options.zIndexBase);
+		this.boundClick = this.click.bind(this);
 	},
 
-	register: function(instance){
-		if (this.instances.contains(instance)) return;
-		
-		$(instance).addEvent('mousedown', function(){
-			if (!instance.focused) this.focus(instance);
-		}.bind(this));
-		
-		this.instances.push(instance);
+	addLayer: function(name, zIndex) {
+		this.layers[name] = {
+			zIndex: zIndexBase,
+			name: name,
+			instances: []
+		};
 	},
-	
+
+	register: function(instance, layer){
+		layer = layer || 'default';
+		var registered = this.instances.contains(instance);
+		if (registered) {
+			var instanceLayer = this.getLayerForInstance(instance);
+			if (instanceLayer == layer) return;
+			instanceLayer.instances.erase(instance);
+		} else  {
+			$(instance).addEvent('mousedown', this.boundClick);
+			this.instances.push(instance);
+		}
+		this.layers[layer].push(instance);
+		if (instance.focused) this.focus(instance);
+	},
+
+	unregister: function(instance){
+		this.instances.erase(instance);
+		var layer = this.getLayerForInstance(instance);
+		if (layer) layer.instances.erase(instance);
+		$(instance).removeEvent('mousedown', this.boundClick);
+	},
+
+	getLayerForInstance: function(instance) {
+		var ret;
+		$each(this.layers, function(layer) {
+			if (layer.instances.contains(instance)) ret = layer;
+		});
+		return ret;
+	},
+
+	focus: function(instance){
+		if (instance) this.instances.erase(instance).push(instance);
+		$each(layers, function(layer) {
+			var i = 0;
+			layer.instances.each(function(current){
+				$(current).setStyle('z-index', layer.zIndex + i);
+				if (current === instance) current.focus(true);
+				i++;
+			}, this);
+		}, this);
+		this.focused.blur();
+		this.focused = instance;
+	},
+
+	click: function(){
+		if (!instance.focused) this.focus(instance);
+	},
+
 	cascade: function(noAnim, x, y){
 		x = $pick(x, this.options.offset.x);
 		y = $pick(y, this.options.offset.y);
@@ -33,28 +82,18 @@ var Stacker = new Class({
 			(noAnim || !current.morph) ? $(current).setStyles(styles) : current.morph.start(styles);
 		});
 	},
-	
-	unregister: function(instance){
-		this.instances.erase(instance);
-	},
-	
-	focus: function(instance){
-		if (instance) this.instances.erase(instance).push(instance);
-		this.instances.each(function(current, i){
-			$(current).setStyle('z-index', this.options.zIndexBase + i);
-			if (current === instance) current.focus(true);
-			else current.blur();
-		}, this);
-		this.focused = instance;
-	},
 
 	positionNew: function(instance, options){
+		var pos = true;
 		if (options) {
-			var pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo'].every(function(opt){
+			pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo'].every(function(opt){
 				return options[opt] == null || (this.focused.options[opt] == options[opt]);
 			}, this);
 		}
-		if (this.instances.length < 2 || !pos) return false;
+		var instances = this.instances.filter(function(instance){
+			return !instance.hidden;
+		});
+		if (instances.length < 2 || !pos) return false;
 		var focused = this.focused;
 		this.focus(instance);
 		$(instance).position({
