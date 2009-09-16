@@ -71,6 +71,14 @@ ART.Sheet.defineStyle('history ul li a', {
 	'color': '#333',
 	'text-decoration': 'none'
 });
+ART.Sheet.defineStyle('history ul li a span', {
+	'padding': '4px 0px 0px',
+	'color': '#888',
+	'font-weight': 'normal',
+	'cursor': 'pointer',
+	'display': 'block',
+	'font-size': 9
+});
 ART.Sheet.defineStyle('history ul li a.current', {
 	'font-weight': 'bold',
 	'background-color': '#ddd'
@@ -90,17 +98,18 @@ ART.Sheet.defineStyle('history ul li a:hover', {
 });
 ART.Sheet.defineStyle('history ul li.hovered a', {
 	'background-color': '#d5dee5',
-	'color': '#000'
+	'color': '#000',
+	'cursor': 'pointer'
 });
 ART.Sheet.defineStyle('history input', {
 	'display': 'none',
 	'position': 'absolute',
 	'height': 9,
 	'left': 54,
-	'top': 0,
+	'top': 1,
 	'background-color': 'transparent',
 	'border': 'none',
-	'font-family':'"Lucida Grande","Lucida Sans Unicode","Trebuchet MS",Helvetica,Arial,sans-serif',
+	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
 	'font-size': 12,
 	'height': 14,
 	'position': 'absolute',
@@ -127,16 +136,19 @@ ART.History = new Class({
 	options: {
 		/*
 		selected: 0,
+		onAdd: $empty(item, index),
+		onRemove: $empty(item),
 		onSelectManual: $empty(path),
 		onShowEditor: $empty,
 		onHideEditor: $empty,
-		onSelect: $empty(path, title),
-		onBack: $empty,
-		onForward: $empty,
+		onSelect: $empty(item),
+		onBack: $empty(item, index),
+		onForward: $empty(item, index),
 		onRefresh: $empty,
 		*/
 		maxToShow: 4,
 		editable: false,
+		showPath: true,
 		history: []
 	},
 	
@@ -215,7 +227,7 @@ ART.History = new Class({
 					}
 					if (target) {
 						target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-						this.editor.set('value', target.getElement('a').get('html')).select();
+						this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
 					}
 				}.bind(this),
 				up: function(e) {
@@ -235,7 +247,7 @@ ART.History = new Class({
 					}
 					if (target) {
 						target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-						this.editor.set('value', target.getElement('a').get('html')).select();
+						this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
 					}
 				}.bind(this),
 				enter: function(e) {
@@ -252,7 +264,7 @@ ART.History = new Class({
 		this.editor = new Element('input', {
 			events: {
 				keyup: function(e) {
-					if (e.key == "enter") {
+					if (e.key == 'enter') {
 						this.fireEvent('selectManual', this.editor.get('value'));
 						this.hide();
 					}
@@ -315,33 +327,39 @@ ART.History = new Class({
 		this.keyboard.deactivate();
 	},
 	
-	add: function(path, title, select) {
-		title = title || path;
-		this.dropFutureHistory();
-		this.history = this.history.filter(function(item) {
-			return item.path != path;
+	push: function(item, select, index) {
+		if ($type(item) == 'string') item = { path: item, title: item };
+		this.history = this.history.filter(function(hist) {
+			return item.path != hist.path;
 		});
-		this.push({ path: path, title: title });
-		this.makeEndSelected();
-		if ($pick(select, true)) this.setTitle(title);
-	},
-	
-	push: function(item, index) {
-		if($type(index) == "number" && index < this.history.length) {
+
+		this.dropFutureHistory();
+
+		if($type(index) == 'number' && index < this.history.length) {
 			this.history = this.history.splice(index, 0, item);
 			this.selected = index;
 		} else {
 			this.history.push(item);
-			this.makeEndSelected();
 		}
-		this.setNavState();
-		return this;
+		if ($pick(select, true)) {
+			this.selected = this.history.indexOf(item);
+			this.select(item, true);
+		}
+		this.fireEvent('add', [item, this.selected]);
 	},
 	
+	pop: function(){
+		var item = this.history.getLast();
+		this.remove(item);
+		return item;
+	},
+
 	remove: function(item) {
 		var val = this.history[this.selected];
 		this.history.erase(item);
 		if (val == item) this.makeEndSelected();
+		this.fireEvent('remove', item);
+		return this;
 	},
 	
 	dropFutureHistory: function(){
@@ -355,13 +373,14 @@ ART.History = new Class({
 	},
 
 	showEditor: function(show){
-		if ($pick(show, true)) {
-			this.editor.setStyle('display', 'block').set('value', this.location_text.get('html')).select();
+		if ($pick(show, true) && this.history.length) {
+			this.editor.setStyle('display', 'block').set('value', this.history[this.selected].path).select();
 			this.editor.setStyle('width', $(this.location).getSize().x - 30);
 			this.location_text.setStyle('display', 'none');
 		} else {
 			this.editor.setStyle('display', 'none');
 			this.location_text.setStyle('display', 'block');
+			if (this.history.length) this.editor.set('value', this.history[this.selected].title);
 		}
 	},
 
@@ -380,38 +399,45 @@ ART.History = new Class({
 		var liAnchorStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a');
 		var liCurrentAnchorStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a.current');
 		var hoveredStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li.hovered a');
+		var urlStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a span');
 		var nav = this.nav;
 
 		var lis = this.history.map(function(hist, index){
 			if (index < this.selected - this.options.maxToShow || index > this.selected + this.options.maxToShow) return;
 			var current = this.selected == index;
-			return new Element('li').adopt(
-				new Element('a', {
-					html: hist.title,
-					'class': current ? 'current' : '',
-					events: {
-						click: function(){
-							//this.loadHistory(index);
-							this.selected = index;
-							this.select(hist);
-						}.bind(this),
-						mouseenter: function(){
-							var hovered = nav.getElement('li.hovered');
-							if (hovered) {
-								var a = hovered.removeClass('hovered').getElement('a');
-								if (a.hasClass('current')) a.setStyles(liCurrentAnchorStyles);
-								else a.setStyles(liAnchorStyles);
-							}
-							this.setStyles(hoveredStyles);
-							this.getParent('li').addClass('hovered');
-						},
-						mouseleave: function(){
-							this.setStyles(current ? liCurrentAnchorStyles : liAnchorStyles);
+			var link = new Element('a', {
+				html: hist.title,
+				href: hist.path,
+				'class': current ? 'current' : '',
+				events: {
+					click: function(e){
+						e.preventDefault();
+						//this.loadHistory(index);
+						this.selected = index;
+						this.select(hist);
+					}.bind(this),
+					mouseenter: function(){
+						var hovered = nav.getElement('li.hovered');
+						if (hovered) {
+							var a = hovered.removeClass('hovered').getElement('a');
+							if (a.hasClass('current')) a.setStyles(liCurrentAnchorStyles);
+							else a.setStyles(liAnchorStyles);
 						}
+						this.setStyles(hoveredStyles);
+						this.getParent('li').addClass('hovered');
 					},
-					styles: current ? liCurrentAnchorStyles : liAnchorStyles
-				})
-			).setStyles(liStyles);
+					mouseleave: function(){
+						this.setStyles(current ? liCurrentAnchorStyles : liAnchorStyles);
+					}
+				},
+				styles: current ? liCurrentAnchorStyles : liAnchorStyles
+			});
+			if (hist.path != hist.title && this.options.showPath) {
+				link.adopt(new Element('span', {
+					html: hist.path
+				}).setStyles(urlStyles));
+			}
+			return new Element('li').adopt(link).setStyles(liStyles);
 		}, this);
 		//empty the nav (destroying all children), inject the list items, 
 		//then put the static prompt back in at the end and show
@@ -448,12 +474,12 @@ ART.History = new Class({
 		}, this);
 	},
 	
-	select: function(hist){
+	select: function(hist, suppressEvent){
 		this.hide();
 		this.setTitle(hist.title);
 		this.selected = this.history.indexOf(hist);
 		this.setNavState();
-		return this.fireEvent('select', [ hist.path, hist.title ]);
+		return suppressEvent ? this : this.fireEvent('select', [ hist, this.selected ]);
 	},
 
 	setNavState: function(){
@@ -503,7 +529,7 @@ ART.History = new Class({
 	setHistory: function(arr) {
 		this.clear();
 		arr.each(function(hist) {
-			this.add(hist.title, hist.path);
+			this.push(hist);
 		}, this);
 	},
 	
