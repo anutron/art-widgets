@@ -123,7 +123,7 @@ ART.Sheet.defineStyle('history divot', {
 	'top': 7,
 	'color': hsb(0, 0, 33)
 });
-ART.Sheet.defineStyle('history.disabled divot', {
+ART.Sheet.defineStyle('history:disabled divot', {
 	'color': hsb(0, 0, 66)
 });
 
@@ -148,7 +148,6 @@ ART.History = new Class({
 		*/
 		maxToShow: 4,
 		editable: false,
-		showPath: true,
 		history: []
 	},
 	
@@ -207,58 +206,55 @@ ART.History = new Class({
 		var nonHovered = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a');
 		var currentHovered = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a.current');
 
-		this.keyboard = new Keyboard({
-			events: {
-				down: function(e) {
-					e.preventDefault();
-					//hover the next item
-					var hovered = this.nav.getElement('li.hovered');
-					var target;
-					if (!hovered) {
-						target = this.nav.getElement('li');
-					} else {
-						var lis = this.nav.getElements('li');
-						target = lis[lis.indexOf(hovered) + 1];
-						if (!target) return;
-						hovered.removeClass('hovered');
-						var a = hovered.getElement('a');
-						if (a.hasClass('current')) a.setStyles(currentHovered);
-						else a.setStyles(nonHovered);
-					}
-					if (target) {
-						target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-						this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
-					}
-				}.bind(this),
-				up: function(e) {
-					//hover the previous item
-					e.preventDefault();
-					var hovered = this.nav.getElement('li.hovered');
-					var target;
-					if (!hovered) {
-						target = this.nav.getElement('li');
-					} else {
-						var lis = this.nav.getElements('li');
-						target = lis[lis.indexOf(hovered) - 1];
-						if (!target) return;
-						var a = hovered.removeClass('hovered').getElement('a');
-						if (a.hasClass('current')) a.setStyles(currentHovered);
-						else a.setStyles(nonHovered);
-					}
-					if (target) {
-						target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
-						this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
-					}
-				}.bind(this),
-				enter: function(e) {
-					var hovered = this.nav.getElement('li.hovered a');
-					if (hovered) hovered.fireEvent('click');
-				}.bind(this),
-				esc: function(e) {
-					this.hide();
-				}.bind(this)
-			},
-			active: false
+		this.attachKeys({
+			down: function(e) {
+				e.preventDefault();
+				//hover the next item
+				var hovered = this.nav.getElement('li.hovered');
+				var target;
+				if (!hovered) {
+					target = this.nav.getElement('li');
+				} else {
+					var lis = this.nav.getElements('li');
+					target = lis[lis.indexOf(hovered) + 1];
+					if (!target) return;
+					hovered.removeClass('hovered');
+					var a = hovered.getElement('a');
+					if (a.hasClass('current')) a.setStyles(currentHovered);
+					else a.setStyles(nonHovered);
+				}
+				if (target) {
+					target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
+					this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
+				}
+			}.bind(this),
+			up: function(e) {
+				//hover the previous item
+				e.preventDefault();
+				var hovered = this.nav.getElement('li.hovered');
+				var target;
+				if (!hovered) {
+					target = this.nav.getElement('li');
+				} else {
+					var lis = this.nav.getElements('li');
+					target = lis[lis.indexOf(hovered) - 1];
+					if (!target) return;
+					var a = hovered.removeClass('hovered').getElement('a');
+					if (a.hasClass('current')) a.setStyles(currentHovered);
+					else a.setStyles(nonHovered);
+				}
+				if (target) {
+					target.addClass('hovered').getElement('a').setStyles(hoveredStyles);
+					this.editor.set('value', target.getElement('a').get('href')).setCaretPosition('end');
+				}
+			}.bind(this),
+			enter: function(e) {
+				var hovered = this.nav.getElement('li.hovered a');
+				if (hovered) hovered.fireEvent('click');
+			}.bind(this),
+			esc: function(e) {
+				this.hide();
+			}.bind(this)
 		});
 
 		this.editor = new Element('input', {
@@ -303,7 +299,7 @@ ART.History = new Class({
 		var divotStyles = ART.Sheet.lookupStyle(this.getSelector() + ' divot');
 		this.divot.end({fill: true, fillColor: divotStyles.color});
 
-		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input.disabled')));
+		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input:disabled')));
 		this.resize();
 	},
 	
@@ -324,7 +320,6 @@ ART.History = new Class({
 	
 	detach: function(){
 		this.attach(false);
-		this.keyboard.deactivate();
 	},
 	
 	push: function(item, select, index) {
@@ -386,7 +381,8 @@ ART.History = new Class({
 
 	//displays the dropdown list of your history
 	show: function(){
-		if(this.keyboard.active) return this;
+		this.parent.apply(this, arguments);
+		if(this.nav.isDisplayed()) return this;
 		//activate this keyboard watcher
 		this.keyboard.activate();
 		this.location.activate();
@@ -432,7 +428,7 @@ ART.History = new Class({
 				},
 				styles: current ? liCurrentAnchorStyles : liAnchorStyles
 			});
-			if (hist.path != hist.title && this.options.showPath) {
+			if (hist.path != hist.title) {
 				link.adopt(new Element('span', {
 					html: hist.path
 				}).setStyles(urlStyles));
@@ -447,9 +443,10 @@ ART.History = new Class({
 	},
 	
 	hide: function(){
+		this.parent.apply(this, arguments);
 		this.element.removeClass('history_location_active');
 		this.location.deactivate();
-		this.keyboard.deactivate(); //disable the main keyboard
+		this.keyboard.relenquish(); //disable the main keyboard
 		this.nav.setStyle('display', 'none'); //hide the nav
 		this.showEditor(false);
 		this.fireEvent('hideEditor');
@@ -457,21 +454,18 @@ ART.History = new Class({
 	},
 	
 	blur: function(){
+		this.parent.apply(this, arguments);
 		this.hide();
 	},
 	
 	disable: function(){
+		this.parent.apply(this, arguments);
 		this.hide();
-		this.buttons.each(function(button){
-			button.deactivate();
-		});
 	},
 	
 	enable: function(){
-		this.buttons.each(function(button){
-			button.activate();
-			this.setNavState();
-		}, this);
+		this.parent.apply(this, arguments);
+		this.setNavState();
 	},
 	
 	select: function(hist, suppressEvent){

@@ -28,12 +28,10 @@ ART.Sheet.defineStyle('button', {
 	'pill': false,
 
 	'corner-radius': 3,
-	//'fill-color': {0: hsb(0, 0, 90), 1: hsb(0, 0, 50)},
 	'background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
 	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
 	'border-color': hsb(0, 0, 0, 0.8)
 });
-
 ART.Sheet.defineStyle('button:active', {
 	//'fill-color': {0: hsb(0, 0, 70), 1: hsb(0, 0, 30, 0)},
 	'background-color': hsb(0, 0, 40),

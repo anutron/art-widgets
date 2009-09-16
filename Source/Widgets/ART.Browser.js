@@ -31,6 +31,7 @@ ART.Browser = new Class({
 	build: function(){
 		this.parent.apply(this, arguments);
 		this.history = new ART.History(this.options.historyOptions);
+		this.history.setParent(this);
 		$(this.history).inject(this.header);
 		var styles = ART.Sheet.lookupStyle(this.getSelector());
 		this.header.setStyles({
@@ -38,7 +39,7 @@ ART.Browser = new Class({
 		});
 		this.history.resize();
 	},
-	
+
 	render: function(){
 		this.parent.apply(this, arguments);
 		if (this.history) this.history.render();
@@ -47,7 +48,18 @@ ART.Browser = new Class({
 	resize: function(){
 		this.parent.apply(this, arguments);
 		if (this.history) this.history.resize();
+	},
+
+	focus: function(){
+		this.parent.apply(this, arguments);
+		this.history.enable();
+	},
+
+	blur: function(){
+		this.parent.apply(this, arguments);
+		this.history.disable();
 	}
+
 
 });
 
