@@ -23,12 +23,12 @@ ART.Widget = new Class({
 		// onDisable: $empty,
 		// id: null,
 		// style: null,
-		className: ''
+		className: '',
+		keyboardOptions: {}
 	},
 	
 	initialize: function(options){
 		if (options) this.setOptions(options);
-
 		this.prefix = this.ns + '-' + this.name;
 		this.element = new Element('div', {
 			id: this.options.id || this.prefix+new Date().getTime(),
@@ -39,8 +39,8 @@ ART.Widget = new Class({
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
 		this.pseudos = [];
 		this.childWidgets = [];
-
 		// initial render
+		this.keyboard = new KeyBoard(this.options.keyboardOptions);
 		this.render();
 	},
 
@@ -63,6 +63,7 @@ ART.Widget = new Class({
 	setParent: function(widget){
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
+		this.parentWidget.keyboard.manages(this.keyboard);
 		return this;
 	},
 
@@ -94,6 +95,7 @@ ART.Widget = new Class({
 			this.fireEvent('activate');
 			this.element.addClass(this.prefix + '-active');
 			this.addPseudo('active');
+			this.keyboard.activate();
 			this.render();
 		}
 		return this;
@@ -105,11 +107,12 @@ ART.Widget = new Class({
 			this.fireEvent('focus');
 			this.element.addClass(this.prefix + '-focused');
 			this.addPseudo('focus');
-			
-			this.childWidgets.each(function(child){
-				child.focus();
-			});
-			
+			this.keyboard.activate();
+			if (this.parentWidget) {
+				this.parentWidget.childWidgets.each(function(child) {
+					if (child != this) child.blur();
+				}, this);
+			}
 			this.render();
 		}
 		return this;
@@ -119,6 +122,9 @@ ART.Widget = new Class({
 		if (!this.disabled){
 			this.disabled = true;
 			this.fireEvent('disable');
+			this.childWidgets.each(function(child){
+				child.disable();
+			});
 			this.element.addClass(this.prefix + '-disabled');
 			this.addPseudo('disabled');
 			this.render();
@@ -156,11 +162,6 @@ ART.Widget = new Class({
 			this.fireEvent('blur');
 			this.element.removeClass(this.prefix + '-focused');
 			this.removePseudo('focus');
-			
-			this.childWidgets.each(function(child){
-				child.blur();
-			});
-			
 			this.render();
 		}
 		return this;
@@ -169,6 +170,9 @@ ART.Widget = new Class({
 	enable: function(){
 		if (this.disabled){
 			this.disabled = false;
+			this.childWidgets.each(function(child){
+				child.enable();
+			});
 			this.fireEvent('enable');
 			this.element.removeClass(this.prefix + '-disabled');
 			this.removePseudo('disabled');
@@ -176,7 +180,15 @@ ART.Widget = new Class({
 		}
 		return this;
 	},
-	
+
+	addKeys: function(events){
+		this.keyboard.addEvents(events);
+	},
+
+	removeKeys: function(events) {
+		this.keyboard.removeEvents(events);
+	},
+
 	// toElement
 	
 	toElement: function(){
