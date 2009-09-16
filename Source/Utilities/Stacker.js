@@ -10,17 +10,17 @@ var Stacker = new Class({
 		}
 	},
 
-	layers: {},
+	instances: [],
 
 	initialize: function(options) {
 		this.setOptions(options);
-		this.addLayer(name, this.options.zIndexBase);
-		this.boundClick = this.click.bind(this);
+		this.layers = $H();
+		this.addLayer('default', this.options.zIndexBase);
 	},
 
 	addLayer: function(name, zIndex) {
 		this.layers[name] = {
-			zIndex: zIndexBase,
+			zIndex: zIndex,
 			name: name,
 			instances: []
 		};
@@ -34,23 +34,25 @@ var Stacker = new Class({
 			if (instanceLayer == layer) return;
 			instanceLayer.instances.erase(instance);
 		} else  {
-			$(instance).addEvent('mousedown', this.boundClick);
+			$(instance).addEvent('mousedown', function(){
+				if (!instance.focused) this.focus(instance);
+			}.bind(this));
 			this.instances.push(instance);
 		}
-		this.layers[layer].push(instance);
+		this.layers[layer].instances.push(instance);
 		if (instance.focused) this.focus(instance);
 	},
 
-	unregister: function(instance){
+	unregister: function(instance) {
 		this.instances.erase(instance);
-		var layer = this.getLayerForInstance(instance);
-		if (layer) layer.instances.erase(instance);
-		$(instance).removeEvent('mousedown', this.boundClick);
+		this.layers.each(function(layer) {
+			if (layer.instances.contains(instance)) layer.instances.erase(instance);
+		});
 	},
 
 	getLayerForInstance: function(instance) {
 		var ret;
-		$each(this.layers, function(layer) {
+		this.layers.each(function(layer) {
 			if (layer.instances.contains(instance)) ret = layer;
 		});
 		return ret;
@@ -58,20 +60,18 @@ var Stacker = new Class({
 
 	focus: function(instance){
 		if (instance) this.instances.erase(instance).push(instance);
-		$each(layers, function(layer) {
+		this.layers.each(function(layer) {
 			var i = 0;
+			if (!layer.instances.contains(instance)) return;
+			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
 				$(current).setStyle('z-index', layer.zIndex + i);
 				if (current === instance) current.focus(true);
 				i++;
 			}, this);
 		}, this);
-		this.focused.blur();
+		if (this.focused && this.focused != instance) this.focused.blur();
 		this.focused = instance;
-	},
-
-	click: function(){
-		if (!instance.focused) this.focus(instance);
 	},
 
 	cascade: function(noAnim, x, y){
