@@ -80,10 +80,10 @@
 			if (!this.options.inject) {
 				this.options.inject = {
 					target: document.body,
-					where: 'bottom' 
+					where: 'bottom'
 				};
 			}
-			this.windowManager = this.options.windowManager || ART.WM;
+			this.windowManager = this.options.windowManager || WM;
 			this.parent(options);
 			this.build();
 			this.windowManager.register(this, this.options.windowManagerLayer);

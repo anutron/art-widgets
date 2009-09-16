@@ -53,8 +53,7 @@ ART.Sheet.defineStyle('window:focus', {
 	'content-border-bottom-color': hsb(0, 0, 50),
 	'content-background-color': hsb(0, 0, 100)
 });
-
-ART.Sheet.defineStyle('window button', {
+ART.Sheet.defineStyle('window button.wincontrol', {
 	'pill': true,
 	'height': 14,
 	'width': 14,
@@ -66,7 +65,7 @@ ART.Sheet.defineStyle('window button', {
 	'glyph-color': hsb(0, 0, 0, 0.4)
 });
 
-ART.Sheet.defineStyle('window:focus button', {
+ART.Sheet.defineStyle('window:focus button.wincontrol', {
 	'background-color': {0: hsb(0, 0, 75), 1: hsb(0, 0, 55)},
 	'reflection-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 0, 0)},
 	'shadow-color': hsb(0, 0, 100, 0.4),
@@ -74,7 +73,7 @@ ART.Sheet.defineStyle('window:focus button', {
 	'glyph-color': hsb(0, 0, 0, 0.6)
 });
 
-ART.Sheet.defineStyle('window button:active', {
+ART.Sheet.defineStyle('window button.wincontrol:active', {
 	'background-color': hsb(0, 0, 65),
 	'reflection-color': {0: hsb(0, 0, 65), 1: hsb(0, 0, 0, 0)},
 	'border-color': hsb(0, 0, 45),
@@ -202,21 +201,21 @@ ART.Window = new Class({
 		});
 		this.buttons = {};
 		if (this.options.close){
-			this.buttons.close = new ART.Button({className: 'close'});
+			this.buttons.close = new ART.Button({className: 'close wincontrol'});
 			this.buttons.close.setParent(this);
 			$(this.buttons.close).setStyles(absolute).inject(this.header);
 			this.buttons.close.addEvent('press', this.hide.bind(this));
 		}
 		
 		if (this.options.maximize){
-			this.buttons.maximize = new ART.Button({className: 'maximize'});
+			this.buttons.maximize = new ART.Button({className: 'maximize wincontrol'});
 			this.buttons.maximize.setParent(this);
 			$(this.buttons.maximize).setStyles(absolute).inject(this.header);
 			this.buttons.maximize.addEvent('press', this.maximize.bind(this));
 		}
 		
 		if (this.options.minimize){
-			this.buttons.minimize = new ART.Button({className: 'minimize'});
+			this.buttons.minimize = new ART.Button({className: 'minimize wincontrol'});
 			this.buttons.minimize.setParent(this);
 			$(this.buttons.minimize).setStyles(absolute).inject(this.header);
 			this.buttons.minimize.addEvent('press', this.minimize.bind(this));
@@ -481,6 +480,7 @@ ART.Window = new Class({
 			left: this.options.shadow ? -11 : -1
 		});
 		if (this.shim) this.shim.position();
+		this.parent();
 		this.fireEvent('resize', [contentWidth, contentHeight]);
 	}
 
