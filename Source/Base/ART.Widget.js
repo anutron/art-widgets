@@ -33,7 +33,7 @@ ART.Widget = new Class({
 		this.element = new Element('div', {
 			id: this.options.id || this.prefix+new Date().getTime(),
 			'class': this.options.className
-		});
+		}).store(this.prefix, this);
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
