@@ -32,11 +32,11 @@ ART.Browser = new Class({
 		this.parent.apply(this, arguments);
 		this.history = new ART.History(this.options.historyOptions);
 		$(this.history).inject(this.header);
-		this.history.resize();
 		var styles = ART.Sheet.lookupStyle(this.getSelector());
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
+		this.history.resize();
 	},
 	
 	render: function(){
@@ -47,6 +47,14 @@ ART.Browser = new Class({
 	resize: function(){
 		this.parent.apply(this, arguments);
 		if (this.history) this.history.resize();
+	}
+
+});
+
+ART.WindowTools.implement({
+
+	getHistory: function() {
+		return this.getWindow().history;
 	}
 
 });
