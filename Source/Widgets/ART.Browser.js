@@ -52,12 +52,17 @@ ART.Browser = new Class({
 
 	focus: function(){
 		this.parent.apply(this, arguments);
-		this.history.enable();
+		if (this.history) this.history.enable();
 	},
 
 	blur: function(){
 		this.parent.apply(this, arguments);
-		this.history.disable();
+		if (this.history) this.history.disable();
+	},
+
+	show: function() {
+		this.parent.apply(this, arguments);
+		if (this.history) this.history.resize();
 	}
 
 
