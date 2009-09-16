@@ -486,6 +486,18 @@ ART.Window = new Class({
 
 });
 
+ART.WindowTools = new Class({
+
+	getWindow: function(){
+		return this.getWindowElement().retrieve('art-window');
+	},
+
+	getWindowElement: function(){
+		return $(this).hasClass('art-window') ? $(this) : $(this).getParent('.art-window');
+	}
+
+});
+
 /* 
 TODO
  * header can overlap buttons
