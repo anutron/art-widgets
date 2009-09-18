@@ -113,7 +113,9 @@ ART.SplitView = new Class({
 		// render
 		
 		this.element.setStyles({'width': this.currentWidth, 'height': this.currentHeight});
-		this.splitter.setStyles({'width': style.splitterWidth, 'background-color': style.splitterBackgroundColor, 'cursor': style.splitterCursor});
+		
+		this.splitter.setStyles({'width': style.splitterWidth, 'background-color': style.splitterBackgroundColor});
+		if (this.options.resizable) this.splitter.setStyle('cursor', style.splitterCursor);
 		this.left.setStyles({'background-color': style.leftBackgroundColor});
 		this.right.setStyles({'background-color': style.rightBackgroundColor});
 		
