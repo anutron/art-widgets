@@ -260,6 +260,8 @@ ART.History = new Class({
 	render: function(){
 		this.parent();
 		if (!this.nav_back) return;
+		if (this.current_selector == this.getSelector()) return;
+		this.current_selector = this.getSelector();
 		this.element.setStyles(ART.Sheet.lookupStyle(this.getSelector()));
 		
 		this.nav_back.render();
