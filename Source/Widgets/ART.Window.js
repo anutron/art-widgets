@@ -481,6 +481,10 @@ ART.Window = new Class({
 		});
 		if (this.shim) this.shim.position();
 		this.parent();
+		this.contentSize = {
+			w: contentWidth, 
+			h: contentHeight
+		};
 		this.fireEvent('resize', [contentWidth, contentHeight]);
 	}
 
