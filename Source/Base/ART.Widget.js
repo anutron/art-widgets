@@ -21,6 +21,7 @@ ART.Widget = new Class({
 		// onBlur: $empty,
 		// onEnable: $empty,
 		// onDisable: $empty,
+		// onDestroy: $empty,
 		// id: null,
 		// style: null,
 		className: '',
@@ -64,11 +65,19 @@ ART.Widget = new Class({
 	},
 
 	setParent: function(widget){
+		this.removeParent();
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
 		this.parentWidget.keyboard.manage(this.keyboard);
 		this.render();
 		return this;
+	},
+
+	removeParent: function(){
+		if (!this.parentWidget) return;
+		this.parentWidget.childWidgets.erase(this);
+		Keyboard.manager.manage(this.keyboard);
+		this.parentWidget = null;
 	},
 
 	// render
@@ -193,6 +202,12 @@ ART.Widget = new Class({
 
 	detachKeys: function(events) {
 		this.keyboard.removeEvents(events);
+	},
+
+	destroy: function(){
+		this.removeParent();
+		this.element.destroy();
+		return this.fireEvent('destroy');
 	},
 
 	// toElement

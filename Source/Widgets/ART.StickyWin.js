@@ -247,9 +247,8 @@
 
 		destroy: function(){
 			this.windowManager.unregister(this);
-			this.element.dispose();
 			if (this.options.useIframeShim && this.shim) this.shim.destroy();
-			return this;
+			return this.parent();
 		},
 
 		makeIframeShim: function(target){
