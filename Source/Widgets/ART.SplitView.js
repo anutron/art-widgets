@@ -86,7 +86,8 @@ ART.SplitView = new Class({
 		var targetWidth = this.startFixWidth + dx;
 		if (targetWidth < 0) targetWidth = 0;
 		else if (targetWidth > this.currentWidth - this.splitterWidth) targetWidth = this.currentWidth - this.splitterWidth;
-		this['resize' + Fix](targetWidth);
+		var fix = this.options.fixed.capitalize();
+		this['resize' + fix](targetWidth);
 	},
 
 	render: function(override){
