@@ -88,7 +88,7 @@ ART.Sheet.defineStyle('history div.location_text', {
 	'left': 7,
 	'overflow': 'hidden',
 	'position': 'absolute',
-	'top': 2,
+	'top': 3,
 	'padding-right': 12
 });
 ART.Sheet.defineStyle('history ul li a:hover', {
@@ -146,10 +146,12 @@ ART.History = new Class({
 		onForward: $empty(item, index),
 		onRefresh: $empty,
 		*/
-		pathFilter: $lambda,
+		pathFilter: function(val){ return val;},
+		pathBuilder: function(val){ return val; },
 		maxToShow: 4,
 		editable: false,
-		history: []
+		history: [],
+		showPath: true
 	},
 	
 	initialize: function(options) {
@@ -245,7 +247,7 @@ ART.History = new Class({
 			events: {
 				keyup: function(e) {
 					if (e.key == 'enter') {
-						this.fireEvent('selectManual', this.editor.get('value'));
+						this.fireEvent('selectManual', this.options.pathBuilder(this.editor.get('value')));
 						this.hide();
 					}
 				}.bind(this),
@@ -389,7 +391,7 @@ ART.History = new Class({
 			var current = this.selected == index;
 			var link = new Element('a', {
 				html: hist.title,
-				href: hist.path,
+				href: this.options.pathBuilder(hist.path),
 				'class': current ? 'current' : '',
 				events: {
 					click: function(e){
@@ -414,7 +416,7 @@ ART.History = new Class({
 				},
 				styles: current ? liCurrentAnchorStyles : liAnchorStyles
 			});
-			if (hist.path != hist.title) {
+			if (this.options.showPath && hist.path != hist.title && ['string', 'element'].contains($type(hist.path))) {
 				link.adopt(new Element('span', {
 					html: this.options.pathFilter(hist.path)
 				}).setStyles(urlStyles));
@@ -459,7 +461,7 @@ ART.History = new Class({
 		this.setTitle(hist.title);
 		this.selected = this.history.indexOf(hist);
 		this.setNavState();
-		return suppressEvent ? this : this.fireEvent('select', [ hist, this.selected ]);
+		return suppressEvent ? this : this.fireEvent('select', [ this.options.pathBuilder(hist.path), hist.title, this.selected ]);
 	},
 
 	setNavState: function(){
