@@ -40,19 +40,17 @@ ART.SplitView = new Class({
 	
 	initialize: function(options){
 		this.parent(options);
-		
+		this.build();
+	},
+
+	build: function(){
 		var style = ART.Sheet.lookupStyle(this.getSelector());
-		this.currentHeight = style.height;
-		this.currentWidth = style.width;
-		
-		this.splitterWidth = style.splitterWidth;
-		
+
 		this.element.addClass('art-splitview').setStyles({'position': 'relative'});
-		var styles = {'float': 'left', 'overflow-x': 'hidden'};
+		var styles = {'float': 'left', 'overflow-x': 'auto'};
 		this.left = new Element('div', {'class': 'art-splitview-left'}).inject(this.element).setStyles(styles);
 		this.splitter = new Element('div', {'class': 'art-splitview-splitter'}).inject(this.element).setStyles(styles);
 		this.right = new Element('div', {'class': 'art-splitview-right'}).inject(this.element).setStyles(styles);
-		this['resize' + this.options.fixed.capitalize()](style.fixedWidth);
 		
 		this.fx = new Fx();
 		this.touch = new Touch(this.splitter);
@@ -65,18 +63,9 @@ ART.SplitView = new Class({
 				self.startFixWidth = self[fix + 'Width'];
 			});
 		}
-		
-		if (this.options.resizable){
 
-			this.touch.addEvent('move', function(dx){
-				var targetWidth = self.startFixWidth + dx;
-				if (targetWidth < 0) targetWidth = 0;
-				else if (targetWidth > self.currentWidth - style.splitterWidth) targetWidth = self.currentWidth - style.splitterWidth;
-				self['resize' + Fix](targetWidth);
-			});
+		if (this.options.resizable) this.touch.addEvent('move', this.moveSplitter.bind(this));
 
-		}
-		
 		if (this.options.foldable){
 			this.touch.addEvent('cancel', function(){
 				if (self[fix + 'Width'] == 0){
@@ -89,14 +78,26 @@ ART.SplitView = new Class({
 		}
 		
 		this.initialized = true;
-		this.render(style.width, style.height);
-
+		this.render();
+		this['resize' + this.options.fixed.capitalize()](style.fixedWidth);
 	},
-	
+
+	moveSplitter: function(dx){
+		var targetWidth = this.startFixWidth + dx;
+		if (targetWidth < 0) targetWidth = 0;
+		else if (targetWidth > this.currentWidth - this.splitterWidth) targetWidth = this.currentWidth - this.splitterWidth;
+		this['resize' + Fix](targetWidth);
+	},
+
 	render: function(override){
 		if (!this.initialized) return this;
 
 		var style = ART.Sheet.lookupStyle(this.getSelector());
+
+		this.currentHeight = style.height;
+		this.currentWidth = style.width;
+		this.splitterWidth = style.splitterWidth;
+		
 		
 		// height / width management
 		
