@@ -230,6 +230,16 @@
 			}.bind(this));
 		},
 
+		disableDrag: function(){
+			this.touchDrag.detach();
+			return this;
+		},
+
+		enableDrag: function(){
+			this.touchDrag.attach();
+			return this;
+		},
+
 		setContent: function(){
 			this.element.adopt(arguments);
 			return this;
