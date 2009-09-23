@@ -22,6 +22,8 @@ ART.Widget = new Class({
 		// onEnable: $empty,
 		// onDisable: $empty,
 		// onDestroy: $empty,
+		// onAdoption: $empty(parentWidget),
+		// onOrphan: $empty(previousParent),
 		// id: null,
 		// style: null,
 		className: '',
@@ -70,14 +72,17 @@ ART.Widget = new Class({
 		widget.childWidgets.include(this);
 		this.parentWidget.keyboard.manage(this.keyboard);
 		this.render();
+		this.fireEvent('adoption', widget);
 		return this;
 	},
 
 	removeParent: function(){
 		if (!this.parentWidget) return;
+		var prevParent = this.parentWidget;
 		this.parentWidget.childWidgets.erase(this);
 		Keyboard.manager.manage(this.keyboard);
 		this.parentWidget = null;
+		this.fireEvent('orphan', prevParent);
 	},
 
 	// render
