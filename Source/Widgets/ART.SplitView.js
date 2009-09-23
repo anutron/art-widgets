@@ -95,8 +95,8 @@ ART.SplitView = new Class({
 
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 
-		this.currentHeight = style.height;
-		this.currentWidth = style.width;
+		this.currentHeight = $pick(this.currentHeight, style.height);
+		this.currentWidth = $pick(this.currentWidth, style.width);
 		this.splitterWidth = style.splitterWidth;
 		
 		
