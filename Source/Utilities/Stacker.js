@@ -86,16 +86,24 @@ var Stacker = new Class({
 	positionNew: function(instance, options){
 		var pos = true;
 		if (options) {
+			//if the position is not defined in the options
+			//or, if it is, the position is the same as the focused instance's options
+			//such that opening with the same options will place them on top of each other
+			//(assuming the first one hasn't moved)
 			pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo'].every(function(opt){
 				return options[opt] == null || (this.focused.options[opt] == options[opt]);
 			}, this);
 		}
 		var instances = this.instances.filter(function(instance){
-			return !instance.hidden;
+			return !instance.hidden && $(instance);
 		});
+		//if there are no instances other than this one, or one instance
+		//or the position is not set or is equal to the focused instances options
+		//then return; and let the window be positioned as the class would normally.
 		if (instances.length < 2 || !pos) return false;
 		var focused = this.focused;
 		this.focus(instance);
+		//position near the focused instance, with an offset as defined in the options
 		$(instance).position({
 			relativeTo: $(focused),
 			offset: this.options.offset,

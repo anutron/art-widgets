@@ -95,7 +95,7 @@
 				}.bind(this));
 			}
 			if (this.options.closeOnClickOut || this.options.closeOnEsc) this.attach();
-			if (this.options.destroyOnClose) this.addEvent('hide', this.destroy);
+			if (this.options.destroyOnClose) this.addEvent('hide', this.destroy.bind(this));
 			if (this.options.showNow) this.show();
 		},
 
@@ -161,10 +161,9 @@
 			this.fadeFx.clearChain();
 			this.fadeFx.start(to).chain(function (){
 				if (to == 0) {
-					this.element.setStyle('display', 'none');
-					//this.hide(true);
+					this.hide(true);
 				} else {
-					//this.show();
+					this.show();
 				}
 			}.bind(this));
 			return this;
