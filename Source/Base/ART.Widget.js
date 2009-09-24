@@ -212,6 +212,7 @@ ART.Widget = new Class({
 	destroy: function(){
 		this.removeParent();
 		this.element.destroy();
+		this.destroyed = true;
 		return this.fireEvent('destroy');
 	},
 
