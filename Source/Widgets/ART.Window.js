@@ -39,7 +39,8 @@ ART.Sheet.defineStyle('window', {
 	'border-color': hsb(0, 0, 0, 0.2),
 	'content-border-top-color': hsb(0, 0, 60),
 	'content-border-bottom-color': hsb(0, 0, 70),
-	'content-background-color': hsb(0, 0, 100)
+	'content-background-color': hsb(0, 0, 100),
+	'content-color': hsb(0, 0, 0)
 });
 
 ART.Sheet.defineStyle('window:focus', {
@@ -120,37 +121,15 @@ ART.Window = new Class({
 		min: {/* height: null, width: null */},
 		max: {/* height: null, width: null */},
 		close: true,
-		minimize: function(){
-			var style = this.getSizeRange();
-			var w = style['minWidth'], h = style['minHeight'];
-			if (this.beforeMinimize) {
-				w = this.beforeMinimize.width;
-				h = this.beforeMinimize.height;
-				this.beforeMinimize = null;
-			} else {
-				this.beforeMinimize = this.getSize();
-			}
-			this.resize(w, h);
-		},
-		maximize: function(){
-			var style = this.getSizeRange();
-			var w = style['maxWidth'], h = style['maxHeight'];
-			if (this.beforeMaximize) {
-				w = this.beforeMaximize.width;
-				h = this.beforeMaximize.height;
-				this.beforeMaximize = null;
-			} else {
-				this.beforeMaximize = this.getSize();
-			}
-			this.resize(w, h);
-		},
+		minimize: true,
+		maximize: true,
 		resizable: true,
 		draggable: true,
 		shadow: Browser.Engine.webkit,
 		cascaded: true
 	},
 
-	initialize: function(options) {
+	initialize: function(options){
 		this.parent(options);
 		if (this.options.resizable) this.makeResizeable();
 	},
@@ -168,8 +147,6 @@ ART.Window = new Class({
 			top: 0, 
 			left: 0
 		};
-		
-		this.morph = new Fx.Morph(this.element);
 		
 		this.paint = new ART.Paint();
 		$(this.paint).setStyles(absolute).inject(this.element);
@@ -199,59 +176,70 @@ ART.Window = new Class({
 				overflow: 'hidden'
 			})
 		});
-		this.buttons = {};
-		if (this.options.close){
-			this.buttons.close = new ART.Button({className: 'close wincontrol'});
-			this.buttons.close.setParent(this);
-			$(this.buttons.close).setStyles(absolute).inject(this.header);
-			this.buttons.close.addEvent('press', this.hide.bind(this));
-		}
-		
-		if (this.options.maximize){
-			this.buttons.maximize = new ART.Button({className: 'maximize wincontrol'});
-			this.buttons.maximize.setParent(this);
-			$(this.buttons.maximize).setStyles(absolute).inject(this.header);
-			this.buttons.maximize.addEvent('press', this.maximize.bind(this));
-		}
-		
-		if (this.options.minimize){
-			this.buttons.minimize = new ART.Button({className: 'minimize wincontrol'});
-			this.buttons.minimize.setParent(this);
-			$(this.buttons.minimize).setStyles(absolute).inject(this.header);
-			this.buttons.minimize.addEvent('press', this.minimize.bind(this));
-		}
-		
+		this.makeButtons();
 		this.render();
 		this.contents.adopt(this.header, this.content, this.footer);
 	},
 
+	makeButtons: function() {
+		this.buttons = {};
+		var style = ART.Sheet.lookupStyle(this.getSelector());
+		var actions = {
+			close: this.hide.bind(this),
+			maximize: this.maximize.bind(this),
+			minimize: this.minimize.bind(this)
+		};
+		var baseLeft = 6;
+		['close', 'maximize', 'minimize'].each(function(button){
+			if (this.options[button]) {
+				this.buttons[button] = new ART.Button({className: button + ' wincontrol'});
+				this.buttons[button].setParent(this);
+				$(this.buttons[button]).setStyles({
+					'position': 'absolute',
+					'top': style.headerPaddingTop, 
+					'left': baseLeft
+				}).inject(this.header);
+				baseLeft = baseLeft + style.buttonSpacing;
+				this.buttons[button].addEvent('press', actions[button]);
+			}
+		}, this);
+	},
+
 	maximize: function(){
-		this.focus();
-		var style = this.getSizeRange();
-		var w = style['maxWidth'], h = style['maxHeight'];
-		if (this.beforeMaximize) {
-			w = this.beforeMaximize.width;
-			h = this.beforeMaximize.height;
-			this.beforeMaximize = null;
+		if ($type(this.options.maximize) == "function") {
+			this.options.maximize.call(this);
 		} else {
-			this.beforeMaximize = this.getSize();
+			this.focus();
+			var style = this.getSizeRange();
+			var w = style['maxWidth'], h = style['maxHeight'];
+			if (this.beforeMaximize) {
+				w = this.beforeMaximize.width;
+				h = this.beforeMaximize.height;
+				this.beforeMaximize = null;
+			} else {
+				this.beforeMaximize = this.getSize();
+			}
+			this.resize(w, h);
 		}
-		this.resize(w, h);
 		this.fireEvent('minimize', [w, h]);
 	},
 
 	minimize: function(){
-		this.focus();
-		var style = this.getSizeRange();
-		var w = style['minWidth'], h = style['minHeight'];
-		if (this.beforeMinimize) {
-			w = this.beforeMinimize.width;
-			h = this.beforeMinimize.height;
-			this.beforeMinimize = null;
+		if ($type(this.options.maximize) == "function") {
+			this.options.minimize.call(this);
 		} else {
-			this.beforeMinimize = this.getSize();
+			this.focus();
+			var style = this.getSizeRange();
+			var w = style['minWidth'], h = style['minHeight'];
+			if (this.beforeMinimize) {
+				w = this.beforeMinimize.width;
+				h = this.beforeMinimize.height;
+				this.beforeMinimize = null;
+			} else {
+				this.beforeMinimize = this.getSize();
+			}
+			this.resize(w, h);
 		}
-		this.resize(w, h);
 		this.fireEvent('maximize', [w, h]);
 	},
 
@@ -310,11 +298,11 @@ ART.Window = new Class({
 		this.parent();
 	},
 
-	getSizeRange: function(override) {
+	getSizeRange: function(override){
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var ret = {};
-		['min', 'max'].each(function(extreme) {
-			['width', 'height'].each(function(axis) {
+		['min', 'max'].each(function(extreme){
+			['width', 'height'].each(function(axis){
 				var str = extreme + axis.capitalize();
 				var opt = this.options[extreme][axis];
 				if ((override && !$defined(override[extreme + axis.capitalize()]) && $defined(opt)) || (!override && $defined(opt))) 
@@ -356,15 +344,33 @@ ART.Window = new Class({
 			'height': style.height,
 			'width': style.width
 		});
-		
+		this.renderContent(style);
+		this.renderHeaderText(style);
+		this.renderResize(style);
+		this.paint.restore();
+		$(this.paint).setStyles({
+			top: this.options.shadow ? -6 : -1,
+			left: this.options.shadow ? -11 : -1
+		});
+		if (this.shim) this.shim.position();
+		this.parent();
+		this.fireEvent('resize', [this.contentSize.w, this.contentSize.h]);
+	},
+	
+	renderContent: function(style){
 		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
 		var contentWidth = style.width -2;
+		this.contentSize = {
+			w: contentWidth, 
+			h: contentHeight
+		};
 		this.content.setStyles({
 			'top': 1,
 			'left': 0,
 			'height': contentHeight < 0 ? 0 : contentHeight,
 			'width': contentWidth < 0 ? 0 : contentWidth,
 			'background-color': style.contentBackgroundColor,
+			'color': style.contentColor,
 			'overflow': style.contentOverflow
 		});
 		
@@ -422,45 +428,25 @@ ART.Window = new Class({
 		this.paint.start({x: 1, y: style.height - style.footerHeight});
 		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight - 1}, [0, 0, style.cornerRadius, style.cornerRadius]);
 		this.paint.end({'fill': true, 'fill-color': style.footerBackgroundColor});
+	},
+	
+	renderResize: function(style){
+		if (!this.options.resizable) return;
+
+		var drawLines = function(){
+			this.paint.lineBy({x: -10, y: 10}).moveBy({x: 4, y: 0}).lineBy({x: 6, y: -6}).moveBy({x: 0, y: 4}).lineBy({x: -2, y: 2});
+		};
 		
-		if (this.options.resizable){
-			
-			var drawLines = function(){
-				this.paint.lineBy({x: -10, y: 10}).moveBy({x: 4, y: 0}).lineBy({x: 6, y: -6}).moveBy({x: 0, y: 4}).lineBy({x: -2, y: 2});
-			};
-			
-			this.paint.start({x: style.width - 2, y: style.height - 13});
-			drawLines.call(this);
-			this.paint.end({'stroke': true, 'stroke-color': hsb(0, 0, 100, 0.5)});
-			
-			this.paint.start({x: style.width - 3, y: style.height - 13});
-			drawLines.call(this);
-			this.paint.end({'stroke': true, 'stroke-color': hsb(0, 0, 0, 0.4)});
-		}
+		this.paint.start({x: style.width - 2, y: style.height - 13});
+		drawLines.call(this);
+		this.paint.end({'stroke': true, 'stroke-color': hsb(0, 0, 100, 0.5)});
 		
-		// painting buttons
-		
-		var baseLeft = 8;
-		var oneLeft = baseLeft + style.buttonSpacing;
-		var twoLeft = oneLeft + oneLeft - baseLeft;
-		if (this.buttons.close){
-			$(this.buttons.close).setStyles({top: style.headerPaddingTop, left: baseLeft});
-		}
-		
-		if (this.buttons.minimize){
-			$(this.buttons.minimize).setStyles({
-				'top': style.headerPaddingTop,
-				'left': (this.buttons.close) ? oneLeft : baseLeft
-			});
-		}
-		
-		if (this.buttons.maximize){
-			$(this.buttons.maximize).setStyles({
-				'top': style.headerPaddingTop,
-				'left': (this.buttons.close && this.buttons.maximize) ? twoLeft : (this.buttons.close || this.buttons.maximize) ? oneLeft : baseLeft
-			});
-		}
-		
+		this.paint.start({x: style.width - 3, y: style.height - 13});
+		drawLines.call(this);
+		this.paint.end({'stroke': true, 'stroke-color': hsb(0, 0, 0, 0.4)});
+	},
+	
+	renderHeaderText: function(style){
 		// font
 		
 		var font = ART.Paint.lookupFont(style.captionFont);
@@ -474,18 +460,6 @@ ART.Window = new Class({
 		this.paint.text(font, style.captionFontSize, this.options.caption || "");
 		this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
 		
-		this.paint.restore();
-		$(this.paint).setStyles({
-			top: this.options.shadow ? -6 : -1,
-			left: this.options.shadow ? -11 : -1
-		});
-		if (this.shim) this.shim.position();
-		this.parent();
-		this.contentSize = {
-			w: contentWidth, 
-			h: contentHeight
-		};
-		this.fireEvent('resize', [contentWidth, contentHeight]);
 	}
 
 });
