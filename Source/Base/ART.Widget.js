@@ -132,6 +132,7 @@ ART.Widget = new Class({
 						child.blur();
 					}
 				}, this);
+				this.parentWidget.focus();
 			}
 			this.render();
 		}
