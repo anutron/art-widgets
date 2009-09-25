@@ -28,6 +28,11 @@ ART.Sheet.defineStyle('button', {
 	'pill': false,
 
 	'corner-radius': 3,
+	'background-color': {0: hsb(0, 0, 90), 1: hsb(0, 0, 70)},
+	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'border-color': hsb(0, 0, 0, 0.8)
+});
+ART.Sheet.defineStyle('button:focus', {
 	'background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
 	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
 	'border-color': hsb(0, 0, 0, 0.8)
@@ -65,15 +70,18 @@ ART.Button = new Class({
 		$(this.paint).inject(this.element);
 
 		this.element.addEvents({
-			mouseover: function(e) {
+			focus: function(e) {
 				this.focus();
 			}.bind(this),
-			mouseout: function(){
+			blur: function(){
 				this.blur();
 			}.bind(this),
 			mousedown: function(e) {
 				e.stopPropagation();
+				this.focus();
 			}
+		}).set('tabindex', 0).setStyles({
+		  outline: 'none'
 		});
 		
 		var click = new Touch(this.element);
@@ -86,6 +94,16 @@ ART.Button = new Class({
 				this.deactivate();
 			}.bind(this),
 			cancel: function(){
+				this.deactivate();
+				this.fireEvent('press');
+			}.bind(this)
+		});
+		
+		this.attachKeys({
+			'keydown:space': function(){
+				this.activate();
+			}.bind(this),
+			'keyup:space': function(){
 				this.deactivate();
 				this.fireEvent('press');
 			}.bind(this)
