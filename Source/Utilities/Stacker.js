@@ -15,15 +15,24 @@ var Stacker = new Class({
 	initialize: function(options) {
 		this.setOptions(options);
 		this.layers = $H();
-		this.addLayer('default', this.options.zIndexBase);
+		this.setLayer('default', this.options.zIndexBase);
 	},
 
-	addLayer: function(name, zIndex) {
+	setLayer: function(name, zIndex) {
+		if (this.layers[name]) {
+			this.setZIndex(zIndex, name);
+			return this.getLayer(name);
+		}
 		this.layers[name] = {
 			zIndex: zIndex,
 			name: name,
 			instances: []
 		};
+	},
+
+	getLayer: function(name, defaultZIndex) {
+		if (!this.layers[name] && defaultZIndex) this.addLayer(name, defaultZIndex);
+		return this.layers[name];
 	},
 
 	register: function(instance, layer){
