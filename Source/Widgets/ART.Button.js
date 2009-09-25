@@ -59,8 +59,9 @@ ART.Button = new Class({
 	
 	options: {
 	/*
-		text: ''
+		text: '',
 	*/
+		tabIndex: 0
 	},
 
 	initialize: function(options){
@@ -80,9 +81,12 @@ ART.Button = new Class({
 				e.stopPropagation();
 				this.focus();
 			}
-		}).set('tabindex', 0).setStyles({
-		  outline: 'none'
 		});
+		if (this.options.tabIndex != undefined) {
+			this.element.set('tabindex', this.options.tabIndex).setStyles({
+			  outline: 'none'
+			});
+		}
 		
 		var click = new Touch(this.element);
 		
