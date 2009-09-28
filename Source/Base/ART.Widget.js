@@ -135,7 +135,7 @@ ART.Widget = new Class({
 	},
 
 	render: function(override){
-		if (this.isReadyToRender()) this.redraw();
+		if (this.isReadyToRender()) this.redraw(override);
 		return this;
 	},
 

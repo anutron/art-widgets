@@ -124,10 +124,8 @@ ART.Button = new Class({
 	},
 
 	enable: function(){
-		dbug.log('button enable');
 		this.parent.apply(this, arguments);
 		this.setTabIndex();
-		dbug.log('/button enable');
 	},
 
 	disable: function(){
