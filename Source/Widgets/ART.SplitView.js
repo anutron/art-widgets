@@ -39,6 +39,7 @@ ART.SplitView = new Class({
 	name: 'splitview',
 	
 	initialize: function(options){
+		this.requireToRender('splitview:panes');
 		this.parent(options);
 		this.build();
 	},
@@ -77,7 +78,7 @@ ART.SplitView = new Class({
 			});
 		}
 		
-		this.initialized = true;
+		this.readyToRender('splitview:panes');
 		this.render();
 		this['resize' + this.options.fixed.capitalize()](style.fixedWidth);
 	},
@@ -90,9 +91,7 @@ ART.SplitView = new Class({
 		this['resize' + fix](targetWidth);
 	},
 
-	render: function(override){
-		if (!this.initialized) return this;
-
+	redraw: function(override){
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 
 		this.currentHeight = $pick(this.currentHeight, style.height);

@@ -159,11 +159,11 @@ ART.History = new Class({
 		this.parent(options);
 		this.selected = $pick(this.options.selected, this.history.length -1);
 		this.build();
-		this.readyToRender('history:buttons', 'history:editor');
-		this.render();
 		this.setHistory(this.options.history);
 		this.setNavState();
 		this.attach();
+		this.readyToRender('history:buttons', 'history:editor');
+		this.render();
 	},
 	
 	history: [],
@@ -265,30 +265,26 @@ ART.History = new Class({
 				}
 			}
 		}).inject(this.element);
+		this.resize();
 
 	},
 	
-	render: function(){
+	redraw: function(){
 		this.parent();
 		if (!this.nav_back) return;
 		if (this.current_selector == this.getSelector()) return;
 		this.current_selector = this.getSelector();
 		this.element.setStyles(ART.Sheet.lookupStyle(this.getSelector()));
 		
-		this.nav_back.render();
 		$(this.nav_back).setStyles(ART.Sheet.lookupStyle(this.nav_back.getSelector()));
 
-		this.nav_next.render();
 		$(this.nav_next).setStyles(ART.Sheet.lookupStyle(this.nav_next.getSelector()));
 
-		this.location.render();
 		this.location_text.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' div.location_text'));
 		$(this.location).setStyles(ART.Sheet.lookupStyle(this.location.getSelector()));
 
-		this.refresher.render();
 		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector()));
 
-		this.resize();
 		this.nav.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' ul'));
 
 		this.divot.start({x: 0, y: 0});
@@ -297,7 +293,6 @@ ART.History = new Class({
 		this.divot.end({fill: true, fillColor: divotStyles.color});
 
 		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input:disabled')));
-		this.resize();
 	},
 	
 	destroy: function(){
@@ -520,9 +515,11 @@ ART.History = new Class({
 	
 	setHistory: function(arr) {
 		this.clear();
+		this.requireToRender('history:items');
 		arr.each(function(hist) {
 			this.push(hist);
 		}, this);
+		this.readyToRender('history:items');
 	},
 	
 	clear: function(){

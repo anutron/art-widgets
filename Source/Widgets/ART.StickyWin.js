@@ -74,6 +74,7 @@ ART.StickyWin = new Class({
 	},
 
 	initialize: function(options) {
+		this.requireToRender('window:managed', 'window:displayed');
 		if (!this.options.inject) {
 			this.options.inject = {
 				target: document.body,
@@ -83,11 +84,15 @@ ART.StickyWin = new Class({
 		this.windowManager = this.options.windowManager || ART.StickyWin.DefaultManager;
 		//the window manager enables the windows; so we must start with disabled = true
 		this.disabled = true;
+		
 		this.parent(options);
 		this.element.store('StickyWin', this);
 		this.build();
 		this.windowManager.register(this, this.options.windowManagerLayer);
+		this.readyToRender('window:managed');
+		
 		if (this.options.content) this.setContent(this.options.content);
+		
 		if (this.options.draggable) this.makeDraggable();
 		if (this.options.timeout) {
 			this.addEvent('show', function(){
@@ -96,6 +101,7 @@ ART.StickyWin = new Class({
 		}
 		if (this.options.closeOnClickOut || this.options.closeOnEsc) this.attach();
 		if (this.options.destroyOnClose) this.addEvent('hide', this.destroy.bind(this));
+		
 		if (this.options.showNow) this.show();
 		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
 			this.hide();
@@ -146,12 +152,14 @@ ART.StickyWin = new Class({
 				opacity: 1,
 				display: 'block'
 			});
-			this.windowManager.enable(this);
 			if (this.options.useIframeShim) this.showIframeShim();
 			this.parent();
 		} else {
-			if (!this.positioned) this.position();
 			this.fade(1);
+			this.readyToRender('window:displayed');
+			this.windowManager.enable(this);
+			this.render();
+			if (!this.positioned) this.position();
 		}
 	},
 
@@ -167,15 +175,14 @@ ART.StickyWin = new Class({
 			if (this.options.fadeDuration) opts.duration = this.options.fadeDuration;
 			this.fadeFx = new Fx.Tween(this.element, opts);
 		}
-		this.fadeFx.clearChain();
-		this.fadeFx.start(to).chain(function (){
+		this.fadeFx.clearChain().chain(function(){
 			if (to == 0) {
 				this.element.setStyle('display', 'none');
 				this.hide(true);
 			} else {
 				this.show(true);
 			}
-		}.bind(this));
+		}.bind(this)).start(to);
 		return this;
 	},
 

@@ -124,8 +124,10 @@ ART.Button = new Class({
 	},
 
 	enable: function(){
+		dbug.log('button enable');
 		this.parent.apply(this, arguments);
 		this.setTabIndex();
+		dbug.log('/button enable');
 	},
 
 	disable: function(){
@@ -133,7 +135,7 @@ ART.Button = new Class({
 		this.element.set('tabindex', null);
 	},
 
-	render: function(options){
+	redraw: function(options){
 		this.parent();
 		if (options) this.setOptions(options);
 		if (!this.paint) return this;

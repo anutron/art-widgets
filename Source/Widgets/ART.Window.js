@@ -181,9 +181,8 @@ ART.Window = new Class({
 			})
 		});
 		this.makeButtons();
-		this.readyToRender('window:buttons');
+		this.readyToRender('window:navButtons');
 		this.contents.adopt(this.header, this.content, this.footer);
-		this.render();
 	},
 
 	makeButtons: function() {
@@ -294,7 +293,7 @@ ART.Window = new Class({
 
 	show: function(){
 		if (!this.positioned) this.position();
-		this.parent();
+		this.parent.apply(this, arguments);
 	},
 
 	getSizeRange: function(override){
@@ -313,9 +312,8 @@ ART.Window = new Class({
 		return ret;
 	},
 
-	render: function(override){
-		if (!this.paint) return;
-		
+	redraw: function(override){
+		this.parent.apply(this, arguments);
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var h = style.height, w = style.width;
 		// height / width management

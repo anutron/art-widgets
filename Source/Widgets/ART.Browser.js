@@ -49,7 +49,7 @@ ART.Browser = new Class({
 		this.history.resize();
 	},
 
-	render: function(){
+	redraw: function(){
 		this.parent.apply(this, arguments);
 		if (this.history) this.history.render();
 	},

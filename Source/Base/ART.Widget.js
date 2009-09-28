@@ -6,6 +6,9 @@ License:
 */
 
 // Base widget class. Based on » http://gist.github.com/85837
+(function(){
+
+var focused;
 
 ART.Widget = new Class({
 	
@@ -104,28 +107,38 @@ ART.Widget = new Class({
 
 	// render
 
-	requiredToRender: [],
 	requireToRender: function(){
+		this.requiredToRender = this.requiredToRender || [];
 		$A(arguments).each(function(requirement) {
 			this.requiredToRender.push(requirement);
 		}, this);
 	},
 
 	readyToRender: function() {
+		if (!this.requiredToRender || !this.requiredToRender.length) return;
 		$A(arguments).each(function(requirement) {
 			this.requiredToRender.erase(requirement);
 		}, this);
 	},
 
-	render: function(){
-		if (!this.requiredToRender.length) {
-			this.childWidgets.each(function(child){
-				child.render();
-			});
-		}
+	redraw: function(){
+		this.childWidgets.each(function(child){
+			child.render();
+		});
 		return this;
 	},
-	
+
+	isReadyToRender: function(){
+		var isReady = !this.requiredToRender || !this.requiredToRender.length;
+		if (isReady && this.parentWidget) isReady = this.parentWidget.isReadyToRender();
+		return isReady;
+	},
+
+	render: function(override){
+		if (this.isReadyToRender()) this.redraw();
+		return this;
+	},
+
 	// special states
 	
 	hide: function(){
@@ -145,7 +158,6 @@ ART.Widget = new Class({
 			this.fireEvent('activate');
 			this.element.addClass(this.prefix + '-active');
 			this.addPseudo('active');
-			this.keyboard.activate();
 			this.render();
 		}
 		return this;
@@ -157,13 +169,8 @@ ART.Widget = new Class({
 			this.fireEvent('focus');
 			this.element.addClass(this.prefix + '-focused');
 			this.addPseudo('focus');
-			this.keyboard.activate();
-			if (this.parentWidget) {
-				this.parentWidget.childWidgets.each(function(child) {
-					if (child != this) child.blur();
-				}, this);
-				this.parentWidget.focus();
-			}
+			if (focused) focused.blur();
+			focused = this;
 			this.render();
 		}
 		return this;
@@ -175,6 +182,7 @@ ART.Widget = new Class({
 			this.blur();
 			this.disabled = true;
 			this.fireEvent('disable');
+			this.keyboard.deactivate();
 			this.childWidgets.each(function(child){
 				child.disable(true);
 			});
@@ -223,6 +231,7 @@ ART.Widget = new Class({
 	enable: function(){
 		if (this.disabled){
 			this.disabled = false;
+			this.keyboard.activate();
 			this.childWidgets.each(function(child){
 				if (child.disabledByParent) {
 					child.enable();
@@ -259,3 +268,5 @@ ART.Widget = new Class({
 	}
 	
 });
+
+})();

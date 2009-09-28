@@ -46,7 +46,7 @@ ART.Alert = new Class({
 		]
 	},
 
-	render: function(){
+	redraw: function(){
 		this.parent();
 		if (!this.content) return;
 		var style = ART.Sheet.lookupStyle(this.getSelector() + ' content');

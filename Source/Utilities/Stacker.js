@@ -49,7 +49,6 @@ var Stacker = new Class({
 			this.instances.push(instance);
 		}
 		this.layers[layer].instances.push(instance);
-		this.enable(instance);
 	},
 
 	unregister: function(instance) {
@@ -75,7 +74,7 @@ var Stacker = new Class({
 			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
 				$(current).setStyle('z-index', layer.zIndex + i);
-				if (current === instance) current.enable(true).focus();
+				if (current === instance) current.enable(true);
 				i++;
 			}, this);
 		}, this);
