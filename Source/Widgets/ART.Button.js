@@ -84,11 +84,6 @@ ART.Button = new Class({
 				this.focus();
 			}
 		});
-		if (this.options.tabIndex != undefined) {
-			this.element.set('tabindex', this.options.tabIndex).setStyles({
-			  outline: 'none'
-			});
-		}
 		
 		var click = new Touch(this.element);
 		
@@ -116,6 +111,26 @@ ART.Button = new Class({
 		});
 		
 		this.render(this.options);
+	},
+
+	setTabIndex: function(index){
+		index = $pick(index, this.tabIndex, this.options.tabIndex);
+		if (index != undefined) {
+			this.tabIndex = index;
+			this.element.set('tabindex', index).setStyles({
+			  outline: 'none'
+			});
+		}
+	},
+
+	enable: function(){
+		this.parent.apply(this, arguments);
+		this.setTabIndex();
+	},
+
+	disable: function(){
+		this.parent.apply(this, arguments);
+		this.element.set('tabindex', null);
 	},
 
 	render: function(options){
