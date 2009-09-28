@@ -16,8 +16,8 @@ ART.Sheet.defineStyle('window.solid', {
 
 ART.Sheet.defineStyle('window.solid.smoke', {
 	'caption-font-color': hsb(94, 82, 100),
-	'body-background-color': {0: hsb(0, 0, 0, 0.8), 1: hsb(0, 0, 0, 0.5)},
-	'body-reflection-color': {0: hsb(0, 0, 100, 0.1), 1: hsb(0, 0, 100, 0.2)},
+	'body-background-color': {0: hsb(0, 0, 0, 0.9), 1: hsb(0, 0, 0, 0.8)},
+	'body-reflection-color': {0: hsb(0, 0, 100, 0.05), 1: hsb(0, 0, 100, 0.1)},
 	'body-reflection-percent-size': 0.6,
 	'content-color': hsb(94, 82, 100),
 	'body-reflection-shape': 'funky-glass'
