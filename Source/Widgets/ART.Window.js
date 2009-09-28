@@ -22,7 +22,6 @@ ART.Sheet.defineStyle('window', {
 	
 	'caption-font': 'moderna',
 	'caption-font-size': 13,
-	'caption-font-color': hsb(0, 0, 30),
 	
 	'button-spacing': 20,
 	'header-padding-top': 4,
@@ -32,6 +31,21 @@ ART.Sheet.defineStyle('window', {
 	'corner-radius': 4,
 	'header-height': 24,
 	'footer-height': 17,
+
+	'caption-font-color': hsb(0, 0, 10),
+	'header-background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
+	'footer-background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 70)},
+	'header-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'footer-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'border-color': hsb(0, 0, 0, 0.4),
+	'content-border-top-color': hsb(0, 0, 30),
+	'content-border-bottom-color': hsb(0, 0, 50),
+	'content-background-color': hsb(0, 0, 100)
+
+});
+
+ART.Sheet.defineStyle('window:disabled', {
+	'caption-font-color': hsb(0, 0, 30),
 	'header-background-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 80)},
 	'footer-background-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 90)},
 	'header-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
@@ -42,36 +56,24 @@ ART.Sheet.defineStyle('window', {
 	'content-background-color': hsb(0, 0, 100),
 	'content-color': hsb(0, 0, 0)
 });
-
-ART.Sheet.defineStyle('window:focus', {
-	'caption-font-color': hsb(0, 0, 10),
-	'header-background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
-	'footer-background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 70)},
-	'header-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
-	'footer-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
-	'border-color': hsb(0, 0, 0, 0.4),
-	'content-border-top-color': hsb(0, 0, 30),
-	'content-border-bottom-color': hsb(0, 0, 50),
-	'content-background-color': hsb(0, 0, 100)
-});
 ART.Sheet.defineStyle('window button.wincontrol', {
 	'pill': true,
 	'height': 14,
 	'width': 14,
 	'cursor': 'pointer',
-	'background-color': {0: hsb(0, 0, 100, 0.6), 1: hsb(0, 0, 100, 0.6)},
-	'reflection-color': {0: hsb(0, 0, 100), 1: hsb(0, 0, 0, 0)},
-	'shadow-color': hsb(0, 0, 100, 0.2),
-	'border-color': hsb(0, 0, 45, 0.5),
-	'glyph-color': hsb(0, 0, 0, 0.4)
-});
-
-ART.Sheet.defineStyle('window:focus button.wincontrol', {
 	'background-color': {0: hsb(0, 0, 75), 1: hsb(0, 0, 55)},
 	'reflection-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 0, 0)},
 	'shadow-color': hsb(0, 0, 100, 0.4),
 	'border-color': hsb(0, 0, 45),
 	'glyph-color': hsb(0, 0, 0, 0.6)
+});
+
+ART.Sheet.defineStyle('window button.wincontrol:disabled', {
+	'background-color': {0: hsb(0, 0, 100, 0.6), 1: hsb(0, 0, 100, 0.6)},
+	'reflection-color': {0: hsb(0, 0, 100), 1: hsb(0, 0, 0, 0)},
+	'shadow-color': hsb(0, 0, 100, 0.2),
+	'border-color': hsb(0, 0, 45, 0.5),
+	'glyph-color': hsb(0, 0, 0, 0.4)
 });
 
 ART.Sheet.defineStyle('window button.wincontrol:active', {
@@ -130,6 +132,7 @@ ART.Window = new Class({
 	},
 
 	initialize: function(options){
+		this.requireToRender('window:navButtons', 'window:paint');
 		this.parent(options);
 		if (this.options.resizable) this.makeResizeable();
 	},
@@ -150,6 +153,7 @@ ART.Window = new Class({
 		
 		this.paint = new ART.Paint();
 		$(this.paint).setStyles(absolute).inject(this.element);
+		this.readyToRender('window:paint');
 		
 		this.contents = new Element('div').inject(this.element);
 		
@@ -177,8 +181,9 @@ ART.Window = new Class({
 			})
 		});
 		this.makeButtons();
-		this.render();
+		this.readyToRender('window:buttons');
 		this.contents.adopt(this.header, this.content, this.footer);
+		this.render();
 	},
 
 	makeButtons: function() {
@@ -192,8 +197,11 @@ ART.Window = new Class({
 		var baseLeft = 6;
 		['close', 'maximize', 'minimize'].each(function(button){
 			if (this.options[button]) {
-				this.buttons[button] = new ART.Button({className: button + ' wincontrol'});
-				this.buttons[button].setParent(this);
+				this.buttons[button] = new ART.Button({
+					className: button + ' wincontrol',
+					parentWidget: this,
+					tabIndex: -1
+				});
 				$(this.buttons[button]).setStyles({
 					'position': 'absolute',
 					'top': style.headerPaddingTop, 
@@ -206,41 +214,32 @@ ART.Window = new Class({
 	},
 
 	maximize: function(){
-		if ($type(this.options.maximize) == "function") {
-			this.options.maximize.call(this);
-		} else {
-			this.focus();
-			var style = this.getSizeRange();
-			var w = style['maxWidth'], h = style['maxHeight'];
-			if (this.beforeMaximize) {
-				w = this.beforeMaximize.width;
-				h = this.beforeMaximize.height;
-				this.beforeMaximize = null;
-			} else {
-				this.beforeMaximize = this.getSize();
-			}
-			this.resize(w, h);
-		}
-		this.fireEvent('minimize', [w, h]);
+		this.minMax('maximize');
 	},
 
 	minimize: function(){
-		if ($type(this.options.maximize) == "function") {
-			this.options.minimize.call(this);
+		this.minMax('minimize');
+	},
+
+	minMax: function(operation){
+		if ($type(this.options[operation]) == "function") {
+			this.options[operation].call(this);
 		} else {
-			this.focus();
+			this.enable();
 			var style = this.getSizeRange();
-			var w = style['minWidth'], h = style['minHeight'];
-			if (this.beforeMinimize) {
-				w = this.beforeMinimize.width;
-				h = this.beforeMinimize.height;
-				this.beforeMinimize = null;
+			var prefix = operation == 'maximize' ? 'max' : 'min';
+			var w = style[prefix + 'Width'], h = style[prefix + 'Height'];
+			var beforeStr = 'before'+ operation.capitalize();
+			if (this[beforeStr]) {
+				w = this[beforeStr].width;
+				h = this[beforeStr].height;
+				this[beforeStr] = null;
 			} else {
-				this.beforeMinimize = this.getSize();
+				this[beforeStr] = this.getSize();
 			}
 			this.resize(w, h);
 		}
-		this.fireEvent('maximize', [w, h]);
+		this.fireEvent(operation, [w, h]);
 	},
 
 	makeResizeable: function(){

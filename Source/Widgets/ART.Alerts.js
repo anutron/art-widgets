@@ -69,7 +69,9 @@ ART.Alert = new Class({
 	makeButtons: function(){
 		this.parent();
 		this.options.buttons.each(function(button){
-			var b = new ART.Button(button).setParent(this);
+			var b = new ART.Button(button, {
+				parentWidget: this
+			});
 			b.addEvent('activate', function(){
 				if ($(b).hasClass(this.options.closeClass)) this.hide();
 			}.bind(this));

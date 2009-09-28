@@ -36,7 +36,7 @@ ART.Sheet.defineStyle('window.solid.smoke button.wincontrol', {
 	'glyph-color': hsb(94, 82, 100)
 });
 
-ART.Sheet.defineStyle('window.solid:focus button.wincontrol', {
+ART.Sheet.defineStyle('window.solid button.wincontrol', {
 	'background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 70)},
 	'reflection-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 0, 0)},
 	'shadow-color': hsb(0, 0, 100, 0.7),
@@ -44,7 +44,7 @@ ART.Sheet.defineStyle('window.solid:focus button.wincontrol', {
 	'glyph-color': hsb(0, 0, 0, 0.6)
 });
 
-ART.Sheet.defineStyle('window.solid.smoke:focus button.wincontrol', {
+ART.Sheet.defineStyle('window.solid.smoke button.wincontrol:disabled', {
 	'background-color': hsb(0, 0, 100, 0),
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),

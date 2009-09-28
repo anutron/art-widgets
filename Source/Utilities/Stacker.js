@@ -44,12 +44,12 @@ var Stacker = new Class({
 			instanceLayer.instances.erase(instance);
 		} else  {
 			$(instance).addEvent('mousedown', function(){
-				if (!instance.focused) this.focus(instance);
+				if (instance.disabled) this.enable(instance);
 			}.bind(this));
 			this.instances.push(instance);
 		}
 		this.layers[layer].instances.push(instance);
-		if (instance.focused) this.focus(instance);
+		this.enable(instance);
 	},
 
 	unregister: function(instance) {
@@ -67,7 +67,7 @@ var Stacker = new Class({
 		return ret;
 	},
 
-	focus: function(instance){
+	enable: function(instance){
 		if (instance) this.instances.erase(instance).push(instance);
 		this.layers.each(function(layer) {
 			var i = 0;
@@ -75,12 +75,12 @@ var Stacker = new Class({
 			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
 				$(current).setStyle('z-index', layer.zIndex + i);
-				if (current === instance) current.focus(true);
+				if (current === instance) current.enable(true).focus();
 				i++;
 			}, this);
 		}, this);
-		if (this.focused && this.focused != instance) this.focused.blur();
-		this.focused = instance;
+		if (this.enabled && this.enabled != instance) this.enabled.disable();
+		this.enabled = instance;
 	},
 
 	cascade: function(noAnim, x, y){
@@ -96,25 +96,25 @@ var Stacker = new Class({
 		var pos = true;
 		if (options) {
 			//if the position is not defined in the options
-			//or, if it is, the position is the same as the focused instance's options
+			//or, if it is, the position is the same as the enabled instance's options
 			//such that opening with the same options will place them on top of each other
 			//(assuming the first one hasn't moved)
 			pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo'].every(function(opt){
-				return options[opt] == null || (this.focused.options[opt] == options[opt]);
+				return options[opt] == null || (this.enabled.options[opt] == options[opt]);
 			}, this);
 		}
 		var instances = this.instances.filter(function(instance){
 			return !instance.hidden && $(instance);
 		});
 		//if there are no instances other than this one, or one instance
-		//or the position is not set or is equal to the focused instances options
+		//or the position is not set or is equal to the enabled instances options
 		//then return; and let the window be positioned as the class would normally.
 		if (instances.length < 2 || !pos) return false;
-		var focused = this.focused;
-		this.focus(instance);
-		//position near the focused instance, with an offset as defined in the options
+		var enabled = this.enabled;
+		this.enable(instance);
+		//position near the enabled instance, with an offset as defined in the options
 		$(instance).position({
-			relativeTo: $(focused),
+			relativeTo: $(enabled),
 			offset: this.options.offset,
 			edge: 'upperLeft',
 			position: 'upperLeft'

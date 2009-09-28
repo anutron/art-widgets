@@ -15,10 +15,10 @@ ART.WindowManager = new Class({
 		this.keyboard.manage(instance.keyboard);
 	},
 
-	focus: function() {
+	enable: function() {
 		this.parent.apply(this, arguments);
 		this.keyboard.enable();
-		this.focused.keyboard.enable();
+		this.enabled.keyboard.enable();
 	},
 
 	unregister: function(instance) {
@@ -81,6 +81,8 @@ ART.StickyWin = new Class({
 			};
 		}
 		this.windowManager = this.options.windowManager || ART.StickyWin.DefaultManager;
+		//the window manager enables the windows; so we must start with disabled = true
+		this.disabled = true;
 		this.parent(options);
 		this.element.store('StickyWin', this);
 		this.build();
@@ -144,7 +146,7 @@ ART.StickyWin = new Class({
 				opacity: 1,
 				display: 'block'
 			});
-			this.windowManager.focus(this);
+			this.windowManager.enable(this);
 			if (this.options.useIframeShim) this.showIframeShim();
 			this.parent();
 		} else {
@@ -257,9 +259,10 @@ ART.StickyWin = new Class({
 		return this;
 	},
 
-	focus: function(callParent){
+	enable: function(callParent){
 		if (callParent) this.parent();
-		else this.windowManager.focus(this);
+		else this.windowManager.enable(this);
+		return this;
 	},
 
 	destroy: function(){

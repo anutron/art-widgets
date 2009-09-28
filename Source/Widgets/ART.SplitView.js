@@ -14,15 +14,15 @@ ART.Sheet.defineStyle('splitview', {
 	'splitter-width': 3,
 	'splitter-cursor': 'ew-resize',
 	
-	'splitter-background-color': hsb(0, 0, 70),
-	'left-background-color': '#e8e8e8',
+	'splitter-background-color': hsb(0, 0, 50),
+	'left-background-color': '#d6dde5',
 	
 	'right-background-color': '#fff'
 });
 
-ART.Sheet.defineStyle('splitview:focus', {
-	'splitter-background-color': hsb(0, 0, 50),
-	'left-background-color': '#d6dde5'
+ART.Sheet.defineStyle('splitview:disabled', {
+	'splitter-background-color': hsb(0, 0, 70),
+	'left-background-color': '#e8e8e8'
 });
 
 ART.SplitView = new Class({

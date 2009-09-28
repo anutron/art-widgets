@@ -29,11 +29,24 @@ ART.Widget = new Class({
 		className: '',
 		keyboardOptions: {
 			active: true
-		}
+		},
+		parentWidget: null
 	},
 	
 	initialize: function(options){
-		if (options) this.setOptions(options);
+		this.pseudos = [];
+		this.childWidgets = [];
+		this.keyboard = new Keyboard();
+		this.keyboard.widget = this;
+		var parent;
+		if (options) {
+			if (options.parentWidget) {
+				parent = options.parentWidget;
+				delete options.parentWidget;
+			}
+		}
+		this.setOptions(options);
+		this.keyboard.setOptions(this.options.keyboardOptions).setup();
 		this.prefix = this.ns + '-' + this.name;
 		this.element = new Element('div', {
 			id: this.options.id || this.prefix+new Date().getTime(),
@@ -42,11 +55,8 @@ ART.Widget = new Class({
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
-		this.pseudos = [];
-		this.childWidgets = [];
+		if (parent) this.setParent(parent);
 		// initial render
-		this.keyboard = new Keyboard(this.options.keyboardOptions);
-		this.keyboard.widget = this;
 		this.render();
 	},
 
@@ -66,13 +76,20 @@ ART.Widget = new Class({
 		this.pseudos.erase(pseudo);
 	},
 
-	setParent: function(widget){
-		this.removeParent();
+	setParent: function(widget, initing){
+		if (!initing) this.removeParent();
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
 		this.parentWidget.keyboard.manage(this.keyboard);
+		if (this.parentWidget.disabled) {
+			this.disabledByParent = true;
+			this.disable();
+		} else {
+			this.disabled = true;
+			this.enable();
+		}
 		this.render();
-		this.fireEvent('adoption', widget);
+		if (!initing) this.fireEvent('adoption', widget);
 		return this;
 	},
 
@@ -86,11 +103,26 @@ ART.Widget = new Class({
 	},
 
 	// render
-	
+
+	requiredToRender: [],
+	requireToRender: function(){
+		$A(arguments).each(function(requirement) {
+			this.requiredToRender.push(requirement);
+		}, this);
+	},
+
+	readyToRender: function() {
+		$A(arguments).each(function(requirement) {
+			this.requiredToRender.erase(requirement);
+		}, this);
+	},
+
 	render: function(){
-		this.childWidgets.each(function(child){
-			child.render();
-		});
+		if (!this.requiredToRender.length) {
+			this.childWidgets.each(function(child){
+				child.render();
+			});
+		}
 		return this;
 	},
 	
@@ -128,9 +160,7 @@ ART.Widget = new Class({
 			this.keyboard.activate();
 			if (this.parentWidget) {
 				this.parentWidget.childWidgets.each(function(child) {
-					if (child != this) {
-						child.blur();
-					}
+					if (child != this) child.blur();
 				}, this);
 				this.parentWidget.focus();
 			}
@@ -139,12 +169,14 @@ ART.Widget = new Class({
 		return this;
 	},
 	
-	disable: function(){
+	disable: function(byParent){
 		if (!this.disabled){
+			if (byParent) this.disabledByParent = true;
+			this.blur();
 			this.disabled = true;
 			this.fireEvent('disable');
 			this.childWidgets.each(function(child){
-				child.disable();
+				child.disable(true);
 			});
 			this.element.addClass(this.prefix + '-disabled');
 			this.addPseudo('disabled');
@@ -192,7 +224,10 @@ ART.Widget = new Class({
 		if (this.disabled){
 			this.disabled = false;
 			this.childWidgets.each(function(child){
-				child.enable();
+				if (child.disabledByParent) {
+					child.enable();
+					delete child.disabledByParent;
+				}
 			});
 			this.fireEvent('enable');
 			this.element.removeClass(this.prefix + '-disabled');

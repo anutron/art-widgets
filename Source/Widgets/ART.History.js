@@ -155,9 +155,11 @@ ART.History = new Class({
 	},
 	
 	initialize: function(options) {
+		this.requireToRender('history:buttons', 'history:editor');
 		this.parent(options);
 		this.selected = $pick(this.options.selected, this.history.length -1);
 		this.build();
+		this.readyToRender('history:buttons', 'history:editor');
 		this.render();
 		this.setHistory(this.options.history);
 		this.setNavState();
@@ -179,13 +181,19 @@ ART.History = new Class({
 	},
 	
 	build: function(){
-		this.nav_back = new ART.Button.Nav.Left().setParent(this);
+		this.nav_back = new ART.Button.Nav.Left({
+			parentWidget: this
+		});
 		$(this.nav_back).inject(this.element).addEvent('click', this.back.bind(this));
 
-		this.nav_next = new ART.Button.Nav.Right().setParent(this);
+		this.nav_next = new ART.Button.Nav.Right({
+			parentWidget: this
+		});
 		$(this.nav_next).inject(this.element).addEvent('click', this.next.bind(this));
 
-		this.location = new ART.Button.Nav.Down().setParent(this);
+		this.location = new ART.Button.Nav.Down({
+			parentWidget: this
+		});
 		this.location_text = new Element('div');
 		$(this.location).inject(this.element).addEvent('click', function(){
 			this.toggle();
@@ -195,8 +203,9 @@ ART.History = new Class({
 		$(this.divot).inject(this.location).setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' divot'));
 
 		this.refresher = new ART.Button({
-			className: 'refresh'
-		}).setParent(this);
+			className: 'refresh',
+			parentWidget: this
+		});
 
 		$(this.refresher).inject(this.element).addEvent('click', function(){
 			this.fireEvent('refresh');
@@ -431,6 +440,7 @@ ART.History = new Class({
 	},
 	
 	hide: function(){
+		if (!this.location) return;
 		this.parent.apply(this, arguments);
 		this.element.removeClass('history_location_active');
 		this.location.deactivate();

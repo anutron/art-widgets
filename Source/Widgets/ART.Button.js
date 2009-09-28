@@ -65,10 +65,12 @@ ART.Button = new Class({
 	},
 
 	initialize: function(options){
+		this.requireToRender('button:paint');
 		this.parent(options);
 
 		this.paint = new ART.Paint();
 		$(this.paint).inject(this.element);
+		this.readyToRender('button:paint');
 
 		this.element.addEvents({
 			focus: function(e) {
@@ -118,7 +120,7 @@ ART.Button = new Class({
 
 	render: function(options){
 		this.parent();
-		this.setOptions(options);
+		if (options) this.setOptions(options);
 		if (!this.paint) return this;
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var font = ART.Paint.lookupFont(style.font);
