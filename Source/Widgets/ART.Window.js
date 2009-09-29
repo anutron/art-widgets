@@ -262,10 +262,12 @@ ART.Window = new Class({
 		this.touchResize.addEvent('start', function(){
 			this.startHeight = this.contents.offsetHeight;
 			this.startWidth = this.contents.offsetWidth;
+			this.fireEvent('resize:end');
 		}.bind(this));
 
 		var dragging;
 		this.touchResize.addEvent('move', function(dx, dy){
+			this.fireEvent('resize:move', [dx, dy]);
 			if (!dragging) {
 				this.element.addClass(this.prefix + '-dragging');
 				this.addPseudo('dragging');
@@ -281,6 +283,7 @@ ART.Window = new Class({
 				this.removePseudo('dragging');
 				this.render();
 			}
+			this.fireEvent('resize:end');
 		}.bind(this));
 	},
 

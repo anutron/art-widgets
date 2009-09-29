@@ -197,6 +197,8 @@ ART.StickyWin = new Class({
 		this.touchDrag = new Touch(handle);
 		handle.setStyle('cursor', 'move');
 		this.touchDrag.addEvent('start', function(){
+			this.fireEvent('drag:start');
+			
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
 		}.bind(this));
@@ -214,12 +216,14 @@ ART.StickyWin = new Class({
 				'top': top,
 				'left': left
 			});
+			this.fireEvent('drag:move', [dx, dy]);
 		}.bind(this));
 		var end = function(){
 			if (dragging) {
 				this.displayForDrag(false);
 				dragging = false;
 			}
+			this.fireEvent('drag:end');
 		}.bind(this);
 		this.touchDrag.addEvent('end', end);
 		this.touchDrag.addEvent('cancel', end);

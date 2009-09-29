@@ -91,7 +91,6 @@ ART.SolidWindow = new Class({
 			});
 		}
 
-
 		// border layer
 		this.paint.save();
 
