@@ -156,14 +156,12 @@ ART.StickyWin = new Class({
 		this.positioned = true;
 		this.setOptions(options);
 		if (this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
-			dbug.log('positioning manually');
 			if ($defined(this.options.top) && $defined(this.options.left)) {
 				this.element.setStyles({
 					top: this.options.top,
 					left: this.options.left
 				});
 			} else {
-			dbug.log('relativeTo: ', $(this.options.relativeTo) || $(document.body));
 				this.element.position({
 					allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
 					relativeTo: $(this.options.relativeTo) || $(document.body),

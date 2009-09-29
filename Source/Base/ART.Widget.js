@@ -122,12 +122,12 @@ ART.Widget = new Class({
 	redrawCount: 0,
 	redraw: function(){
 		this.redrawCount++;
-		dbug.log('redraw %s: ', this.name, this.redrawCount);
+		//dbug.log('redraw %s: ', this.name, this.redrawCount);
 		return this;
 	},
 
 	isReadyToRender: function(){
-		var isReady = !this.requiredToRender || !this.requiredToRender.length;
+		var isReady = (!this.requiredToRender || !this.requiredToRender.length) && !this.destroyed && !this.hidden;
 		if (isReady && this.parentWidget) isReady = this.parentWidget.isReadyToRender();
 		return isReady;
 	},
@@ -141,11 +141,11 @@ ART.Widget = new Class({
 	
 	hide: function(){
 		if (!this.hidden){
-			this.hidden = true;
 			this.fireEvent('hide');
 			this.element.addClass(this.prefix + '-hidden');
 			this.addPseudo('hidden');
 			this.render();
+			this.hidden = true;
 		}
 		return this;
 	},
