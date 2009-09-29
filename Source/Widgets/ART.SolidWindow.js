@@ -77,14 +77,20 @@ ART.SolidWindow = new Class({
 			w: contentWidth, 
 			h: contentHeight
 		};
-		this.content.setStyles({
-			'top': 1,
-			'left': 0,
-			'height': contentHeight < 0 ? 0 : contentHeight,
-			'width': contentWidth < 0 ? 0 : contentWidth,
-			'overflow': style.contentOverflow,
-			'color': style.contentColor
-		});
+		if (style.contentVisibility == "hidden") {
+			this.content.setStyle('display', 'none');
+		} else {
+			this.content.setStyles({
+				'top': 1,
+				'left': 0,
+				'height': contentHeight < 0 ? 0 : contentHeight,
+				'width': contentWidth < 0 ? 0 : contentWidth,
+				'overflow': style.contentOverflow,
+				'color': style.contentColor,
+				'display': 'block'
+			});
+		}
+
 
 		// border layer
 		this.paint.save();
