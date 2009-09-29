@@ -262,7 +262,7 @@ ART.Window = new Class({
 		this.touchResize.addEvent('start', function(){
 			this.startHeight = this.contents.offsetHeight;
 			this.startWidth = this.contents.offsetWidth;
-			this.fireEvent('resize:end');
+			this.fireEvent('resize:start');
 		}.bind(this));
 
 		var dragging;
