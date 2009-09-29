@@ -15,7 +15,7 @@
 			type = type.replace(':latch', '');
 			if (latched || this.getLatch(type)) {
 				this.getLatch(type).enabled = true;
-				if (this.latched[type].args) fn.create({'bind': this, 'delay': 10, 'arguments': this.latched[type]})();
+				if (this.latched[type].args) fn.create({'bind': this, 'delay': 10, 'arguments': this.latched[type].args})();
 			}
 			return this.previous(type, fn, internal);
 		},
