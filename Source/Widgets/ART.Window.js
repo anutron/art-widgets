@@ -291,11 +291,6 @@ ART.Window = new Class({
 		};
 	},
 
-	show: function(){
-		if (!this.positioned) this.position();
-		this.parent.apply(this, arguments);
-	},
-
 	getSizeRange: function(override){
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var ret = {};
@@ -350,7 +345,6 @@ ART.Window = new Class({
 			left: this.options.shadow ? -11 : -1
 		});
 		if (this.shim) this.shim.position();
-		this.parent();
 		this.fireEvent('resize', [this.contentSize.w, this.contentSize.h]);
 	},
 	

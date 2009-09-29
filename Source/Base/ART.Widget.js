@@ -59,8 +59,6 @@ ART.Widget = new Class({
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
 		if (parent) this.setParent(parent);
-		// initial render
-		this.render();
 	},
 
 	getSelector: function(){
@@ -121,7 +119,11 @@ ART.Widget = new Class({
 		}, this);
 	},
 
+	count: 0,
 	redraw: function(){
+		this.count++;
+		dbug.log('redraw: %s - %s', this.name, this.count);
+		//TODO: not call render on children?
 		this.childWidgets.each(function(child){
 			child.render();
 		});

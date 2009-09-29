@@ -101,8 +101,8 @@ ART.StickyWin = new Class({
 		}
 		if (this.options.closeOnClickOut || this.options.closeOnEsc) this.attach();
 		if (this.options.destroyOnClose) this.addEvent('hide', this.destroy.bind(this));
-		
 		if (this.options.showNow) this.show();
+		
 		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
 			this.hide();
 		}.bind(this));
@@ -147,19 +147,18 @@ ART.StickyWin = new Class({
 	},
 
 	show: function(noFade){
+		this.readyToRender('window:displayed');
+		this.windowManager.enable(this);
 		if (noFade) {
 			this.element.setStyles({
 				opacity: 1,
 				display: 'block'
 			});
+			if (!this.positioned) this.position();
 			if (this.options.useIframeShim) this.showIframeShim();
 			this.parent();
 		} else {
 			this.fade(1);
-			this.readyToRender('window:displayed');
-			this.windowManager.enable(this);
-			this.render();
-			if (!this.positioned) this.position();
 		}
 	},
 
@@ -190,15 +189,17 @@ ART.StickyWin = new Class({
 		this.positioned = true;
 		this.setOptions(options);
 		if (this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
+			dbug.log('positioning manually')
 			if ($defined(this.options.top) && $defined(this.options.left)) {
 				this.element.setStyles({
 					top: this.options.top,
 					left: this.options.left
 				});
 			} else {
+			dbug.log('relativeTo: ', $(this.options.relativeTo) || $(document.body));
 				this.element.position({
 					allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
-					relativeTo: this.options.relativeTo,
+					relativeTo: $(this.options.relativeTo) || $(document.body),
 					position: this.options.position,
 					offset: this.options.offset,
 					edge: this.options.edge
