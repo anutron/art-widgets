@@ -61,6 +61,7 @@ ART.StickyWin = new Class({
 		************************************************
 
 		*/
+		greyContentsOnDrag: true,
 		closeClass: 'closeWin',
 		close: true,
 		draggable: false,
@@ -198,6 +199,7 @@ ART.StickyWin = new Class({
 		this.touchDrag.addEvent('start', function(){
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
+			this.displayForDrag(true);
 		}.bind(this));
 
 		this.touchDrag.addEvent('move', function(dx, dy){
@@ -210,6 +212,25 @@ ART.StickyWin = new Class({
 				'left': left
 			});
 		}.bind(this));
+		this.touchDrag.addEvent('end', this.displayForDrag.bind(this, false));
+		this.touchDrag.addEvent('cancel', this.displayForDrag.bind(this, false));
+	},
+
+	displayForDrag: function(dragging) {
+		if (!this.options.greyContentsOnDrag) return;
+		if (dragging) {
+			this.element.getChildren().setStyle('visibility', 'hidden');
+			this.element.setStyles({
+				background: '#000',
+				opacity: 0.3
+			});
+		} else {
+			this.element.getChildren().setStyle('visibility', 'visible');
+			this.element.setStyles({
+				background: 'none',
+				opacity: 1
+			});
+		}
 	},
 
 	disableDrag: function(){

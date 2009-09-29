@@ -110,6 +110,11 @@ ART.Sheet.defineStyle('window button.maximize', {
 	'glyph-left': 4
 });
 
+ART.Sheet.defineStyle('window:dragging', {
+	'content-visibility': 'hidden',
+	'background-color': hsb(0, 0, 0, 0.1)
+});
+
 ART.Window = new Class({
 	
 	Extends: ART.StickyWin,
@@ -257,10 +262,18 @@ ART.Window = new Class({
 		this.touchResize.addEvent('start', function(){
 			this.startHeight = this.contents.offsetHeight;
 			this.startWidth = this.contents.offsetWidth;
+			this.element.addClass(this.prefix + '-dragging');
+			this.addPseudo('dragging');
 		}.bind(this));
 		
 		this.touchResize.addEvent('move', function(dx, dy){
 			this.resize(this.startWidth + dx, this.startHeight + dy);
+		}.bind(this));
+		
+		this.touchResize.addEvent('end', function(){
+			this.element.removeClass(this.prefix + '-dragging');
+			this.removePseudo('dragging');
+			this.render();
 		}.bind(this));
 	},
 
@@ -334,7 +347,8 @@ ART.Window = new Class({
 		
 		this.contents.setStyles({
 			'height': style.height,
-			'width': style.width
+			'width': style.width,
+			'visibility':style.contentVisibility || 'visible'
 		});
 		this.renderContent(style);
 		this.renderHeaderText(style);
@@ -385,40 +399,45 @@ ART.Window = new Class({
 		this.paint.end(border);
 		
 		// header layers
+		if (style.contentVisibility == 'hidden') {
+			this.paint.start({x: 1, y: 1});
+			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.height - 2}, style.cornerRadius);
+			this.paint.end({'fill': true, 'fill-color': style.backgroundColor});
+		} else {
+			this.header.setStyles({'width': style.width - 2, height: style.headerHeight - 2});
 		
-		this.header.setStyles({'width': style.width - 2, height: style.headerHeight - 2});
-		
-		this.paint.start({x: 1, y: 1});
-		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 2}, [style.cornerRadius, style.cornerRadius, 0, 0]);
-		this.paint.end({'fill': true, 'fill-color': style.headerReflectionColor});
+			this.paint.start({x: 1, y: 1});
+			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 2}, [style.cornerRadius, style.cornerRadius, 0, 0]);
+			this.paint.end({'fill': true, 'fill-color': style.headerReflectionColor});
 
-		this.paint.start({x: 1, y: 2});
-		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 3}, [style.cornerRadius, style.cornerRadius, 0, 0]);
-		this.paint.end({'fill': true, 'fill-color': style.headerBackgroundColor});
+			this.paint.start({x: 1, y: 2});
+			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 3}, [style.cornerRadius, style.cornerRadius, 0, 0]);
+			this.paint.end({'fill': true, 'fill-color': style.headerBackgroundColor});
 		
-		// first content separator border
+			// first content separator border
 		
-		this.paint.start({x: 1.5, y: style.headerHeight - 0.5});
-		this.paint.lineTo({x: style.width - 3, y: 0});
-		this.paint.end({'stroke': true, 'stroke-color': style.contentBorderTopColor});
+			this.paint.start({x: 1.5, y: style.headerHeight - 0.5});
+			this.paint.lineTo({x: style.width - 3, y: 0});
+			this.paint.end({'stroke': true, 'stroke-color': style.contentBorderTopColor});
 		
-		// second content separator border
+			// second content separator border
 		
-		this.paint.start({x: 1.5, y: style.height - style.footerHeight - 1.5});
-		this.paint.lineTo({x: style.width - 3, y: 0});
-		this.paint.end({'stroke': true, 'stroke-color': style.contentBorderBottomColor});
+			this.paint.start({x: 1.5, y: style.height - style.footerHeight - 1.5});
+			this.paint.lineTo({x: style.width - 3, y: 0});
+			this.paint.end({'stroke': true, 'stroke-color': style.contentBorderBottomColor});
 		
-		//footer layers
+			//footer layers
 		
-		this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
+			this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
 		
-		this.paint.start({x: 1, y: style.height - style.footerHeight - 1});
-		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight}, [0, 0, style.cornerRadius, style.cornerRadius]);
-		this.paint.end({'fill': true, 'fill-color': style.footerReflectionColor});
+			this.paint.start({x: 1, y: style.height - style.footerHeight - 1});
+			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight}, [0, 0, style.cornerRadius, style.cornerRadius]);
+			this.paint.end({'fill': true, 'fill-color': style.footerReflectionColor});
 		
-		this.paint.start({x: 1, y: style.height - style.footerHeight});
-		this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight - 1}, [0, 0, style.cornerRadius, style.cornerRadius]);
-		this.paint.end({'fill': true, 'fill-color': style.footerBackgroundColor});
+			this.paint.start({x: 1, y: style.height - style.footerHeight});
+			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight - 1}, [0, 0, style.cornerRadius, style.cornerRadius]);
+			this.paint.end({'fill': true, 'fill-color': style.footerBackgroundColor});
+		}
 	},
 	
 	renderResize: function(style){
@@ -439,18 +458,24 @@ ART.Window = new Class({
 	
 	renderHeaderText: function(style){
 		// font
+		if (style.contentVisibility != 'hidden') {
+			var font = ART.Paint.lookupFont(style.captionFont);
+			var fontBounds = font.measure(style.captionFontSize, this.options.caption || '');
 		
-		var font = ART.Paint.lookupFont(style.captionFont);
-		var fontBounds = font.measure(style.captionFontSize, this.options.caption || '');
+			// header text
 		
-		// header text
+			var spare = (style.width - fontBounds.x) / 2;
 		
-		var spare = (style.width - fontBounds.x) / 2;
-		
-		this.paint.start({x: spare, y: style.headerPaddingTop + 3});
-		this.paint.text(font, style.captionFontSize, this.options.caption || "");
-		this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
-		
+			this.paint.start({x: spare, y: style.headerPaddingTop + 3});
+			this.paint.text(font, style.captionFontSize, this.options.caption || "");
+			this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
+		}
+	},
+
+	displayForDrag: function(dragging){
+		this.element[dragging ? 'addClass' : 'removeClass'](this.prefix + '-dragging');
+		this[dragging ? 'addPseudo' : 'removePseudo']('dragging');
+		this.render();
 	}
 
 });
