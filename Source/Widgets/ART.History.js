@@ -265,8 +265,6 @@ ART.History = new Class({
 				}
 			}
 		}).inject(this.element);
-		this.resize();
-
 	},
 	
 	redraw: function(){
@@ -293,6 +291,7 @@ ART.History = new Class({
 		this.divot.end({fill: true, fillColor: divotStyles.color});
 
 		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input:disabled')));
+		this.resize();
 	},
 	
 	destroy: function(){

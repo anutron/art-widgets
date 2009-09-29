@@ -59,16 +59,6 @@ ART.Browser = new Class({
 		if (this.history) this.history.resize();
 	},
 
-	focus: function(){
-		this.parent.apply(this, arguments);
-		if (this.history) this.history.enable();
-	},
-
-	blur: function(){
-		this.parent.apply(this, arguments);
-		if (this.history) this.history.disable();
-	},
-
 	show: function() {
 		this.parent.apply(this, arguments);
 		if (this.history) this.history.resize();
