@@ -146,6 +146,7 @@ ART.StickyWin = new Class({
 			display: 'block'
 		});
 		this.windowManager.enable(this);
+		this.position();
 		if (this.options.useIframeShim) this.showIframeShim();
 		this.element.setStyle('opacity', 1);
 		this.parent();

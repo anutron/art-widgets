@@ -67,22 +67,19 @@ var Stacker = new Class({
 	},
 
 	enable: function(instance){
-		if (instance) this.instances.erase(instance).push(instance);
+		if (!instance) return;
+		this.instances.erase(instance).push(instance);
 		this.layers.each(function(layer) {
 			var i = 0;
 			if (!layer.instances.contains(instance)) return;
 			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
 				$(current).setStyle('z-index', layer.zIndex + i);
-				dbug.log("~~~~~~~~~~~~~~~~~~~~enable~~~~~~~~~~~~~~~~~~~~");
 				if (current === instance) current.enable(true);
-				dbug.log("~~~~~~~~~~~~~~~~~~~~enable~~~~~~~~~~~~~~~~~~~~");
 				i++;
 			}, this);
 		}, this);
-		dbug.log("~~~~~~~~~~~~~~~~~~~~disable~~~~~~~~~~~~~~~~~~~~");
 		if (this.enabled && this.enabled != instance) this.enabled.disable();
-		dbug.log("~~~~~~~~~~~~~~~~~~~~/disable~~~~~~~~~~~~~~~~~~~~");
 		this.enabled = instance;
 	},
 
@@ -112,13 +109,18 @@ var Stacker = new Class({
 		//if there are no instances other than this one, or one instance
 		//or the position is not set or is equal to the enabled instances options
 		//then return; and let the window be positioned as the class would normally.
-		var enabled = this.enabled;
-		if (instances.length < 2 || !pos || !$(enabled) && enabled != instance) return false;
-		dbug.log('positioning relative to: ', $(enabled));
+		var current;
+		instances.reverse().some(function(win){
+			if (win != instance && $(win)) {
+				current = win;
+				return true;
+			}
+		});
+		if (instances.length < 2 || !pos || !current) return false;
 		this.enable(instance);
 		//position near the enabled instance, with an offset as defined in the options
 		$(instance).position({
-			relativeTo: $(enabled),
+			relativeTo: $(current),
 			offset: this.options.offset,
 			edge: 'upperLeft',
 			position: 'upperLeft'
