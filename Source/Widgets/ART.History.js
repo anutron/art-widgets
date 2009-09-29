@@ -205,12 +205,12 @@ ART.History = new Class({
 
 		this.refresher = new ART.Button({
 			className: 'refresh',
-			parentWidget: this
+			parentWidget: this,
+			onActivate: function(){
+				this.fireEvent('refresh');
+			}.bind(this)
 		});
-
-		$(this.refresher).inject(this.element).addEvent('click', function(){
-			this.fireEvent('refresh');
-		}.bind(this));
+		$(this.refresher).inject(this.element);
 
 		//create the list for the history
 		this.nav = new Element('ul').inject(this.location);

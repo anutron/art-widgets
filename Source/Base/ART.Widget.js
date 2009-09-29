@@ -91,7 +91,7 @@ ART.Widget = new Class({
 			this.enable();
 		}
 		this.render();
-		if (!initing) this.fireEvent('adoption', widget);
+		this.fireEvent('adoption', widget);
 		return this;
 	},
 
@@ -122,6 +122,9 @@ ART.Widget = new Class({
 
 	redraw: function(){
 		if (counting) this._counters();
+		this.childWidgets.each(function(child) {
+			child.render();
+		});
 		return this;
 	},
 
