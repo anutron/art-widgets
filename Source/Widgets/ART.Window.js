@@ -269,8 +269,7 @@ ART.Window = new Class({
 		this.touchResize.addEvent('move', function(dx, dy){
 			this.fireEvent('resize:move', [dx, dy]);
 			if (!dragging) {
-				this.element.addClass(this.prefix + '-dragging');
-				this.addPseudo('dragging');
+				this.displayForDrag(true, false);
 				dragging = true;
 			}
 			this.resize(this.startWidth + dx, this.startHeight + dy);
@@ -279,9 +278,7 @@ ART.Window = new Class({
 		this.touchResize.addEvent('end', function(){
 			if (dragging) {
 				dragging = false;
-				this.element.removeClass(this.prefix + '-dragging');
-				this.removePseudo('dragging');
-				this.render();
+				this.displayForDrag(false);
 			}
 			this.fireEvent('resize:end');
 		}.bind(this));
@@ -487,10 +484,12 @@ ART.Window = new Class({
 		}
 	},
 
-	displayForDrag: function(dragging){
+	displayForDrag: function(dragging, render){
+		render = $pick(render, true);
 		this.element[dragging ? 'addClass' : 'removeClass'](this.prefix + '-dragging');
 		this[dragging ? 'addPseudo' : 'removePseudo']('dragging');
-		this.render();
+		if (render) this.render();
+		this.fireEvent('shade', dragging);
 	}
 
 });

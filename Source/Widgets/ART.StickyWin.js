@@ -50,6 +50,12 @@ ART.StickyWin = new Class({
 		windowManager: instanceOfStacker,
 		destroyOnClose: false,
 		windowManagerLayer: 'default',
+		
+		//events:
+		'drag:start': $empty,
+		'drag:move': $empty(x,y),
+		'drag:end': $empty,
+		'shade': $empty
 
 		//these are the defaults for Element.position anyway
 		************************************************
@@ -198,7 +204,6 @@ ART.StickyWin = new Class({
 		handle.setStyle('cursor', 'move');
 		this.touchDrag.addEvent('start', function(){
 			this.fireEvent('drag:start');
-			
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
 		}.bind(this));
@@ -244,6 +249,7 @@ ART.StickyWin = new Class({
 				opacity: 1
 			});
 		}
+		this.fireEvent('shade', dragging);
 	},
 
 	disableDrag: function(){
