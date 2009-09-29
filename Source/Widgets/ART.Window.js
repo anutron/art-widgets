@@ -262,18 +262,25 @@ ART.Window = new Class({
 		this.touchResize.addEvent('start', function(){
 			this.startHeight = this.contents.offsetHeight;
 			this.startWidth = this.contents.offsetWidth;
-			this.element.addClass(this.prefix + '-dragging');
-			this.addPseudo('dragging');
 		}.bind(this));
-		
+
+		var dragging;
 		this.touchResize.addEvent('move', function(dx, dy){
-			this.resize(this.startWidth + dx, this.startHeight + dy);
+			this.element.addClass(this.prefix + '-dragging');
+			if (!dragging) {
+				this.addPseudo('dragging');
+				this.resize(this.startWidth + dx, this.startHeight + dy);
+				dragging = true;
+			}
 		}.bind(this));
 		
 		this.touchResize.addEvent('end', function(){
-			this.element.removeClass(this.prefix + '-dragging');
-			this.removePseudo('dragging');
-			this.render();
+			if (dragging) {
+				dragging = false;
+				this.element.removeClass(this.prefix + '-dragging');
+				this.removePseudo('dragging');
+				this.render();
+			}
 		}.bind(this));
 	},
 
