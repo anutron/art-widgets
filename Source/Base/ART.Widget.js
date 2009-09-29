@@ -119,14 +119,10 @@ ART.Widget = new Class({
 		}, this);
 	},
 
-	count: 0,
+	redrawCount: 0,
 	redraw: function(){
-		this.count++;
-		dbug.log('redraw: %s - %s', this.name, this.count);
-		//TODO: not call render on children?
-		this.childWidgets.each(function(child){
-			child.render();
-		});
+		this.redrawCount++;
+		dbug.log('redraw %s: ', this.name, this.redrawCount);
 		return this;
 	},
 
