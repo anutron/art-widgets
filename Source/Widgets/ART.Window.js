@@ -397,6 +397,9 @@ ART.Window = new Class({
 		});
 		
 		this.paint.end(border);
+
+		this.header.setStyles({'width': style.width - 2, height: style.headerHeight - 2});
+		this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
 		
 		// header layers
 		if (style.contentVisibility == 'hidden') {
@@ -404,7 +407,6 @@ ART.Window = new Class({
 			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.height - 2}, style.cornerRadius);
 			this.paint.end({'fill': true, 'fill-color': style.backgroundColor});
 		} else {
-			this.header.setStyles({'width': style.width - 2, height: style.headerHeight - 2});
 		
 			this.paint.start({x: 1, y: 1});
 			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 2}, [style.cornerRadius, style.cornerRadius, 0, 0]);
@@ -427,9 +429,7 @@ ART.Window = new Class({
 			this.paint.end({'stroke': true, 'stroke-color': style.contentBorderBottomColor});
 		
 			//footer layers
-		
-			this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
-		
+				
 			this.paint.start({x: 1, y: style.height - style.footerHeight - 1});
 			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight}, [0, 0, style.cornerRadius, style.cornerRadius]);
 			this.paint.end({'fill': true, 'fill-color': style.footerReflectionColor});
