@@ -97,12 +97,14 @@ ART.Widget = new Class({
 	},
 
 	removeParent: function(){
-		if (!this.parentWidget) return;
-		var prevParent = this.parentWidget;
-		this.parentWidget.childWidgets.erase(this);
-		Keyboard.manager.manage(this.keyboard);
-		this.parentWidget = null;
-		this.fireEvent('orphan', prevParent);
+		this.prevParent = this.parentWidget || this.prevParent;
+		if (!this.prevParent) return;
+		if (this.parentWidget) {
+			this.parentWidget.childWidgets.erase(this);
+			Keyboard.manager.manage(this.keyboard);
+			this.parentWidget = null;
+		}
+		this.fireEvent('orphan', this.prevParent);
 	},
 
 	// render
@@ -257,6 +259,9 @@ ART.Widget = new Class({
 
 	destroy: function(){
 		this.removeParent();
+		this.childWidgets.each(function(child) {
+			child.destroy();
+		});
 		this.element.destroy();
 		this.destroyed = true;
 		return this.fireEvent('destroy');
