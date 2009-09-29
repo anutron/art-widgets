@@ -8,7 +8,7 @@ License:
 // Base widget class. Based on » http://gist.github.com/85837
 (function(){
 
-var focused;
+var counting;
 
 ART.Widget = new Class({
 	
@@ -29,6 +29,7 @@ ART.Widget = new Class({
 		// onOrphan: $empty(previousParent),
 		// id: null,
 		// style: null,
+		renderWhileHidden: false,
 		className: '',
 		keyboardOptions: {
 			active: true
@@ -119,15 +120,13 @@ ART.Widget = new Class({
 		}, this);
 	},
 
-	redrawCount: 0,
 	redraw: function(){
-		this.redrawCount++;
-		//dbug.log('redraw %s: ', this.name, this.redrawCount);
+		if (counting) this._counters();
 		return this;
 	},
 
 	isReadyToRender: function(){
-		var isReady = (!this.requiredToRender || !this.requiredToRender.length) && !this.destroyed && !this.hidden;
+		var isReady = (!this.requiredToRender || !this.requiredToRender.length) && !this.destroyed && (this.options.renderWhileHidden || !this.hidden);
 		if (isReady && this.parentWidget) isReady = this.parentWidget.isReadyToRender();
 		return isReady;
 	},
@@ -263,8 +262,24 @@ ART.Widget = new Class({
 	
 	toElement: function(){
 		return this.element;
+	},
+	
+	_redrawCount: 0,
+	_counters: function(){
+		this._redrawCount++;
+		$clear(this._countTimer);
+		this._countTimer = (function(){
+			this._redrawCount = 0;
+		}).delay(1000, this);
+		dbug.log('redraw %s: ', this.name, this._redrawCount, this.element);
 	}
 	
 });
+
+ART._counts = function(){
+	counting = !counting;
+	if (counting) dbug.log('counting widget renders');
+	else dbug.log('disabling widget render counts');
+};
 
 })();

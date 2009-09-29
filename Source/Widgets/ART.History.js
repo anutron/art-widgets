@@ -151,7 +151,8 @@ ART.History = new Class({
 		maxToShow: 4,
 		editable: false,
 		history: [],
-		showPath: true
+		showPath: true,
+		renderWhileHidden: true
 	},
 	
 	initialize: function(options) {
@@ -444,7 +445,7 @@ ART.History = new Class({
 		this.fireEvent('hideEditor');
 		return this;
 	},
-	
+
 	blur: function(){
 		this.parent.apply(this, arguments);
 		this.hide();
