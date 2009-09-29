@@ -348,7 +348,7 @@ ART.Window = new Class({
 		this.contents.setStyles({
 			'height': style.height,
 			'width': style.width,
-			'visibility':style.contentVisibility || 'visible'
+			'visibility': style.contentVisibility || 'visible'
 		});
 		this.renderContent(style);
 		this.renderHeaderText(style);
@@ -369,15 +369,20 @@ ART.Window = new Class({
 			w: contentWidth, 
 			h: contentHeight
 		};
-		this.content.setStyles({
-			'top': 1,
-			'left': 0,
-			'height': contentHeight < 0 ? 0 : contentHeight,
-			'width': contentWidth < 0 ? 0 : contentWidth,
-			'background-color': style.contentBackgroundColor,
-			'color': style.contentColor,
-			'overflow': style.contentOverflow
-		});
+		if (style.contentVisibility == "hidden") {
+			this.content.setStyle('display', 'none');
+		} else {
+			this.content.setStyles({
+				'top': 1,
+				'left': 0,
+				'height': contentHeight < 0 ? 0 : contentHeight,
+				'width': contentWidth < 0 ? 0 : contentWidth,
+				'background-color': style.contentBackgroundColor,
+				'color': style.contentColor,
+				'overflow': style.contentOverflow,
+				'display': 'block'
+			});
+		}
 		
 		// border layer
 		this.paint.save();
