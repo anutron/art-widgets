@@ -47,7 +47,6 @@ ART.StickyWin = new Class({
 		iframeShimSelector: '',
 		closeOnClickOut: false,
 		closeOnEsc: false,
-		fadeTransition: 'sine:in:out',
 		windowManager: instanceOfStacker,
 		destroyOnClose: false,
 		windowManagerLayer: 'default',
@@ -68,8 +67,6 @@ ART.StickyWin = new Class({
 		dragHandle: false,
 		showNow: true,
 		useIframeShim: true,
-		fade: true,
-		fadeDuration: 150,
 		cascaded: false
 	},
 
@@ -136,60 +133,29 @@ ART.StickyWin = new Class({
 		}).inject(this.options.inject.target, this.options.inject.where);
 	},
 
-	hide: function(noFade){
-		if (noFade) {
-			this.element.setStyle('display', 'none');
-			if (this.options.useIframeShim) this.hideIframeShim();
-			this.parent();
-		} else {
-			this.fade(0);
-		}
+	hide: function(){
+		this.element.setStyle('display', 'none');
+		if (this.options.useIframeShim) this.hideIframeShim();
+		this.parent();
 	},
 
-	show: function(noFade){
+	show: function(){
 		this.readyToRender('window:displayed');
+		this.element.setStyles({
+			opacity: 0,
+			display: 'block'
+		});
 		this.windowManager.enable(this);
-		if (noFade) {
-			this.element.setStyles({
-				opacity: 1,
-				display: 'block'
-			});
-			if (!this.positioned) this.position();
-			if (this.options.useIframeShim) this.showIframeShim();
-			this.parent();
-		} else {
-			this.fade(1);
-		}
-	},
-
-	fade: function(to){
-		if (!this.fadeFx) {
-			this.element.setStyles({
-				opacity: 0,
-				display: 'block'
-			});
-			var opts = {
-				property: 'opacity'
-			};
-			if (this.options.fadeDuration) opts.duration = this.options.fadeDuration;
-			this.fadeFx = new Fx.Tween(this.element, opts);
-		}
-		this.fadeFx.clearChain().chain(function(){
-			if (to == 0) {
-				this.element.setStyle('display', 'none');
-				this.hide(true);
-			} else {
-				this.show(true);
-			}
-		}.bind(this)).start(to);
-		return this;
+		if (this.options.useIframeShim) this.showIframeShim();
+		this.element.setStyle('opacity', 1);
+		this.parent();
 	},
 
 	position: function(options){
 		this.positioned = true;
 		this.setOptions(options);
 		if (this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
-			dbug.log('positioning manually')
+			dbug.log('positioning manually');
 			if ($defined(this.options.top) && $defined(this.options.left)) {
 				this.element.setStyles({
 					top: this.options.top,
@@ -264,6 +230,7 @@ ART.StickyWin = new Class({
 
 	resize: function(width, height){
 		this.render({'height': height, 'width': width});
+		if (this.shim) this.shim.position();
 		return this;
 	},
 
