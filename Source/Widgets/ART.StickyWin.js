@@ -126,16 +126,17 @@ ART.StickyWin = new Class({
 		if ((e.type == "click" && this.element != e.target && !this.element.hasChild(e.target)) || e.key == "esc") this.hide();
 	},
 
-	build: function(){
-		var self = this;
-		this.size = {};
+	initialSize: function(element){
 		['height', 'width'].each(function(axis) {
 			var val = this.options[axis];
 			if (val) {
 				this['current'+axis.capitalize()] = val;
-				this.element.setStyle(axis, val);
+				(element || this.element).setStyle(axis, val);
 			}
 		}, this);
+	},
+
+	build: function(){
 		this.element.setStyles({
 			display: 'none',
 			position: 'absolute'
@@ -155,7 +156,7 @@ ART.StickyWin = new Class({
 			display: 'block'
 		});
 		this.windowManager.enable(this);
-		this.position();
+		if (!this.positioned) this.position();
 		if (this.options.useIframeShim) this.showIframeShim();
 		this.element.setStyle('opacity', 1);
 		this.parent();
@@ -309,6 +310,20 @@ ART.StickyWin = new Class({
 
 	hideIframeShim: function(){
 		if (this.shim) this.shim.hide();
+	},
+
+	getOnScreen: function(positioner){
+		positioner = positioner || function(element){
+			var pos = this.element.getPosition();
+			var size = this.element.getSize();
+			var bottom = pos.y + size.y;
+			var right = pos.x + size.x;
+			var containerSize = $(document.body).getSize();
+			if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y);
+			if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x);
+		}.bind(this);
+		positioner();
+		return true;
 	}
 
 });
