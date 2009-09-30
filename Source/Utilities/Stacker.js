@@ -94,28 +94,29 @@ var Stacker = new Class({
 
 	positionNew: function(instance, options){
 		var pos = true;
-		if (options) {
-			//if the position is not defined in the options
-			//or, if it is, the position is the same as the enabled instance's options
-			//such that opening with the same options will place them on top of each other
-			//(assuming the first one hasn't moved)
-			pos = ['top', 'left', 'edge', 'position', 'offset', 'relativeTo'].every(function(opt){
-				return options[opt] == null || (this.enabled.options[opt] == options[opt]);
-			}, this);
-		}
-		var instances = this.instances.filter(function(instance){
-			return !instance.hidden && $(instance);
-		});
 		//if there are no instances other than this one, or one instance
 		//or the position is not set or is equal to the enabled instances options
 		//then return; and let the window be positioned as the class would normally.
 		var current;
+		var instances = this.instances.filter(function(instance){
+			return !instance.hidden && $(instance);
+		});
 		instances.reverse().some(function(win){
 			if (win != instance && $(win)) {
 				current = win;
 				return true;
 			}
 		});
+		if (options) {
+			//if the position is not defined in the options
+			//or, if it is, the position is the same as the enabled instance's options
+			//such that opening with the same options will place them on top of each other
+			//(assuming the first one hasn't moved)
+			pos = ['top', 'left', 'edge', 'position', 'relativeTo'].every(function(opt){
+				curOpt = current ? current.options[opt] : null;
+				return curOpt == options[opt];
+			}, this);
+		}
 		if (instances.length < 2 || !pos || !current) return false;
 		this.enable(instance);
 		//position near the enabled instance, with an offset as defined in the options
