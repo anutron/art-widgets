@@ -64,6 +64,8 @@ ART.StickyWin = new Class({
 		offset: {x:0,y:0},
 		relativeTo: document.body,
 		allowNegative: false,
+		posMin: {x: , y:}, //passed as 'minimum' to element.position
+		posMax: {x: , y: },//passed as 'maximum' to element.position
 		************************************************
 
 		*/
@@ -174,7 +176,9 @@ ART.StickyWin = new Class({
 					relativeTo: $(this.options.relativeTo) || $(document.body),
 					position: this.options.position,
 					offset: this.options.offset,
-					edge: this.options.edge
+					edge: this.options.edge,
+					minimum: this.options.posMin,
+					maximum: this.options.posMax
 				});
 			}
 		}
