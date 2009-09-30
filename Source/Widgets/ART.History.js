@@ -207,7 +207,8 @@ ART.History = new Class({
 			className: 'refresh',
 			parentWidget: this,
 			onActivate: function(){
-				this.fireEvent('refresh');
+				var hist = this.history[this.selected] || {};
+				this.fireEvent('refresh', [ this.options.pathBuilder(hist.path), hist.title, this.selected ]);
 			}.bind(this)
 		});
 		$(this.refresher).inject(this.element);
