@@ -56,6 +56,12 @@ ART.Sheet.defineStyle('window:disabled', {
 	'content-background-color': hsb(0, 0, 100),
 	'content-color': hsb(0, 0, 0)
 });
+
+ART.Sheet.defineStyle('window footer-text', {
+	'float': 'left',
+	'margin': '3px 14px 0px 4px'
+});
+
 ART.Sheet.defineStyle('window button.wincontrol', {
 	'pill': true,
 	'height': 14,
@@ -185,6 +191,9 @@ ART.Window = new Class({
 				overflow: 'hidden'
 			})
 		});
+		this.footerText = new Element('div', {
+			'class': 'footer-text'
+		}).inject(this.footer);
 		this.makeButtons();
 		this.readyToRender('window:navButtons');
 		this.contents.adopt(this.header, this.content, this.footer);
@@ -199,7 +208,7 @@ ART.Window = new Class({
 			minimize: this.minimize.bind(this)
 		};
 		var baseLeft = 6;
-		['close', 'maximize', 'minimize'].each(function(button){
+		['close', 'minimize', 'maximize'].each(function(button){
 			if (this.options[button]) {
 				this.buttons[button] = new ART.Button({
 					className: button + ' wincontrol',
@@ -300,6 +309,10 @@ ART.Window = new Class({
 		return this;
 	},
 
+	setFooter: function(text) {
+		this.footerText.set('html', text);
+	},
+
 	makeIframeShim: function(){
 		return this.parent(this.contents);
 	},
@@ -337,11 +350,10 @@ ART.Window = new Class({
 		delete style.width;
 
 		$mixin(style, override);
-		if (style.height == null) style.height = this.currentHeight || h;
-		if (style.width == null) style.width = this.currentWidth || w;
+		if (style.height == null) style.height = this.currentHeight || this.options.height || h;
+		if (style.width == null) style.width = this.currentWidth || this.options.width || w;
 
 		var ranges = this.getSizeRange(override);
-
 		style.height = style.height.limit(ranges.minHeight, ranges.maxHeight);
 		style.width = style.width.limit(ranges.minWidth, ranges.maxWidth);
 		
@@ -449,6 +461,8 @@ ART.Window = new Class({
 			this.paint.start({x: 1, y: style.height - style.footerHeight});
 			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight - 1}, [0, 0, style.cornerRadius, style.cornerRadius]);
 			this.paint.end({'fill': true, 'fill-color': style.footerBackgroundColor});
+			
+			this.footerText.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' footer-text'));
 		}
 	},
 	
@@ -483,6 +497,8 @@ ART.Window = new Class({
 			this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
 		}
 	},
+
+	initialSize: $empty,
 
 	displayForDrag: function(dragging, render){
 		render = $pick(render, true);
