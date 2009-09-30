@@ -8,7 +8,7 @@ License:
 // Base widget class. Based on » http://gist.github.com/85837
 (function(){
 
-var counting;
+var counting, focused;
 
 ART.Widget = new Class({
 	
