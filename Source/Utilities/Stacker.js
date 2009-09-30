@@ -102,7 +102,7 @@ var Stacker = new Class({
 			return !instance.hidden && $(instance);
 		});
 		instances.reverse().some(function(win){
-			if (win != instance && $(win)) {
+			if (win != instance && $(win) && $(win).getStyle('display') != 'none') {
 				current = win;
 				return true;
 			}
@@ -126,7 +126,21 @@ var Stacker = new Class({
 			edge: 'upperLeft',
 			position: 'upperLeft'
 		});
-		instance.getOnScreen();
+		pos = instance.element.getPosition();
+		var size = instance.element.getSize();
+		var bottom = pos.y + size.y;
+		var right = pos.x + size.x;
+		var containerSize = $(document.body).getSize();
+		if (bottom > containerSize.y || right > containerSize.x) {
+			$(instance).position({
+				relativeTo: instance.options.inject.target,
+				offset: this.options.offset,
+				edge: 'upperLeft',
+				position: 'upperLeft'
+			});
+		}
+		
+		return true;
 	}
 	
 });
