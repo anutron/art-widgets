@@ -312,17 +312,14 @@ ART.StickyWin = new Class({
 		if (this.shim) this.shim.hide();
 	},
 
-	getOnScreen: function(positioner){
-		positioner = positioner || function(element){
-			var pos = this.element.getPosition();
-			var size = this.element.getSize();
-			var bottom = pos.y + size.y;
-			var right = pos.x + size.x;
-			var containerSize = $(document.body).getSize();
-			if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y);
-			if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x);
-		}.bind(this);
-		positioner();
+	getOnScreen: function(){
+		var pos = this.element.getPosition();
+		var size = this.element.getSize();
+		var bottom = pos.y + size.y;
+		var right = pos.x + size.x;
+		var containerSize = $(document.body).getSize();
+		if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y);
+		if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x);
 		return true;
 	}
 
