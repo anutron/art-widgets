@@ -126,7 +126,7 @@ var Stacker = new Class({
 			edge: 'upperLeft',
 			position: 'upperLeft'
 		});
-		return true;
+		instance.getOnScreen();
 	}
 	
 });
