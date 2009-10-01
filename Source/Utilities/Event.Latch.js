@@ -49,7 +49,7 @@
 			type = Events.removeOn(type);
 			if (type.contains(':latch') || elementLatches[type]) {
 				type = type.replace(':latch');
-				var latch = getLatch(type);
+				var latch = getLatch(this, type);
 				latch.enabled = true;
 				if (latch.args) fn.create({'bind': this, 'delay': delay, 'arguments': args})();
 			}
@@ -58,7 +58,7 @@
 
 		fireEvent: function(type, args, delay, bind){
 			type = Events.removeOn(type);
-			getLatch(type).args = args;
+			getLatch(this, type).args = args;
 			return oldRemoveEvent.call(this, type, args, delay, bind);
 		},
 
