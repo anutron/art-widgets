@@ -15,11 +15,11 @@ ART.Sheet.defineStyle('window.solid', {
 });
 
 ART.Sheet.defineStyle('window.solid.smoke', {
-	'caption-font-color': hsb(94, 82, 100),
+	'caption-font-color': hsb(120, 97, 83),
 	'body-background-color': {0: hsb(0, 0, 0, 0.9), 1: hsb(0, 0, 0, 0.8)},
 	'body-reflection-color': {0: hsb(0, 0, 100, 0.05), 1: hsb(0, 0, 100, 0.1)},
 	'body-reflection-percent-size': 0.6,
-	'content-color': hsb(94, 82, 100),
+	'content-color': hsb(120, 97, 83),
 	'body-reflection-shape': 'funky-glass'
 });
 
@@ -33,7 +33,7 @@ ART.Sheet.defineStyle('window.solid.smoke button.wincontrol', {
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),
 	'border-color': hsb(0, 0, 100, 0),
-	'glyph-color': hsb(94, 82, 100)
+	'glyph-color': hsb(120, 97, 83)
 });
 
 ART.Sheet.defineStyle('window.solid button.wincontrol', {
@@ -49,7 +49,7 @@ ART.Sheet.defineStyle('window.solid.smoke button.wincontrol:disabled', {
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),
 	'border-color': hsb(0, 0, 100, 0),
-	'glyph-color': hsb(94, 82, 100)
+	'glyph-color': hsb(120, 97, 83)
 });
 
 ART.Sheet.defineStyle('window.solid.smoke button.wincontrol:active', {
