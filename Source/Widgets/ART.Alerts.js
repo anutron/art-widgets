@@ -12,7 +12,6 @@ ART.Sheet.defineStyle('window.alert', {
 	'footer-height': 30,
 	'height': 140,
 	'width': 300,
-	'border-color': hsb(0, 0, 80),
 	'footer-background-color': hsb(0, 0, 91),
 	'footer-reflection-color': hsb(0, 0, 91),
 	'content-border-bottom-color': hsb(0, 0, 91)
@@ -55,6 +54,7 @@ ART.Alert = new Class({
 		className: 'alert',
 		resizable: false,
 		windowManagerLayer: 'alerts',
+		destroyOnClose: true,
 		buttons: [
 			{
 				text: 'Ok'
@@ -114,7 +114,7 @@ ART.Alert = new Class({
 
 ART.alert = function(caption, content, callback, options) {
 	return new ART.Alert(
-		$merge(options, {
+		$extend(options, {
 			caption: caption,
 			content: content,
 			onHide: callback
@@ -146,7 +146,7 @@ ART.Confirm = new Class({
 });
 ART.confirm = function(caption, content, callback, options) {
 	return new ART.Confirm(
-		$merge(options, {
+		$extend(options, {
 			caption: caption,
 			content: content,
 			onConfirm: callback
@@ -211,10 +211,55 @@ ART.Prompt = new Class({
 
 ART.prompt = function(caption, content, callback, options) {
 	return new ART.Prompt(
-		$merge(options, {
+		$extend(options, {
 			caption: caption,
 			content: content,
 			onConfirm: callback
 		})
 	);
 };
+
+ART.Window.AlertTools = new Class({
+
+	alerts: {},
+
+	alert: function(caption, content, callback, options, type){
+		type = type || 'alert';
+		if (!this.alertManager) this.alertManager = new ART.WindowManager();
+		options = $merge({
+			relativeTo: $(this),
+			inject: {
+				target: $(this),
+				where: 'bottom'
+			},
+			mask: true,
+			maskOptions: {
+				inject: {
+					target: $(this.content),
+					where: 'after'
+				}
+			},
+			constrainToContainer: true
+		}, options);
+		options.parentWidget = this;
+		options.windowManager = this.alertManager;
+		
+		var alert = ART[type](caption, content, callback, options);
+		var shader = function(dragging) {
+			$(alert).setStyle('display', dragging ? 'none' : 'block');
+		};
+		alert.addEvent('destroy', function(){
+			this.removeEvent('shade', shader);
+		}.bind(this));
+		this.addEvent('shade', shader);
+		return alert;
+	},
+	confirm: function() {
+		this.alert($A(arguments).push('confirm'));
+	},
+	prompt: function() {
+		this.alert($A(arguments).push('prompt'));
+	}
+});
+
+ART.Window.implement(new ART.Window.AlertTools);

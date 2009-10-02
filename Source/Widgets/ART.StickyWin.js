@@ -80,7 +80,8 @@ ART.StickyWin = new Class({
 		dragHandle: false,
 		showNow: true,
 		useIframeShim: true,
-		cascaded: false
+		cascaded: false,
+		constrainToContainer: false
 	},
 
 	initialize: function(options) {
@@ -91,10 +92,11 @@ ART.StickyWin = new Class({
 				where: 'bottom'
 			};
 		}
-		this.windowManager = this.options.windowManager || ART.StickyWin.DefaultManager;
+		this.windowManager = options.windowManager || this.options.windowManager || ART.StickyWin.DefaultManager;
+		delete this.options.windowManager;
+		delete options.windowManager;
 		//the window manager enables the windows; so we must start with disabled = true
 		this.disabled = true;
-		
 		this.parent(options);
 		this.element.store('StickyWin', this);
 		this.build();
@@ -169,12 +171,15 @@ ART.StickyWin = new Class({
 		this.element.setStyle('opacity', 1);
 		
 		if (this.options.mask) {
-			var target = $(this.options.maskTarget) || $(document.body);
+			var target = $(this.options.maskTarget);
+			if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
+				target = $(this.options.maskOptions.inject.target) || $(document.body);
 			var zIndex = this.options.maskOptions.zIndex;
 			if (zIndex == null) {
 				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex') + 1;
 				if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
 					zIndex = $(this).getStyle('zIndex').toInt() - 1;
+					if (zIndex < 0) zIndex = 0;
 			}
 			target.mask(
 				$merge({
@@ -239,10 +244,17 @@ ART.StickyWin = new Class({
 		handle = handle || this.options.dragHandle || this.element;
 		this.touchDrag = new Touch(handle);
 		handle.setStyle('cursor', 'move');
+		var size, 
+				containerSize;
 		this.touchDrag.addEvent('start', function(){
 			this.fireEvent('drag:start');
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
+			if (this.options.constrainToContainer) {
+				size = this.element.getSize();
+				var container = $(this.options.constrainToContainer) || this.element.getParent();
+				containerSize = container.getSize();
+			}
 		}.bind(this));
 		var dragging;
 		this.touchDrag.addEvent('move', function(dx, dy){
@@ -254,11 +266,15 @@ ART.StickyWin = new Class({
 			var left = this.startLeft + dx;
 			if (top < 0) top = 0;
 			if (left < 0) left = 0;
+			if (this.options.constrainToContainer) {
+				if (top + size.y > containerSize.y) top = containerSize.y - size.y;
+				if (left + size.x > containerSize.x) left = containerSize.x - size.x;
+			}
 			this.element.setStyles({
 				'top': top,
 				'left': left
 			});
-			this.fireEvent('drag:move', [dx, dy]);
+			this.fireEvent('drag:move', [top, left]);
 		}.bind(this));
 		var end = function(){
 			if (dragging) {
