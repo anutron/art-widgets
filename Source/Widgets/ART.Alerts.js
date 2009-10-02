@@ -18,11 +18,27 @@ ART.Sheet.defineStyle('window.alert', {
 	'content-border-bottom-color': hsb(0, 0, 91)
 });
 
+ART.Sheet.defineStyle('window.alert footer', {
+	'float': 'right',
+	'width': 'auto'
+});
+
 ART.Sheet.defineStyle('window.alert content', {
 	'padding': 20,
 	'font-size': 14,
 	'text-align': 'center'
 });
+
+ART.Sheet.defineStyle('window.alert input.prompt', {
+	'width': '100%'
+});
+
+ART.Sheet.defineStyle('window.alert button.confirmations', {
+	'padding-right': 10,
+	'border':'none',
+	'float': 'left'
+});
+
 
 ART.StickyWin.DefaultManager.setLayer('alerts', 99);
 
@@ -46,6 +62,14 @@ ART.Alert = new Class({
 		]
 	},
 
+	initialize: function(){
+		this.parent.apply(this, arguments);
+		this.addEvent('show', function(){
+			var button = this.alertButtons[0];
+			if (button) button.focus();
+		}.bind(this));
+	},
+
 	redraw: function(){
 		this.parent();
 		if (!this.content) return;
@@ -60,19 +84,21 @@ ART.Alert = new Class({
 					else h += tmp.getStyle(space+side).toInt();
 				});
 			});
+			tmp.destroy();
 			style.width = this.contentSize.w - w; //border is hard coded to 1 on each side
 			style.height = this.contentSize.h - h; //border is hard coded to 1 on each side
 		}
 		this.content.setStyles(style);
+		this.footer.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' footer'));
 	},
 
 	makeButtons: function(){
 		this.parent();
-		this.options.buttons.each(function(button){
-			var b = new ART.Button(button, {
-				parentWidget: this
-			});
-			b.addEvent('activate', function(){
+		this.alertButtons = this.options.buttons.map(function(button){
+			button.className = ((button.className || '') + ' confirmations').trim();
+			button.parentWidget = this;
+			var b = new ART.Button(button);
+			b.addEvent('press', function(){
 				if ($(b).hasClass(this.options.closeClass)) this.hide();
 			}.bind(this));
 
@@ -80,11 +106,115 @@ ART.Alert = new Class({
 			if (!button.properties['class']) button.properties['class'] = this.options.closeClass;
 			$(b).set(button.properties);
 
-			$(b).inject(this.footer).setStyles({
-				'float': 'right',
-				'padding-right': 10
-			});
+			$(b).inject(this.footer).setStyles(ART.Sheet.lookupStyle(b.getSelector()));
 		}, this);
 	}
 
 });
+
+ART.alert = function(caption, content, callback, options) {
+	return new ART.Alert(
+		$merge(options, {
+			caption: caption,
+			content: content,
+			onHide: callback
+		})
+	);
+};
+
+
+ART.Confirm = new Class({
+	
+	Extends: ART.Alert,
+	
+	options: {
+		className: 'alert confirm',
+		resizable: false,
+		windowManagerLayer: 'alerts',
+		buttons: [
+			{
+				text: 'Cancel'
+			},
+			{
+				text: 'Ok',
+				onPress: function(){
+					this.fireEvent('confirm');
+				}
+			}
+		]
+	}
+});
+ART.confirm = function(caption, content, callback, options) {
+	return new ART.Confirm(
+		$merge(options, {
+			caption: caption,
+			content: content,
+			onConfirm: callback
+		})
+	);
+};
+
+ART.Prompt = new Class({
+	
+	Extends: ART.Confirm,
+
+	options: {
+		onShow: function(){
+			this.input.select();
+		},
+		defaultValue: '',
+		buttons: [
+			{
+				text: 'Cancel'
+			},
+			{
+				text: 'Ok',
+				onPress: function(){
+					this.parentWidget.fireEvent('confirm', this.parentWidget.input.get('value'));
+				}
+			}
+		]
+	},
+	initialize: function(){
+		this.parent.apply(this, arguments);
+	},
+	build: function(){
+		this.parent.apply(this, arguments);
+		var styles = ART.Sheet.lookupStyle(this.getSelector() + ' input.prompt');
+		this.inputContainer = new Element('div', {
+			'class': 'inputContainer',
+			styles: {
+				position: 'relative'
+			}
+		}).inject(this.content);
+		this.input = new Element('input', {
+			value: this.options.defaultValue,
+			type: 'text',
+			styles: styles,
+			events: {
+				keyup: function(e) {
+					if (e.key == 'enter') {
+						this.fireEvent('confirm', this.input.get('value'));
+						this.hide();
+					}
+				}.bind(this)
+			}
+		}).inject(this.inputContainer);
+	},
+	setContent: function(){
+		this.inputContainer.dispose();
+		this.parent.apply(this, arguments);
+		this.inputContainer.inject(this.content);
+		return this;
+	}	
+});
+
+ART.prompt = function(caption, content, callback, options) {
+	return new ART.Prompt(
+		$merge(options, {
+			caption: caption,
+			content: content,
+			onConfirm: callback
+		})
+	);
+};
