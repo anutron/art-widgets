@@ -74,15 +74,15 @@ ART.Button = new Class({
 
 		this.element.addEvents({
 			focus: function(e) {
-				this.focus();
+				this.enable().focus();
 			}.bind(this),
 			blur: function(){
 				this.blur();
 			}.bind(this),
 			mousedown: function(e) {
 				e.stopPropagation();
-				this.focus();
-			}
+				this.enable().focus();
+			}.bind(this)
 		});
 		
 		var click = new Touch(this.element);
@@ -126,11 +126,13 @@ ART.Button = new Class({
 	enable: function(){
 		this.parent.apply(this, arguments);
 		this.setTabIndex();
+		return this;
 	},
 
 	disable: function(){
 		this.parent.apply(this, arguments);
 		this.element.set('tabindex', null);
+		return this;
 	},
 
 	redraw: function(options){

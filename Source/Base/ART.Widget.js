@@ -56,7 +56,7 @@ ART.Widget = new Class({
 		this.element = new Element('div', {
 			id: this.options.id || this.prefix+new Date().getTime(),
 			'class': this.options.className
-		}).store(this.prefix, this);
+		}).store(this.prefix, this).store('widget', this);
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
@@ -173,6 +173,7 @@ ART.Widget = new Class({
 			this.element.addClass(this.prefix + '-focused');
 			this.addPseudo('focus');
 			if (focused) focused.blur();
+			this.keyboard.activate();
 			focused = this;
 			this.render();
 		}
@@ -180,6 +181,7 @@ ART.Widget = new Class({
 	},
 	
 	disable: function(byParent){
+		this.disabledByParent = false;
 		if (!this.disabled){
 			if (byParent) this.disabledByParent = true;
 			this.blur();
@@ -232,6 +234,10 @@ ART.Widget = new Class({
 	},
 	
 	enable: function(){
+		if (this.parentWidget && this.parentWidget.disabled) {
+			this.disabledByParent = true;
+			return;
+		};
 		if (this.disabled){
 			this.disabled = false;
 			this.keyboard.activate();
