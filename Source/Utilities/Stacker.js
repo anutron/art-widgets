@@ -31,14 +31,14 @@ var Stacker = new Class({
 	},
 
 	getLayer: function(name, defaultZIndex) {
-		if (!this.layers[name] && defaultZIndex) this.addLayer(name, defaultZIndex);
+		if (!this.layers[name] && defaultZIndex != undefined) this.setLayer(name, defaultZIndex);
 		return this.layers[name];
 	},
 
 	register: function(instance, layer){
 		layer = layer || 'default';
 		var registered = this.instances.contains(instance);
-		if (registered) {
+		if (registered && this.getLayerForInstance(instance)) {
 			var instanceLayer = this.getLayerForInstance(instance);
 			if (instanceLayer == layer) return;
 			instanceLayer.instances.erase(instance);
@@ -48,6 +48,7 @@ var Stacker = new Class({
 			}.bind(this));
 			this.instances.push(instance);
 		}
+		if (!this.layers[layer]) this.getLayer(layer, this.options.zIndexBase);
 		this.layers[layer].instances.push(instance);
 	},
 
