@@ -74,7 +74,7 @@ var Stacker = new Class({
 			if (!layer.instances.contains(instance)) return;
 			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
-				$(current).setStyle('z-index', layer.zIndex + i);
+				$(current).setStyle('z-index', layer.zIndex + (i*2));
 				if (current === instance) current.enable(true);
 				i++;
 			}, this);
@@ -117,8 +117,8 @@ var Stacker = new Class({
 				return curOpt == options[opt];
 			}, this);
 		}
-		if (instances.length < 2 || !pos || !current) return false;
 		this.enable(instance);
+		if (instances.length < 1 || !pos || !current) return false;
 		//position near the enabled instance, with an offset as defined in the options
 		$(instance).position({
 			relativeTo: $(current),

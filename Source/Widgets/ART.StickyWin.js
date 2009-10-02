@@ -68,7 +68,11 @@ ART.StickyWin = new Class({
 		posMax: {x: , y: },//passed as 'maximum' to element.position
 		************************************************
 
+		mask: false,
+		maskTarget: document.body,
 		*/
+		maskOptions: {},
+		hideOnMaskClick: true,
 		greyContentsOnDrag: true,
 		closeClass: 'closeWin',
 		close: true,
@@ -107,6 +111,9 @@ ART.StickyWin = new Class({
 		}
 		if (this.options.closeOnClickOut || this.options.closeOnEsc) this.attach();
 		if (this.options.destroyOnClose) this.addEvent('hide', this.destroy.bind(this));
+		this.element.setStyle('display', 'none');
+		if (this.options.useIframeShim) this.hideIframeShim();
+		this.hidden = true;
 		if (this.options.showNow) this.show();
 		
 		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
@@ -155,11 +162,36 @@ ART.StickyWin = new Class({
 			opacity: 0,
 			display: 'block'
 		});
+		this.parent();
 		this.windowManager.enable(this);
 		if (!this.positioned) this.position();
 		if (this.options.useIframeShim) this.showIframeShim();
 		this.element.setStyle('opacity', 1);
-		this.parent();
+		
+		if (this.options.mask) {
+			var target = $(this.options.maskTarget) || $(document.body);
+			var zIndex = this.options.maskOptions.zIndex;
+			if (zIndex == null) {
+				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex') + 1;
+				if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
+					zIndex = $(this).getStyle('zIndex').toInt() - 1;
+			}
+			target.mask(
+				$merge({
+					style: {
+						zIndex: zIndex
+					},
+					destroyOnHide: true,
+					hideOnClick: this.options.hideOnMaskClick
+				}, this.options.maskOptions)
+			).get('mask').addEvent('hide', function(){
+				if (!this.hidden) this.hide();
+			}.bind(this));
+			this.addEvent('hide', function(){
+				var mask = target.get('mask');
+				if (!mask.hidden) mask.hide();
+			});
+		}
 	},
 
 	position: function(options){
@@ -268,7 +300,8 @@ ART.StickyWin = new Class({
 	},
 
 	setContent: function(){
-		this.element.adopt(arguments);
+		if (document.id(content) || $type(content) == "array") this.element.adopt(content);
+		else if ($type(content) == "string") this.element.set('html', content);
 		return this;
 	},
 
