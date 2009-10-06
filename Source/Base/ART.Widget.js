@@ -146,11 +146,11 @@ ART.Widget = new Class({
 	
 	hide: function(){
 		if (!this.hidden){
+			this.hidden = true;
 			this.fireEvent('hide');
 			this.element.addClass(this.prefix + '-hidden');
 			this.addPseudo('hidden');
 			this.render();
-			this.hidden = true;
 		}
 		return this;
 	},
