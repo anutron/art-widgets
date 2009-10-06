@@ -13,7 +13,7 @@
 			type = Events.removeOn(type);
 			var latched = type.contains(':latch');
 			type = type.replace(':latch', '');
-			if (latched || this.getLatch(type)) {
+			if (latched || this.getLatch(type).enabled) {
 				this.getLatch(type).enabled = true;
 				if (this.latched[type].args) fn.create({'bind': this, 'delay': 10, 'arguments': this.latched[type].args})();
 			}
