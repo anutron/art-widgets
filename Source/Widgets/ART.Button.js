@@ -94,22 +94,20 @@ ART.Button = new Class({
 			end: function(){
 				this.deactivate();
 			}.bind(this),
-			cancel: function(){
+			cancel: function(e){
 				this.deactivate();
-				this.fireEvent('press');
+				this.fireEvent('press', e);
 			}.bind(this)
 		});
-		
 		this.attachKeys({
 			'keydown:space': function(){
 				this.activate();
 			}.bind(this),
-			'keyup:space': function(){
+			'keyup:space': function(e){
 				this.deactivate();
-				this.fireEvent('press');
+				this.fireEvent('press', e);
 			}.bind(this)
 		});
-		
 		this.render(this.options);
 	},
 
