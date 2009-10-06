@@ -68,6 +68,11 @@ ART.Alert = new Class({
 			var button = this.alertButtons[0];
 			if (button) button.focus();
 		}.bind(this));
+		this.attachKeys({
+			'keyup:esc': function(e) {
+				this.hide();
+			}.bind(this)
+		});
 	},
 
 	redraw: function(){
@@ -98,8 +103,11 @@ ART.Alert = new Class({
 			button.className = ((button.className || '') + ' confirmations').trim();
 			button.parentWidget = this;
 			var b = new ART.Button(button);
-			b.addEvent('press', function(){
-				if ($(b).hasClass(this.options.closeClass)) this.hide();
+			b.addEvent('press', function(e){
+				if ($(b).hasClass(this.options.closeClass)) {
+					if (e) e.preventDefault();
+					this.hide();
+				}
 			}.bind(this));
 
 			button.properties = button.properties || {};
@@ -107,7 +115,9 @@ ART.Alert = new Class({
 			$(b).set(button.properties);
 
 			$(b).inject(this.footer).setStyles(ART.Sheet.lookupStyle(b.getSelector()));
+			return b;
 		}, this);
+		if (this.alertButtons[0]) this.alertButtons[0].enable().focus();
 	}
 
 });
@@ -162,7 +172,6 @@ ART.Prompt = new Class({
 		onShow: function(){
 			this.input.select();
 		},
-		defaultValue: '',
 		buttons: [
 			{
 				text: 'Cancel'
@@ -188,7 +197,7 @@ ART.Prompt = new Class({
 			}
 		}).inject(this.content);
 		this.input = new Element('input', {
-			value: this.options.defaultValue,
+			value: this.options.defaultValue || '',
 			type: 'text',
 			styles: styles,
 			events: {
@@ -206,7 +215,13 @@ ART.Prompt = new Class({
 		this.parent.apply(this, arguments);
 		this.inputContainer.inject(this.content);
 		return this;
-	}	
+	},
+	show: function(){
+		this.parent.apply(this, arguments);
+		this.alertButtons[0].disable().blur();
+		this.input.select();
+		return this;
+	}
 });
 
 ART.prompt = function(caption, content, callback, options) {
@@ -243,7 +258,6 @@ ART.Window.AlertTools = new Class({
 		}, options);
 		options.parentWidget = this;
 		options.windowManager = this.alertManager;
-		
 		var alert = ART[type](caption, content, callback, options);
 		var shader = function(dragging) {
 			$(alert).setStyle('display', dragging ? 'none' : 'block');
@@ -254,11 +268,11 @@ ART.Window.AlertTools = new Class({
 		this.addEvent('shade', shader);
 		return alert;
 	},
-	confirm: function() {
-		this.alert($A(arguments).push('confirm'));
+	confirm: function(cap, cont, fn, opt) {
+		return this.alert(cap, cont, fn, opt, 'confirm');
 	},
-	prompt: function() {
-		this.alert($A(arguments).push('prompt'));
+	prompt: function(cap, cont, fn, opt) {
+		return this.alert(cap, cont, fn, opt, 'prompt');
 	}
 });
 
