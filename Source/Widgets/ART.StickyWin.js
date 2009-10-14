@@ -92,6 +92,7 @@ ART.StickyWin = new Class({
 				where: 'bottom'
 			};
 		}
+		options = options || {};
 		this.windowManager = options.windowManager || this.options.windowManager || ART.StickyWin.DefaultManager;
 		delete this.options.windowManager;
 		delete options.windowManager;
