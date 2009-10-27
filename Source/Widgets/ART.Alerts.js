@@ -40,6 +40,9 @@ ART.Sheet.defineStyle('window.alert button.confirmations', {
 
 
 ART.StickyWin.DefaultManager.setLayer('alerts', 99);
+(function(){
+
+var tmp = new Element('div');
 
 ART.Alert = new Class({
 	
@@ -76,11 +79,11 @@ ART.Alert = new Class({
 	},
 
 	redraw: function(){
-		this.parent();
+		this.parent.apply(this, arguments);
 		if (!this.content) return;
 		var style = ART.Sheet.lookupStyle(this.getSelector() + ' content');
 		if (style.margin || style.padding) {
-			var tmp = new Element('div', {styles: style});
+			tmp.setStyles(style);
 			var w = 0,
 					h = 0;
 			['margin', 'padding'].each(function(space) {
@@ -89,7 +92,9 @@ ART.Alert = new Class({
 					else h += tmp.getStyle(space+side).toInt();
 				});
 			});
-			tmp.destroy();
+			
+			tmp.style.cssText = '';
+			
 			style.width = this.contentSize.w - w; //border is hard coded to 1 on each side
 			style.height = this.contentSize.h - h; //border is hard coded to 1 on each side
 		}
@@ -124,10 +129,10 @@ ART.Alert = new Class({
 
 ART.alert = function(caption, content, callback, options) {
 	return new ART.Alert(
-		$extend(options, {
+		$extend(options || {}, {
 			caption: caption,
 			content: content,
-			onHide: callback
+			onHide: callback || $empty
 		})
 	);
 };
@@ -148,7 +153,7 @@ ART.Confirm = new Class({
 			{
 				text: 'Ok',
 				onPress: function(){
-					this.fireEvent('confirm');
+					this.parentWidget.fireEvent('confirm');
 				}
 			}
 		]
@@ -156,10 +161,10 @@ ART.Confirm = new Class({
 });
 ART.confirm = function(caption, content, callback, options) {
 	return new ART.Confirm(
-		$extend(options, {
+		$extend(options || {}, {
 			caption: caption,
 			content: content,
-			onConfirm: callback
+			onConfirm: callback || $empty
 		})
 	);
 };
@@ -170,7 +175,8 @@ ART.Prompt = new Class({
 
 	options: {
 		onShow: function(){
-			this.input.select();
+			var input = this.content.getElement('input, textarea');
+			if (input) input.select();
 		},
 		buttons: [
 			{
@@ -179,72 +185,82 @@ ART.Prompt = new Class({
 			{
 				text: 'Ok',
 				onPress: function(){
-					this.parentWidget.fireEvent('confirm', this.parentWidget.input.get('value'));
+					this.parentWidget.fireEvent('confirm', this.parentWidget.getPromptValue());
 				}
 			}
 		]
 	},
 	initialize: function(){
 		this.parent.apply(this, arguments);
+		this.makePromptInput();
 	},
-	build: function(){
-		this.parent.apply(this, arguments);
-		var styles = ART.Sheet.lookupStyle(this.getSelector() + ' input.prompt');
-		this.inputContainer = new Element('div', {
-			'class': 'inputContainer',
-			styles: {
-				position: 'relative'
-			}
-		}).inject(this.content);
-		this.input = new Element('input', {
-			value: this.options.defaultValue || '',
-			type: 'text',
-			styles: styles,
-			events: {
-				keyup: function(e) {
-					if (e.key == 'enter') {
-						this.fireEvent('confirm', this.input.get('value'));
-						this.hide();
-					}
-				}.bind(this)
-			}
-		}).inject(this.inputContainer);
+	makePromptInput: function(){
+		if (!this.content.getElement('form') && !this.content.getElements('input, textarea, select').length) {
+			var styles = ART.Sheet.lookupStyle(this.getSelector() + ' input.prompt');
+			this.inputContainer = new Element('div', {
+				'class': 'inputContainer',
+				styles: {
+					position: 'relative'
+				}
+			}).inject(this.content);
+			this.input = new Element('input', {
+				value: this.options.defaultValue || '',
+				type: 'text',
+				styles: styles,
+				events: {
+					keyup: function(e) {
+						if (e.key == 'enter') {
+							this.fireEvent('confirm', this.getPromptValue());
+							this.hide();
+						}
+					}.bind(this)
+				}
+			}).inject(this.inputContainer);
+		}
+	},
+	getPromptValue: function(){
+		var form = this.content.getElement('form');
+		return form ? form.toQueryString() : this.content.toQueryString();
 	},
 	setContent: function(){
-		this.inputContainer.dispose();
+		if (this.inputContainer) this.inputContainer.dispose();
 		this.parent.apply(this, arguments);
-		this.inputContainer.inject(this.content);
+		if (this.inputContainer) this.inputContainer.inject(this.content);
 		return this;
 	},
 	show: function(){
 		this.parent.apply(this, arguments);
 		this.alertButtons[0].disable().blur();
-		this.input.select();
+		var input = this.content.getElement('input, textarea');
+		if (input) input.select();
 		return this;
 	}
 });
 
 ART.prompt = function(caption, content, callback, options) {
 	return new ART.Prompt(
-		$extend(options, {
+		$extend(options || {}, {
 			caption: caption,
 			content: content,
-			onConfirm: callback
+			onConfirm: callback || $empty
 		})
 	);
 };
 
 ART.Window.AlertTools = new Class({
 
+	Implements: ART.WindowTools,
+
 	alerts: {},
 
 	alert: function(caption, content, callback, options, type){
 		type = type || 'alert';
-		if (!this.alertManager) this.alertManager = new ART.WindowManager();
+		var win = this.getWindow();
+		if (win && !win.alertManager) win.alertManager = new ART.WindowManager();
 		options = $merge({
-			relativeTo: $(this),
+			relativeTo: $(win) || $(this),
 			inject: {
-				target: $(this),
+				target: $(win) || $(this),
 				where: 'bottom'
 			},
 			mask: true,
@@ -256,16 +272,18 @@ ART.Window.AlertTools = new Class({
 			},
 			constrainToContainer: true
 		}, options);
-		options.parentWidget = this;
-		options.windowManager = this.alertManager;
+		options.parentWidget = win || this;
+		options.windowManager = win ? win.alertManager : null;
 		var alert = ART[type](caption, content, callback, options);
-		var shader = function(dragging) {
-			$(alert).setStyle('display', dragging ? 'none' : 'block');
-		};
-		alert.addEvent('destroy', function(){
-			this.removeEvent('shade', shader);
-		}.bind(this));
-		this.addEvent('shade', shader);
+		if (win) {
+			var shader = function(dragging) {
+				$(alert).setStyle('display', dragging ? 'none' : 'block');
+			};
+			alert.addEvent('destroy', function(){
+				win.removeEvent('shade', shader);
+			}.bind(this));
+			win.addEvent('shade', shader);
+		}
 		return alert;
 	},
 	confirm: function(cap, cont, fn, opt) {
@@ -277,3 +295,5 @@ ART.Window.AlertTools = new Class({
 });
 
 ART.Window.implement(new ART.Window.AlertTools);
+
+})();
