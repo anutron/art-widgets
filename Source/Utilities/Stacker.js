@@ -68,7 +68,7 @@ var Stacker = new Class({
 	},
 
 	enable: function(instance){
-		if (!instance) return;
+		if (!instance || instance == this.enabled) return;
 		this.instances.erase(instance).push(instance);
 		this.layers.each(function(layer) {
 			var i = 0;
@@ -76,20 +76,20 @@ var Stacker = new Class({
 			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
 				$(current).setStyle('z-index', layer.zIndex + (i*2));
-				if (current === instance) current.enable(true);
 				i++;
 			}, this);
 		}, this);
 		if (this.enabled && this.enabled != instance) this.enabled.disable();
+		if (instance.disabled) instance.enable(true);
 		this.enabled = instance;
 	},
 
-	cascade: function(noAnim, x, y){
+	cascade: function(x, y){
 		x = $pick(x, this.options.offset.x);
 		y = $pick(y, this.options.offset.y);
 		this.instances.each(function(current, i){
 			var styles = {top: (y * i) + y, left: (x * i) + x};
-			(noAnim || !current.morph) ? $(current).setStyles(styles) : current.morph.start(styles);
+			$(current).setStyles(styles);
 		});
 	},
 
