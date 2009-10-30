@@ -471,6 +471,7 @@ ART.History = new Class({
 	},
 
 	setNavState: function(){
+		if (!this.location) return;
 		var hasNext = !!this.history[this.selected + 1];
 		var hasPrev = !!this.history[this.selected - 1];
 		if (!hasNext) this.nav_next.disable();
