@@ -84,14 +84,8 @@ ART.Widget = new Class({
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
 		this.parentWidget.keyboard.manage(this.keyboard);
-		if (this.parentWidget.disabled) {
-			this.disabledByParent = true;
-			this.disable();
-		} else {
-			this.disabled = true;
-			this.enable();
-		}
-		this.render();
+		this.disabled = true;
+		this.enable();
 		this.fireEvent('adoption', widget);
 		return this;
 	},
@@ -236,22 +230,23 @@ ART.Widget = new Class({
 	enable: function(){
 		if (this.parentWidget && this.parentWidget.disabled) {
 			this.disabledByParent = true;
-			return;
+			return this;
 		};
+		delete this.disabledByParent;
 		if (this.disabled){
 			this.disabled = false;
 			this.keyboard.activate();
-			this.childWidgets.each(function(child){
-				if (child.disabledByParent) {
-					child.enable();
-					delete child.disabledByParent;
-				}
-			});
 			this.fireEvent('enable');
 			this.element.removeClass(this.prefix + '-disabled');
 			this.removePseudo('disabled');
 			this.render();
 		}
+		this.childWidgets.each(function(child){
+			if (child.disabledByParent) {
+				child.enable();
+				delete child.disabledByParent;
+			}
+		});
 		return this;
 	},
 
@@ -286,15 +281,15 @@ ART.Widget = new Class({
 		this._countTimer = (function(){
 			this._redrawCount = 0;
 		}).delay(1000, this);
-		dbug.log('redraw %s: ', this.name, this._redrawCount, this.element);
+		console.log('redraw %s: ', this.name, this._redrawCount, this.element);
 	}
 	
 });
 
 ART._counts = function(){
 	counting = !counting;
-	if (counting) dbug.log('counting widget renders');
-	else dbug.log('disabling widget render counts');
+	if (counting) console.log('counting widget renders');
+	else console.log('disabling widget render counts');
 };
 
 })();
