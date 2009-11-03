@@ -145,7 +145,6 @@ ART.Confirm = new Class({
 	options: {
 		className: 'alert confirm',
 		resizable: false,
-		windowManagerLayer: 'alerts',
 		buttons: [
 			{
 				text: 'Cancel'
@@ -257,6 +256,7 @@ ART.Window.AlertTools = new Class({
 		type = type || 'alert';
 		var win = this.getWindow();
 		if (win && !win.alertManager) win.alertManager = new ART.WindowManager();
+		win.alertManager.setLayer('alerts', 99);
 		options = $merge({
 			relativeTo: $(win) || $(this),
 			inject: {

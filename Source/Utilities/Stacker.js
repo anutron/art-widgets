@@ -19,23 +19,26 @@ var Stacker = new Class({
 	},
 
 	setLayer: function(name, zIndex) {
+		zIndex = zIndex == undefined ? this.options.zIndexBase : zIndex;
 		if (this.layers[name]) {
-			this.setZIndex(zIndex, name);
-			return this.getLayer(name);
+			this.layers[name].zIndex = zIndex;
+		} else {
+			this.layers[name] = {
+				zIndex: zIndex,
+				name: name,
+				instances: []
+			};
 		}
-		this.layers[name] = {
-			zIndex: zIndex,
-			name: name,
-			instances: []
-		};
+		return this.getLayer(name);
 	},
 
 	getLayer: function(name, defaultZIndex) {
-		if (!this.layers[name] && defaultZIndex != undefined) this.setLayer(name, defaultZIndex);
+		if (!this.layers[name]) this.setLayer(name, defaultZIndex);
 		return this.layers[name];
 	},
 
 	register: function(instance, layer){
+		dbug.log('register: ', instance, layer);
 		layer = layer || 'default';
 		var registered = this.instances.contains(instance);
 		if (registered && this.getLayerForInstance(instance)) {
@@ -46,10 +49,10 @@ var Stacker = new Class({
 			$(instance).addEvent('mousedown', function(){
 				if (instance.disabled) this.enable(instance);
 			}.bind(this));
-			this.instances.push(instance);
+			this.instances.include(instance);
 		}
 		if (!this.layers[layer]) this.getLayer(layer, this.options.zIndexBase);
-		this.layers[layer].instances.push(instance);
+		this.layers[layer].instances.include(instance);
 	},
 
 	unregister: function(instance) {
@@ -68,7 +71,7 @@ var Stacker = new Class({
 	},
 
 	enable: function(instance){
-		if (!instance || instance == this.enabled) return;
+		if (!instance || (instance == this.enabled && instance.stacked)) return;
 		this.instances.erase(instance).push(instance);
 		this.layers.each(function(layer) {
 			var i = 0;
@@ -76,6 +79,7 @@ var Stacker = new Class({
 			layer.instances.erase(instance).push(instance);
 			layer.instances.each(function(current){
 				$(current).setStyle('z-index', layer.zIndex + (i*2));
+				instance.stacked = true;
 				i++;
 			}, this);
 		}, this);
