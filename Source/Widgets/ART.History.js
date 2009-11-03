@@ -316,12 +316,14 @@ ART.History = new Class({
 	},
 	
 	push: function(item, select, index) {
+		//make the item a history object if it is a string
 		if ($type(item) == 'string') item = { path: item, title: item };
+		//remove anything forward of this.selected
+		this.dropFutureHistory();
+		//strip it from the current history
 		this.history = this.history.filter(function(hist) {
 			return item.path != hist.path;
 		});
-
-		this.dropFutureHistory();
 
 		if($type(index) == 'number' && index < this.history.length) {
 			this.history = this.history.splice(index, 0, item);
