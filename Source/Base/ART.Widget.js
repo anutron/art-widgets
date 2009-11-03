@@ -84,7 +84,6 @@ ART.Widget = new Class({
 		this.parentWidget = widget;
 		widget.childWidgets.include(this);
 		this.parentWidget.keyboard.manage(this.keyboard);
-		this.disabled = true;
 		this.enable();
 		this.fireEvent('adoption', widget);
 		return this;
@@ -179,7 +178,6 @@ ART.Widget = new Class({
 		if (!this.disabled){
 			if (byParent) this.disabledByParent = true;
 			this.blur();
-			this.disabled = true;
 			this.fireEvent('disable');
 			this.keyboard.deactivate();
 			this.childWidgets.each(function(child){
@@ -187,6 +185,7 @@ ART.Widget = new Class({
 			});
 			this.element.addClass(this.prefix + '-disabled');
 			this.addPseudo('disabled');
+			this.disabled = true;
 			this.render();
 		}
 		return this;
