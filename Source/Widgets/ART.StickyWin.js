@@ -177,11 +177,12 @@ ART.StickyWin = new Class({
 				target = $(this.options.maskOptions.inject.target) || $(document.body);
 			var zIndex = this.options.maskOptions.zIndex;
 			if (zIndex == null) {
-				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex') + 1;
+				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
 				if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
 					zIndex = $(this).getStyle('zIndex').toInt() - 1;
-					if (zIndex < 0) zIndex = 0;
+				if (zIndex < 0 || isNaN(NaN)) zIndex = 0;
 			}
+			if (zIndex >= $(this).getStyle('zIndex').toInt()) $(this).setStyle('z-index', zIndex + 1);
 			target.mask(
 				$merge({
 					style: {
