@@ -38,7 +38,6 @@ var Stacker = new Class({
 	},
 
 	register: function(instance, layer){
-		dbug.log('register: ', instance, layer);
 		layer = layer || 'default';
 		var registered = this.instances.contains(instance);
 		if (registered && this.getLayerForInstance(instance)) {
