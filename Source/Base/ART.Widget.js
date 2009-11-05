@@ -259,9 +259,9 @@ ART.Widget = new Class({
 
 	destroy: function(){
 		this.removeParent();
-		this.childWidgets.each(function(child) {
-			child.destroy();
-		});
+		for(var i = 0; i < this.childWidgets.length; i++) {
+			this.childWidgets[i].destroy();
+		}
 		this.element.destroy();
 		this.destroyed = true;
 		return this.fireEvent('destroy');
