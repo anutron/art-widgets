@@ -102,7 +102,7 @@ var Stacker = new Class({
 		//or the position is not set or is equal to the enabled instances options
 		//then return; and let the window be positioned as the class would normally.
 		var current;
-		var instances = this.instances.filter(function(instance){
+		var instances = this.getLayerForInstance(instance).instances.filter(function(instance){
 			return !instance.hidden && $(instance);
 		});
 		instances.reverse().some(function(win){
