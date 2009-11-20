@@ -218,6 +218,7 @@ ART.Prompt = new Class({
 		}
 	},
 	getPromptValue: function(){
+		if (this.input) return this.input.get('value');
 		var form = this.content.getElement('form');
 		return form ? form.toQueryString() : this.content.toQueryString();
 	},
