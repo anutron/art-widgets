@@ -299,6 +299,7 @@ ART.History = new Class({
 	destroy: function(){
 		this.element.empty();
 		this.detach();
+		this.parent.apply(this, arguments);
 	},
 	
 	attach: function(attach) {
