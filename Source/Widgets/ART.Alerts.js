@@ -267,7 +267,7 @@ ART.Window.AlertTools = new Class({
 			mask: true,
 			maskOptions: {
 				inject: {
-					target: $(this.content),
+					target: $(this.getWindow().content),
 					where: 'after'
 				}
 			},
