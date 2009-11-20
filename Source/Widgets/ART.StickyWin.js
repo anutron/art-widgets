@@ -170,11 +170,11 @@ ART.StickyWin = new Class({
 		if (!this.positioned) this.position();
 		if (this.options.useIframeShim) this.showIframeShim();
 		this.element.setStyle('opacity', 1);
-		
 		if (this.options.mask) {
 			var target = $(this.options.maskTarget);
 			if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
 				target = $(this.options.maskOptions.inject.target) || $(document.body);
+			else target = $(document.body);
 			var zIndex = this.options.maskOptions.zIndex;
 			if (zIndex == null) {
 				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
