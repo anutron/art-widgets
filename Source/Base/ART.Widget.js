@@ -38,7 +38,7 @@ ART.Widget = new Class({
 	},
 	
 	initialize: function(options){
-		this.latchEvents('adopt');
+		this.latchEvents('adoption');
 		this.pseudos = [];
 		this.childWidgets = [];
 		this.keyboard = new Keyboard();
