@@ -259,8 +259,13 @@ ART.Widget = new Class({
 
 	destroy: function(){
 		this.removeParent();
-		while(this.childWidgets.length) {
+		for (var kids = 0; kids < this.childWidgets.length; kids++) {
 			this.childWidgets[0].destroy();
+		}
+		if (this.childWidgets.length && window.console && console.warn) {
+			this.childWidgets.each(function(widget) {
+				console.warn("warning: %s called the destroy method of %s but it failed. Ensure that destroy method calls this.parent", this.pefix, widget.prefix);
+			});
 		}
 		this.element.destroy();
 		this.destroyed = true;
