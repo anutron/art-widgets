@@ -33,7 +33,7 @@ ART.Sheet.defineStyle('window.alert input.prompt', {
 });
 
 ART.Sheet.defineStyle('window.alert button.confirmations', {
-	'padding-right': 10,
+	'padding-right': 15,
 	'border':'none',
 	'float': 'left'
 });
@@ -58,6 +58,7 @@ ART.Alert = new Class({
 		resizable: false,
 		windowManagerLayer: 'alerts',
 		destroyOnClose: true,
+		autosize: true,
 		buttons: [
 			{
 				text: 'Ok'
@@ -258,6 +259,7 @@ ART.Window.AlertTools = new Class({
 		var win = this.getWindow();
 		if (win && !win.alertManager) win.alertManager = new ART.WindowManager();
 		win.alertManager.setLayer('alerts', 99);
+		var winsize = win.getSize();
 		options = $merge({
 			relativeTo: $(win) || $(this),
 			inject: {
@@ -271,7 +273,12 @@ ART.Window.AlertTools = new Class({
 					where: 'after'
 				}
 			},
-			constrainToContainer: true
+			constrainToContainer: true,
+			width: (winsize.width * 0.9).toInt(),
+			max: {
+				height: (winsize.height * 0.9).toInt(),
+				width: (winsize.width * 0.9).toInt()
+			}
 		}, options);
 		options.parentWidget = win || this;
 		options.windowManager = win ? win.alertManager : null;

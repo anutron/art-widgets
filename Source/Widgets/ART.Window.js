@@ -130,6 +130,7 @@ ART.Window = new Class({
 	options: { 
 		/*
 		caption: null,
+		autosize: false,
 		*/
 		min: {/* height: null, width: null */},
 		max: {/* height: null, width: null */},
@@ -188,7 +189,8 @@ ART.Window = new Class({
 			styles: $merge(relative, {
 				top: 1,
 				left: 1,
-				overflow: 'hidden'
+				overflow: 'hidden',
+				clear: 'both'
 			})
 		});
 		this.footerText = new Element('div', {
@@ -300,7 +302,34 @@ ART.Window = new Class({
 	setContent: function(content){
 		if (document.id(content) || $type(content) == "array") this.content.adopt(content);
 		else if ($type(content) == "string") this.content.set('html', content);
+		if (this.options.autosize) this.autosize();
 		return this;
+	},
+	
+	autosize: function(){
+		if (!this.boundAutoSize) this.boundAutoSize = this.autosize.bind(this);
+		if (this.hidden) {
+			this.addEvent('display', this.boundAutoSize);
+		} else {
+			this.removeEvent('display', this.boundAutoSize);
+			var style = ART.Sheet.lookupStyle(this.getSelector());
+			this.content.setStyles({
+				'float': 'left',
+				'width': 'auto'
+			});
+			var h = this.content.getScrollSize().y + style.headerHeight + style.footerHeight + 2;
+			var w = this.content.getScrollSize().x;
+			if (h > style.maxHeight) h = style.maxHeight;
+			if (w > style.maxWidth) w = style.maxWidth;
+			this.setOptions({
+				height: h,
+				width: w
+			});
+			this.redraw({
+				width: w, 
+				height: h
+			});
+		}
 	},
 	
 	setCaption: function(text){
