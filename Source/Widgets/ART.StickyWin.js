@@ -84,6 +84,8 @@ ART.StickyWin = new Class({
 		constrainToContainer: false
 	},
 
+	hidden: true,
+
 	initialize: function(options) {
 		this.requireToRender('window:managed', 'window:displayed');
 		if (!this.options.inject) {
@@ -154,50 +156,55 @@ ART.StickyWin = new Class({
 	},
 
 	hide: function(){
-		this.element.setStyle('display', 'none');
-		if (this.options.useIframeShim) this.hideIframeShim();
-		this.parent();
+		if (!this.hidden){
+			this.element.setStyle('display', 'none');
+			if (this.options.useIframeShim) this.hideIframeShim();
+			this.parent();
+		}
 	},
 
 	show: function(){
-		this.readyToRender('window:displayed');
-		this.element.setStyles({
-			opacity: 0,
-			display: 'block'
-		});
-		this.parent();
-		this.windowManager.enable(this);
-		if (!this.positioned) this.position();
-		if (this.options.useIframeShim) this.showIframeShim();
-		this.element.setStyle('opacity', 1);
-		if (this.options.mask) {
-			var target = $(this.options.maskTarget);
-			if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
-				target = $(this.options.maskOptions.inject.target) || $(document.body);
-			else target = $(document.body);
-			var zIndex = this.options.maskOptions.zIndex;
-			if (zIndex == null) {
-				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
-				if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
-					zIndex = $(this).getStyle('zIndex').toInt() - 1;
-				if (zIndex < 0 || isNaN(NaN)) zIndex = 0;
-			}
-			if (zIndex >= $(this).getStyle('zIndex').toInt()) $(this).setStyle('z-index', zIndex + 1);
-			target.mask(
-				$merge({
-					style: {
-						zIndex: zIndex
-					},
-					destroyOnHide: true,
-					hideOnClick: this.options.hideOnMaskClick
-				}, this.options.maskOptions)
-			).get('mask').addEvent('hide', function(){
-				if (!this.hidden) this.hide();
-			}.bind(this));
-			this.addEvent('hide', function(){
-				var mask = target.get('mask');
-				if (!mask.hidden) mask.hide();
+		if (this.hidden){
+			this.readyToRender('window:displayed');
+			this.element.setStyles({
+				opacity: 0,
+				display: 'block'
 			});
+			this.parent();
+			this.windowManager.enable(this);
+			this.fireEvent('display');
+			if (!this.positioned) this.position();
+			if (this.options.useIframeShim) this.showIframeShim();
+			this.element.setStyle('opacity', 1);
+			if (this.options.mask) {
+				var target = $(this.options.maskTarget);
+				if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
+					target = $(this.options.maskOptions.inject.target) || $(document.body);
+				else target = $(document.body);
+				var zIndex = this.options.maskOptions.zIndex;
+				if (zIndex == null) {
+					if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
+					if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
+						zIndex = $(this).getStyle('zIndex').toInt() - 1;
+					if (zIndex < 0 || isNaN(NaN)) zIndex = 0;
+				}
+				if (zIndex >= $(this).getStyle('zIndex').toInt()) $(this).setStyle('z-index', zIndex + 1);
+				target.mask(
+					$merge({
+						style: {
+							zIndex: zIndex
+						},
+						destroyOnHide: true,
+						hideOnClick: this.options.hideOnMaskClick
+					}, this.options.maskOptions)
+				).get('mask').addEvent('hide', function(){
+					if (!this.hidden) this.hide();
+				}.bind(this));
+				this.addEvent('hide', function(){
+					var mask = target.get('mask');
+					if (!mask.hidden) mask.hide();
+				});
+			}
 		}
 	},
 
