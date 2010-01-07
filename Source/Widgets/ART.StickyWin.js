@@ -208,6 +208,11 @@ ART.StickyWin = new Class({
 		}
 	},
 
+	bringToFront: function(){
+		this.windowManager.bringToFront(this);
+		return this;
+	},
+
 	position: function(options){
 		this.positioned = true;
 		this.setOptions(options);
