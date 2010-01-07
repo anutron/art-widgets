@@ -17,13 +17,13 @@ ART.WindowManager = new Class({
 
 	enable: function() {
 		this.parent.apply(this, arguments);
-		this.keyboard.enable();
-		this.enabled.keyboard.enable();
+		this.keyboard.activate();
+		this.enabled.keyboard.activate();
 	},
 
 	unregister: function(instance) {
 		this.parent.apply(this, arguments);
-		Keyboard.manager.manage(instance.keyboard);
+		Keyboard.manager.drop(instance.keyboard);
 	}
 
 });
