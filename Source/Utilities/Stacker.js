@@ -55,10 +55,16 @@ var Stacker = new Class({
 	},
 
 	unregister: function(instance) {
+		var refocus = this.enabled == instance;
+		var iLayer = this.getLayerForInstance(instance);
 		this.instances.erase(instance);
 		this.layers.each(function(layer) {
 			if (layer.instances.contains(instance)) layer.instances.erase(instance);
 		});
+		if (refocus) {
+			if (iLayer.instances.length) this.enable(iLayer.instances[iLayer.instances.length -1]);
+			else this.enable(this.instances[this.instances.length -1]);
+		}
 	},
 
 	getLayerForInstance: function(instance) {
@@ -69,28 +75,45 @@ var Stacker = new Class({
 		return ret;
 	},
 
-	enable: function(instance){
+	bringToFront: function(instance){
 		if (!instance || (instance == this.enabled && instance.stacked)) return;
-		this.instances.erase(instance).push(instance);
 		this.layers.each(function(layer) {
 			var i = 0;
 			if (!layer.instances.contains(instance)) return;
 			layer.instances.erase(instance).push(instance);
-			layer.instances.each(function(current){
-				$(current).setStyle('z-index', layer.zIndex + (i*2));
-				instance.stacked = true;
-				i++;
-			}, this);
+			this.stack(layer);
 		}, this);
-		if (this.enabled && this.enabled != instance) this.enabled.disable();
-		if (instance.disabled) instance.enable(true);
+	},
+
+	stack: function(layer) {
+		layer.instances.each(function(win, i){
+			$(win).setStyle('z-index', layer.zIndex + (i*2));
+			win.stacked = true;
+		}, this);
+	},
+
+	cycle: function(direction, layerName) {
+		direction = direction || 'forward';
+		var instances = this.layers[layerName].instances;
+		if (direction == 'forward') instances.push(instances.shift());
+		else instances.unshift(instances.pop());
+		this.stack(this.layers[layerName]);
+		this.enable(instances[instances.length -1], true);
+	},
+
+	enable: function(instance, noOrder){
+		if (!instance || (instance == this.enabled && instance.stacked)) return;
+		if (!noOrder) this.bringToFront(instance);
+		//TODO make this shit not so fucking slow
+		// if (this.enabled && this.enabled != instance) this.enabled.disable();
+		// if (instance.disabled) instance.enable(true);
 		this.enabled = instance;
 	},
 
-	cascade: function(x, y){
+	cascade: function(layer, x, y){
 		x = $pick(x, this.options.offset.x);
 		y = $pick(y, this.options.offset.y);
-		this.instances.each(function(current, i){
+		this.layers[layer].instances.each(function(current, i){
 			var styles = {top: (y * i) + y, left: (x * i) + x};
 			$(current).setStyles(styles);
 		});
