@@ -163,6 +163,38 @@ ART.StickyWin = new Class({
 		}
 	},
 
+	maskTarget: function(){
+		var target = $(this.options.maskTarget);
+		if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
+			target = $(this.options.maskOptions.inject.target) || $(document.body);
+		else target = $(document.body);
+		var mask = target.retrieve('StickyWin:mask');
+		if (!mask) {
+			var zIndex = this.options.maskOptions.zIndex;
+			if (zIndex == null) {
+				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
+				if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
+					zIndex = $(this).getStyle('zIndex').toInt() - 1;
+				if (zIndex < 0 || isNaN(NaN)) zIndex = 0;
+			}
+			if (zIndex >= $(this).getStyle('zIndex').toInt()) $(this).setStyle('z-index', zIndex + 1);
+			mask = new Mask(target, $merge({
+					style: {
+						zIndex: zIndex
+					},
+					destroyOnHide: true,
+					hideOnClick: this.options.hideOnMaskClick
+				}, this.options.maskOptions)
+			).addEvent('hide', function(){
+				if (!this.hidden) this.hide();
+			}.bind(this));
+			this.addEvent('hide', function(){
+				if (!mask.hidden) mask.hide();
+			});
+		}
+		mask.show();
+	},
+
 	show: function(){
 		if (this.hidden){
 			this.readyToRender('window:displayed');
@@ -176,35 +208,7 @@ ART.StickyWin = new Class({
 			if (!this.positioned) this.position();
 			if (this.options.useIframeShim) this.showIframeShim();
 			this.element.setStyle('opacity', 1);
-			if (this.options.mask) {
-				var target = $(this.options.maskTarget);
-				if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
-					target = $(this.options.maskOptions.inject.target) || $(document.body);
-				else target = $(document.body);
-				var zIndex = this.options.maskOptions.zIndex;
-				if (zIndex == null) {
-					if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
-					if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
-						zIndex = $(this).getStyle('zIndex').toInt() - 1;
-					if (zIndex < 0 || isNaN(NaN)) zIndex = 0;
-				}
-				if (zIndex >= $(this).getStyle('zIndex').toInt()) $(this).setStyle('z-index', zIndex + 1);
-				target.mask(
-					$merge({
-						style: {
-							zIndex: zIndex
-						},
-						destroyOnHide: true,
-						hideOnClick: this.options.hideOnMaskClick
-					}, this.options.maskOptions)
-				).get('mask').addEvent('hide', function(){
-					if (!this.hidden) this.hide();
-				}.bind(this));
-				this.addEvent('hide', function(){
-					var mask = target.get('mask');
-					if (!mask.hidden) mask.hide();
-				});
-			}
+			if (this.options.mask) this.maskTarget();
 		}
 	},
 
