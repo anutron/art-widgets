@@ -41,8 +41,6 @@ ART.Widget = new Class({
 		this.latchEvents('adoption');
 		this.pseudos = [];
 		this.childWidgets = [];
-		this.keyboard = new Keyboard();
-		this.keyboard.widget = this;
 		var parent;
 		if (options) {
 			if (options.parentWidget) {
@@ -50,6 +48,10 @@ ART.Widget = new Class({
 				delete options.parentWidget;
 			}
 		}
+		this.keyboard = new Keyboard({
+			manager: parent ? parent.keyboard : null
+		});
+		this.keyboard.widget = this;
 		this.setOptions(options);
 		this.keyboard.setOptions(this.options.keyboardOptions).setup();
 		this.prefix = this.ns + '-' + this.name;
@@ -255,6 +257,30 @@ ART.Widget = new Class({
 
 	detachKeys: function(events) {
 		this.keyboard.removeEvents(events);
+	},
+
+	addShortcut: function(name, shortcut) {
+		this.keyboard.addShortcut(name, shortcut);
+	},
+
+	addShortcuts: function(obj) {
+		this.keyboard.addShortcuts(obj);
+	},
+
+	removeShortcut: function(name) {
+		this.keyboard.removeShortcut(name);
+	},
+
+	removeShortcuts: function(names) {
+		this.keyboard.removeShortcuts(names);
+	},
+
+	getShortcut: function(name) {
+		return this.keyboard.getShortcut(name);
+	},
+
+	getShortcuts: function() {
+		return this.keyboard.getShortcuts();
 	},
 
 	destroy: function(){
