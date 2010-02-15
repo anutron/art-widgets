@@ -105,8 +105,8 @@ var Stacker = new Class({
 		if (!instance || (instance == this.enabled && instance.stacked)) return;
 		if (!noOrder) this.bringToFront(instance);
 		//TODO make this shit not so fucking slow
-		// if (this.enabled && this.enabled != instance) this.enabled.disable();
-		// if (instance.disabled) instance.enable(true);
+		if (this.enabled && this.enabled != instance) this.enabled.disable();
+		if (instance.disabled) instance.enable(true);
 		this.enabled = instance;
 	},
 
