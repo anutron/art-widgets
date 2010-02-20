@@ -2,12 +2,13 @@ ART.WindowManager = new Class({
 
 	Extends: Stacker,
 
-	initialize: function(){
-		this.parent.apply(this, arguments);
+	initialize: function(widget, options){
+		this.parent(options);
 		this.keyboard = new Keyboard({
-			active: true
+			active: true,
+			manager: widget ? widget.keyboard : null
 		});
-		this.keyboard.widget = 'window manager';
+		this.keyboard.widget = widget || 'window manager';
 	},
 
 	register: function(instance){
