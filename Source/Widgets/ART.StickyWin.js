@@ -93,6 +93,8 @@ ART.StickyWin = new Class({
 		this.windowManager = options.windowManager || this.options.windowManager || ART.StickyWin.DefaultManager;
 		delete this.options.windowManager;
 		delete options.windowManager;
+		if (!options.keyboardOptions) options.keyboardOptions = {};
+		options.keyboardOptions.manager = options.keyboardOptions.manager || this.windowManager.keyboard;
 		//the window manager enables the windows; so we must start with disabled = true
 		this.disabled = true;
 		this.parent(options);
