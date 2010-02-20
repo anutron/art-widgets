@@ -208,10 +208,11 @@ ART.Prompt = new Class({
 				type: 'text',
 				styles: styles,
 				events: {
-					keyup: function(e) {
+					keydown: function(e) {
 						if (e.key == 'enter') {
 							this.fireEvent('confirm', this.getPromptValue());
 							this.hide();
+							Keyboard.stop(e);
 						}
 					}.bind(this)
 				}
@@ -257,8 +258,11 @@ ART.Window.AlertTools = new Class({
 	alert: function(caption, content, callback, options, type){
 		type = type || 'alert';
 		var win = this.getWindow();
-		if (win && !win.alertManager) win.alertManager = new ART.WindowManager();
-		win.alertManager.setLayer('alerts', 99);
+		var currentKb = win.keyboard.activeKB;
+		if (win && !win.alertManager) {
+			win.alertManager = new ART.WindowManager(win);
+			win.alertManager.setLayer('alerts', 99);
+		}
 		var winsize = win.getSize();
 		options = $merge({
 			relativeTo: $(win) || $(this),
@@ -283,13 +287,25 @@ ART.Window.AlertTools = new Class({
 		options.parentWidget = win || this;
 		options.windowManager = win ? win.alertManager : null;
 		var alert = ART[type](caption, content, callback, options);
+		var enableKB = function(){
+			win.keyboard.activate(win.alertManager.keyboard);
+			alert.keyboard.activate();
+		};
+		enableKB();
 		if (win) {
 			var shader = function(dragging) {
 				$(alert).setStyle('display', dragging ? 'none' : 'block');
 			};
-			alert.addEvent('destroy', function(){
-				win.removeEvent('shade', shader);
-			}.bind(this));
+			alert.addEvents({
+				destroy: function(){
+					win.removeEvent('shade', shader);
+					win.keyboard.activate(currentKb);
+				},
+				hide: function(){
+					win.keyboard.activate(currentKb);
+				},
+				show: enableKB
+			});
 			win.addEvent('shade', shader);
 		}
 		return alert;
