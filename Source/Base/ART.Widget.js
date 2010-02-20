@@ -32,7 +32,7 @@ ART.Widget = new Class({
 		renderWhileHidden: false,
 		className: '',
 		keyboardOptions: {
-			active: true
+			active: false
 		},
 		parentWidget: null
 	},
