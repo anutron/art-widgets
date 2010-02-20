@@ -41,19 +41,18 @@ ART.Widget = new Class({
 		this.latchEvents('adoption');
 		this.pseudos = [];
 		this.childWidgets = [];
-		var parent;
+		var parent, kbManager;
 		if (options) {
 			if (options.parentWidget) {
 				parent = options.parentWidget;
 				delete options.parentWidget;
 			}
+			if (options.keyboardOptions && options.keyboardOptions.manager) {
+				kbManager = options.keyboardOptions.manager;
+				delete options.keyboardOptions.manager;
+			}
 		}
-		this.keyboard = new Keyboard({
-			manager: parent ? parent.keyboard : null
-		});
-		this.keyboard.widget = this;
 		this.setOptions(options);
-		this.keyboard.setOptions(this.options.keyboardOptions).setup();
 		this.prefix = this.ns + '-' + this.name;
 		this.element = new Element('div', {
 			id: this.options.id || this.prefix+new Date().getTime(),
@@ -62,6 +61,13 @@ ART.Widget = new Class({
 		this.element.addClass(this.ns).addClass(this.prefix);
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
+
+		var kbOptions = $merge(this.options.keyboardOptions, options ? options.keyboardOptions || {} : {});
+		kbOptions.manager = kbManager || (parent ? parent.keyboard : null);
+		this.keyboard = new Keyboard(kbOptions);
+		this.keyboard.widget = this;
+		this.keyboard.addEvent('deactivate', this.blur.bind(this));
+
 		if (parent) this.setParent(parent);
 	},
 
