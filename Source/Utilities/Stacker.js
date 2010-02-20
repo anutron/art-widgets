@@ -110,7 +110,7 @@ var Stacker = new Class({
 		//TODO make this shit not so fucking slow
 		if (this.enabled && this.enabled != instance) this.enabled.disable();
 		if (instance.disabled) instance.enable(true);
-		this.enabled = instance;
+		this.enabled = instance.focus();
 	},
 
 	cascade: function(layer, x, y){
