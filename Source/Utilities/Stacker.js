@@ -62,8 +62,11 @@ var Stacker = new Class({
 			if (layer.instances.contains(instance)) layer.instances.erase(instance);
 		});
 		if (refocus) {
-			if (iLayer.instances.length) this.enable(iLayer.instances[iLayer.instances.length -1]);
-			else this.enable(this.instances[this.instances.length -1]);
+			if (iLayer.instances.length) {
+				this.enable(iLayer.instances[iLayer.instances.length -1]);
+			} else if (this.instances.length){
+				this.enable(this.instances[this.instances.length -1]);
+			}
 		}
 	},
 
