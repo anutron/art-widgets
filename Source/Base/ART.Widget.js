@@ -145,6 +145,7 @@ ART.Widget = new Class({
 
 	// special states
 	
+	//not visible
 	hide: function(){
 		if (!this.hidden){
 			this.hidden = true;
@@ -156,6 +157,7 @@ ART.Widget = new Class({
 		return this;
 	},
 	
+	//engaged; the button is down, the select list is expanded, the mouse is clicking this thing
 	activate: function(){
 		if (!this.active){
 			this.active = true;
@@ -167,20 +169,21 @@ ART.Widget = new Class({
 		return this;
 	},
 	
+	//has keyboard control
 	focus: function(){
-		if (!this.focused){
+		if (!this.keyboard.isActive()){
+			this.keyboard.activate();
 			this.focused = true;
 			this.fireEvent('focus');
 			this.element.addClass(this.prefix + '-focused');
 			this.addPseudo('focus');
-			if (focused) focused.blur();
-			this.keyboard.activate();
 			focused = this;
 			this.render();
 		}
 		return this;
 	},
 	
+	//non-interactive
 	disable: function(byParent){
 		this.disabledByParent = false;
 		if (!this.disabled){
@@ -200,7 +203,7 @@ ART.Widget = new Class({
 	},
 	
 	// normal states
-	
+	//visible
 	show: function(){
 		if (this.hidden){
 			this.hidden = false;
@@ -211,7 +214,7 @@ ART.Widget = new Class({
 		}
 		return this;
 	},
-	
+	//the button is released, the select list is contracted, the mouse is up
 	deactivate: function(){
 		if (this.active){
 			this.active = false;
@@ -223,17 +226,19 @@ ART.Widget = new Class({
 		return this;
 	},
 	
+	//focus has shifted to another widget
 	blur: function(){
 		if (this.focused){
 			this.focused = false;
 			this.fireEvent('blur');
+			this.keyboard.deactivate();
 			this.element.removeClass(this.prefix + '-focused');
 			this.removePseudo('focus');
 			this.render();
 		}
 		return this;
 	},
-	
+	//the widget is interactable
 	enable: function(){
 		if (this.parentWidget && this.parentWidget.disabled) {
 			this.disabledByParent = true;
@@ -242,7 +247,6 @@ ART.Widget = new Class({
 		delete this.disabledByParent;
 		if (this.disabled){
 			this.disabled = false;
-			this.keyboard.activate();
 			this.fireEvent('enable');
 			this.element.removeClass(this.prefix + '-disabled');
 			this.removePseudo('disabled');
