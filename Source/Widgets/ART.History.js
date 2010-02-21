@@ -443,7 +443,7 @@ ART.History = new Class({
 		this.parent.apply(this, arguments);
 		this.element.removeClass('history_location_active');
 		this.location.deactivate();
-		this.keyboard.relenquish(); //disable the main keyboard
+		this.keyboard.relinquish(); //disable the main keyboard
 		this.nav.setStyle('display', 'none'); //hide the nav
 		this.showEditor(false);
 		this.fireEvent('hideEditor');
