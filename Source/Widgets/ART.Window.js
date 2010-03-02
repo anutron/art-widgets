@@ -20,7 +20,8 @@ ART.Sheet.defineStyle('window', {
 	'top': 100,
 	'left': 100,
 	
-	'caption-font': 'moderna',
+	'caption-font-family': 'Moderna',
+	'caption-font-variant': 'normal',
 	'caption-font-size': 13,
 	
 	'button-spacing': 20,
@@ -33,10 +34,10 @@ ART.Sheet.defineStyle('window', {
 	'footer-height': 17,
 
 	'caption-font-color': hsb(0, 0, 10),
-	'header-background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
-	'footer-background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 70)},
-	'header-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
-	'footer-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'header-background-color': [hsb(0, 0, 80), hsb(0, 0, 60)],
+	'footer-background-color': [hsb(0, 0, 80), hsb(0, 0, 70)],
+	'header-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
+	'footer-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.4),
 	'content-border-top-color': hsb(0, 0, 30),
 	'content-border-bottom-color': hsb(0, 0, 50),
@@ -46,10 +47,10 @@ ART.Sheet.defineStyle('window', {
 
 ART.Sheet.defineStyle('window:disabled', {
 	'caption-font-color': hsb(0, 0, 30),
-	'header-background-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 80)},
-	'footer-background-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 90)},
-	'header-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
-	'footer-reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'header-background-color': [hsb(0, 0, 95), hsb(0, 0, 80)],
+	'footer-background-color': [hsb(0, 0, 95), hsb(0, 0, 90)],
+	'header-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
+	'footer-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.2),
 	'content-border-top-color': hsb(0, 0, 60),
 	'content-border-bottom-color': hsb(0, 0, 70),
@@ -63,20 +64,22 @@ ART.Sheet.defineStyle('window footer-text', {
 });
 
 ART.Sheet.defineStyle('window button.wincontrol', {
+	'padding': [1,1,1,1],
 	'pill': true,
 	'height': 14,
 	'width': 14,
+	cornerRadius: 7,
 	'cursor': 'pointer',
-	'background-color': {0: hsb(0, 0, 75), 1: hsb(0, 0, 55)},
-	'reflection-color': {0: hsb(0, 0, 95), 1: hsb(0, 0, 0, 0)},
+	'background-color': [hsb(0, 0, 75), hsb(0, 0, 55)],
+	'reflection-color': [hsb(0, 0, 95), hsb(0, 0, 0, 0)],
 	'shadow-color': hsb(0, 0, 100, 0.4),
 	'border-color': hsb(0, 0, 45),
 	'glyph-color': hsb(0, 0, 0, 0.6)
 });
 
 ART.Sheet.defineStyle('window button.wincontrol:disabled', {
-	'background-color': {0: hsb(0, 0, 100, 0.6), 1: hsb(0, 0, 100, 0.6)},
-	'reflection-color': {0: hsb(0, 0, 100), 1: hsb(0, 0, 0, 0)},
+	'background-color': [hsb(0, 0, 100, 0.6), hsb(0, 0, 100, 0.6)],
+	'reflection-color': [hsb(0, 0, 100), hsb(0, 0, 0, 0)],
 	'shadow-color': hsb(0, 0, 100, 0.2),
 	'border-color': hsb(0, 0, 45, 0.5),
 	'glyph-color': hsb(0, 0, 0, 0.4)
@@ -84,36 +87,36 @@ ART.Sheet.defineStyle('window button.wincontrol:disabled', {
 
 ART.Sheet.defineStyle('window button.wincontrol:active', {
 	'background-color': hsb(0, 0, 65),
-	'reflection-color': {0: hsb(0, 0, 65), 1: hsb(0, 0, 0, 0)},
+	'reflection-color': [hsb(0, 0, 65), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 45),
 	'glyph-color': hsb(0, 0, 100)
 });
 
 ART.Sheet.defineStyle('window button.close', {
-	'glyph': 'close-icon',
+	'glyph': ART.Glyphs.smallCross,
 	
 	'glyph-height': 4,
 	'glyph-width': 4,
-	'glyph-top': 5,
-	'glyph-left': 5
+	'glyph-top': 1,
+	'glyph-left': 1
 });
 
 ART.Sheet.defineStyle('window button.minimize', {
-	'glyph': 'minus-icon',
+	'glyph': ART.Glyphs.smallMinus,
 
 	'glyph-height': 6,
 	'glyph-width': 6,
-	'glyph-top': 4,
-	'glyph-left': 4
+	'glyph-top': 1,
+	'glyph-left': 1
 });
 
 ART.Sheet.defineStyle('window button.maximize', {
-	'glyph': 'plus-icon',
+	'glyph': ART.Glyphs.smallPlus,
 
 	'glyph-height': 6,
 	'glyph-width': 6,
-	'glyph-top': 4,
-	'glyph-left': 4
+	'glyph-top': 1,
+	'glyph-left': 1
 });
 
 ART.Sheet.defineStyle('window:dragging', {
@@ -128,10 +131,10 @@ ART.Window = new Class({
 	name: 'window',
 	
 	options: { 
-		/*
+		
 		caption: null,
 		autosize: false,
-		*/
+		
 		min: {/* height: null, width: null */},
 		max: {/* height: null, width: null */},
 		close: true,
@@ -163,7 +166,36 @@ ART.Window = new Class({
 			left: 0
 		};
 		
-		this.paint = new ART.Paint();
+		var style = ART.Sheet.lookupStyle(this.getSelector());
+		
+		this.paint = new ART;
+		this.borderLayer = new ART.Rectangle;
+		this.resizeLayer = new ART.Shape(ART.Glyphs.resize);
+		this.resizeLayer.fill(hsb(0, 0, 0, 0.4));
+		
+		this.textLayer = new ART.Font(style.captionFontFamily, style.captionFontVariant);
+		this.makeHeaderText(this.options.caption, style.captionFontSize, true);
+		this.backgroundLayer = new ART.Rectangle;
+		this.footerReflectionLayer = new ART.Rectangle;
+		this.footerBackgroundLayer = new ART.Rectangle;
+		this.headerReflectionLayer = new ART.Rectangle;
+		this.headerBackgroundLayer = new ART.Rectangle;
+		this.contentBorderTopLayer = new ART.Rectangle;
+		this.contentBorderBottomLayer = new ART.Rectangle;
+		
+		this.paint.push(
+			this.borderLayer,
+			this.backgroundLayer,
+			this.headerReflectionLayer,
+			this.footerReflectionLayer,
+			this.headerBackgroundLayer,
+			this.footerBackgroundLayer,
+			this.contentBorderTopLayer,
+			this.contentBorderBottomLayer,
+			this.resizeLayer,
+			this.textLayer
+		);
+
 		$(this.paint).setStyles(absolute).inject(this.element);
 		this.readyToRender('window:paint');
 		
@@ -199,6 +231,10 @@ ART.Window = new Class({
 		this.makeButtons();
 		this.readyToRender('window:navButtons');
 		this.contents.adopt(this.header, this.content, this.footer);
+	},
+	
+	fill: function(layer, style){
+		layer.fill.apply(layer, $splat(style));
 	},
 
 	makeButtons: function() {
@@ -390,8 +426,7 @@ ART.Window = new Class({
 		this.currentWidth = style.width;
 
 		var padding = 0;
-		if (this.options.shadow) padding = 20;
-		this.paint.resize({x: style.width + padding, y: style.height + padding});
+		this.paint.resize(style.width + padding, style.height + padding);
 		
 		this.contents.setStyles({
 			'height': style.height,
@@ -401,11 +436,7 @@ ART.Window = new Class({
 		this.renderContent(style);
 		this.renderHeaderText(style);
 		this.renderResize(style);
-		this.paint.restore();
-		$(this.paint).setStyles({
-			top: this.options.shadow ? -6 : -1,
-			left: this.options.shadow ? -11 : -1
-		});
+		$(this.paint).setStyles({top: -1, left: -1});
 		if (this.shim) this.shim.position();
 		this.fireEvent('resize', [this.contentSize.w, this.contentSize.h]);
 	},
@@ -433,63 +464,56 @@ ART.Window = new Class({
 		}
 		
 		// border layer
-		this.paint.save();
 		
-		if (this.options.shadow) this.paint.shift({x: 10, y: 5});
-		
-		this.paint.start();
-		this.paint.shape('rounded-rectangle', {x: style.width, y: style.height}, style.cornerRadius + 1);
-		
-		var border = {'fill': true, 'fill-color': style.borderColor};
-		
-		if (this.options.shadow) $mixin(border, {
-			'shadow-color': hsb(0, 0, 0),
-			'shadow-blur': 8,
-			'shadow-offset-x': 0,
-			'shadow-offset-y': 5
-		});
-		
-		this.paint.end(border);
+		this.borderLayer.draw(style.width, style.height, style.cornerRadius + 1);
+		this.fill(this.borderLayer, style.borderColor);
 
 		this.header.setStyles({'width': style.width - 2, height: style.headerHeight - 2});
 		this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
 		
 		// header layers
 		if (style.contentVisibility == 'hidden') {
-			this.paint.start({x: 1, y: 1});
-			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.height - 2}, style.cornerRadius);
-			this.paint.end({'fill': true, 'fill-color': style.backgroundColor});
+			this.backgroundLayer.translate(1, 1);
+			this.backgroundLayer.draw(style.width - 2, style.height - 2, style.cornerRadius);
+			this.fill(this.backgroundLayer, style.backgroundColor);
+			this.headerReflectionLayer.hide();
+			this.headerBackgroundLayer.hide();
+			this.contentBorderTopLayer.hide();
+			this.contentBorderBottomLayer.hide();
+			this.footerReflectionLayer.hide();
+			this.footerBackgroundLayer.hide();
+			this.resizeLayer.hide();
 		} else {
-		
-			this.paint.start({x: 1, y: 1});
-			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 2}, [style.cornerRadius, style.cornerRadius, 0, 0]);
-			this.paint.end({'fill': true, 'fill-color': style.headerReflectionColor});
+			if (this.options.resizable) this.resizeLayer.show();
+			else this.resizeLayer.hide();
+			this.headerReflectionLayer.show().translate(1, 1);
+			this.headerReflectionLayer.draw(style.width - 2, style.headerHeight - 2, [style.cornerRadius, style.cornerRadius, 0, 0]);
+			this.fill(this.headerReflectionLayer, style.headerReflectionColor);
 
-			this.paint.start({x: 1, y: 2});
-			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.headerHeight - 3}, [style.cornerRadius, style.cornerRadius, 0, 0]);
-			this.paint.end({'fill': true, 'fill-color': style.headerBackgroundColor});
+			this.headerBackgroundLayer.show().translate(1, 2);
+			this.headerBackgroundLayer.draw(style.width - 2, style.headerHeight - 3, [style.cornerRadius, style.cornerRadius, 0, 0]);
+			this.fill(this.headerBackgroundLayer, style.headerBackgroundColor);
 		
 			// first content separator border
-		
-			this.paint.start({x: 1.5, y: style.headerHeight - 0.5});
-			this.paint.lineTo({x: style.width - 3, y: 0});
-			this.paint.end({'stroke': true, 'stroke-color': style.contentBorderTopColor});
+			this.contentBorderTopLayer.show().translate(1, style.headerHeight - 1);
+			this.contentBorderTopLayer.draw(style.width - 2, 1);
+			this.fill(this.contentBorderTopLayer, style.contentBorderTopColor);
 		
 			// second content separator border
-		
-			this.paint.start({x: 1.5, y: style.height - style.footerHeight - 1.5});
-			this.paint.lineTo({x: style.width - 3, y: 0});
-			this.paint.end({'stroke': true, 'stroke-color': style.contentBorderBottomColor});
+			this.contentBorderBottomLayer.show().translate(1, style.height - style.footerHeight - 2);
+			this.contentBorderBottomLayer.draw(style.width - 2, 1);
+			this.fill(this.contentBorderBottomLayer, style.contentBorderBottomColor);
 		
 			//footer layers
-				
-			this.paint.start({x: 1, y: style.height - style.footerHeight - 1});
-			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight}, [0, 0, style.cornerRadius, style.cornerRadius]);
-			this.paint.end({'fill': true, 'fill-color': style.footerReflectionColor});
-		
-			this.paint.start({x: 1, y: style.height - style.footerHeight});
-			this.paint.shape('rounded-rectangle', {x: style.width - 2, y: style.footerHeight - 1}, [0, 0, style.cornerRadius, style.cornerRadius]);
-			this.paint.end({'fill': true, 'fill-color': style.footerBackgroundColor});
+			this.footerReflectionLayer.show().translate(1, style.height - style.footerHeight - 1);
+			this.footerReflectionLayer.draw(style.width - 2, style.footerHeight, [0, 0, style.cornerRadius, style.cornerRadius]);
+			this.fill(this.footerReflectionLayer, style.footerReflectionColor);
+			
+			this.footerBackgroundLayer.show().translate(1, style.height - style.footerHeight);
+			this.footerBackgroundLayer.draw(style.width - 2, style.footerHeight - 1, [0, 0, style.cornerRadius, style.cornerRadius]);
+			this.fill(this.footerBackgroundLayer, style.footerBackgroundColor);
+			
+			
 			
 			this.footerText.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' footer-text'));
 		}
@@ -497,34 +521,25 @@ ART.Window = new Class({
 	
 	renderResize: function(style){
 		if (!this.options.resizable) return;
-
-		var drawLines = function(){
-			this.paint.lineBy({x: -10, y: 10}).moveBy({x: 4, y: 0}).lineBy({x: 6, y: -6}).moveBy({x: 0, y: 4}).lineBy({x: -2, y: 2});
-		};
 		
-		this.paint.start({x: style.width - 2, y: style.height - 13});
-		drawLines.call(this);
-		this.paint.end({'stroke': true, 'stroke-color': hsb(0, 0, 100, 0.5)});
-		
-		this.paint.start({x: style.width - 3, y: style.height - 13});
-		drawLines.call(this);
-		this.paint.end({'stroke': true, 'stroke-color': hsb(0, 0, 0, 0.4)});
+		this.resizeLayer.translate(style.width - 15, style.height - 15);
 	},
 	
 	renderHeaderText: function(style){
-		// font
-		if (style.contentVisibility != 'hidden') {
-			var font = ART.Paint.lookupFont(style.captionFont);
-			var fontBounds = font.measure(style.captionFontSize, this.options.caption || '');
-		
-			// header text
-		
-			var spare = (style.width - fontBounds.x) / 2;
-		
-			this.paint.start({x: spare, y: style.headerPaddingTop + 3});
-			this.paint.text(font, style.captionFontSize, this.options.caption || "");
-			this.paint.end({'fill': true, 'fill-color': style.captionFontColor});
+		if (style.contentVisibility == 'hidden'){
+			this.textLayer.hide();
+		} else {
+			this.textLayer.show();
+			var spare = (style.width - this.fontBounds.right) / 2;
+			this.textLayer.translate(spare, style.headerPaddingTop + 3);
+			this.fill(this.textLayer, style.captionFontColor);
 		}
+	},
+	
+	makeHeaderText: function(text, fontSize, nrd){
+		if (text && fontSize) this.textLayer.draw(text, fontSize);
+		this.fontBounds = this.textLayer.measure();
+		if (!nrd) this.redraw();
 	},
 
 	initialSize: $empty,

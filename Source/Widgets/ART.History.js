@@ -1,13 +1,13 @@
 ART.Sheet.defineStyle('history button.navLeft', {
 	'float': 'left',
-	'padding': 0
+	'padding': [0, 0, 0, 0]
 });
 ART.Sheet.defineStyle('history button.navRight', {
 	'corner-radius-top-right': 0,
 	'corner-radius-bottom-right': 0,
 	'float': 'left',
 	'marginLeft': -1,
-	'padding': 0
+	'padding': [0, 0, 0, 0]
 });
 ART.Sheet.defineStyle('history button.navDown', {
 	'height': 19,
@@ -18,7 +18,7 @@ ART.Sheet.defineStyle('history button.navDown', {
 	'corner-radius-top-left': 0,
 	'corner-radius-bottom-left': 0,
 	'glyph': false,
-	'padding': 0,
+	'padding': [0, 0, 0, 0],
 	'float': 'left',
 	'marginLeft': -1,
 	'position': 'relative'
@@ -26,20 +26,20 @@ ART.Sheet.defineStyle('history button.navDown', {
 ART.Sheet.defineStyle('history button.refresh', {
 	'height': 19,
 	'width': 27,
-	'padding': 0,
+	'padding': [0, 0, 0, 0],
 	'float': 'left',
 	'marginLeft': -1,
 	'corner-radius-top-right': 4,
 	'corner-radius-bottom-right': 4,
 	'corner-radius-top-left': 0,
 	'corner-radius-bottom-left': 0,
-	'glyph': 'refresh',
+	'glyph': ART.Glyphs.refresh,
 	'glyph-stroke': 0,
 	'glyph-fill': true,
-	'glyph-height': 20,
-	'glyph-width': 20,
-	'glyph-top': 5,
-	'glyph-left': 13
+	'glyph-height': 12,
+	'glyph-width': 12,
+	'glyph-top': 4,
+	'glyph-left': 8
 });
 ART.Sheet.defineStyle('history', {
 	'position': 'relative',
@@ -52,7 +52,7 @@ ART.Sheet.defineStyle('history ul', {
 	'border-width': '0px 1px 0px',
 	'background': '#fff',
 	'z-index': 10,
-	'padding': 0,
+	'padding': [0, 0, 0, 0],
 	'margin': 0,
 	'position': 'relative',
 	'top': -4,
@@ -65,7 +65,7 @@ ART.Sheet.defineStyle('history ul li a', {
 	'display': 'block',
 	'background': '#fff',
 	'border-bottom': '1px solid #000',
-	'padding': 4,
+	'padding': [4, 4, 4, 4],
 	'line-height': 12,
 	'cursor': 'pointer',
 	'color': '#333',
@@ -182,26 +182,33 @@ ART.History = new Class({
 	},
 	
 	build: function(){
-		this.nav_back = new ART.Button.Nav.Left({
-			parentWidget: this
+		this.nav_back = new ART.Button({
+			parentWidget: this,
+			className: 'navLeft',
+			glyph: ART.Glyphs.triangleLeft
 		});
 		$(this.nav_back).inject(this.element).addEvent('click', this.back.bind(this));
 
-		this.nav_next = new ART.Button.Nav.Right({
-			parentWidget: this
+		this.nav_next = new ART.Button({
+			parentWidget: this,
+			className: 'navRight',
+			glyph: ART.Glyphs.triangleRight
 		});
 		$(this.nav_next).inject(this.element).addEvent('click', this.next.bind(this));
 
-		this.location = new ART.Button.Nav.Down({
-			parentWidget: this
+		this.location = new ART.Button({
+			parentWidget: this,
+			className: 'navDown'
+			// glyph: ART.Glyphs.triangleDown
 		});
 		this.location_text = new Element('div');
 		$(this.location).inject(this.element).addEvent('click', function(){
 			this.toggle();
 		}.bind(this)).adopt(this.location_text);
 
-		this.divot = new ART.Paint().resize({x: 10, y: 10});
-		$(this.divot).inject(this.location).setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' divot'));
+		this.divotContainer = new ART(10, 10);
+		this.divot = new ART.Shape().inject(this.divotContainer).draw("M0,0L8,0L4,8L0,0").translate(0, -1);
+		$(this.divotContainer).inject(this.location).setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' divot'));
 
 		this.refresher = new ART.Button({
 			className: 'refresh',
@@ -286,11 +293,9 @@ ART.History = new Class({
 		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector()));
 
 		this.nav.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' ul'));
-
-		this.divot.start({x: 0, y: 0});
-		this.divot.shape('triangle', {x: 9, y: 5}, 'down');
+		
 		var divotStyles = ART.Sheet.lookupStyle(this.getSelector() + ' divot');
-		this.divot.end({fill: true, fillColor: divotStyles.color});
+		this.divot.fill.apply(this.divot, $splat(divotStyles.color));
 
 		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input:disabled')));
 		this.resize();

@@ -8,10 +8,11 @@ License:
 // Button Widget. Work in progress.
 
 ART.Sheet.defineStyle('button', {
-	'font': 'moderna',
+	'font-family': 'Moderna',
+	'font-variant': 'normal',
 	'font-size': 11,
 	'font-color': hsb(0, 100, 10),
-	'padding': [5, 5, 3, 5],
+	'padding': [5, 5, 5, 5],
 	'cursor': 'pointer',
 
 	'height': false,
@@ -24,29 +25,30 @@ ART.Sheet.defineStyle('button', {
 	'glyph-width': 10,
 	'glyph-top': 2,
 	'glyph-left': 2,
+	'glyph-bottom': 2,
+	'glyph-right': 2,
 
 	'pill': false,
 
-	'corner-radius': 3,
-	'background-color': {0: hsb(0, 0, 90), 1: hsb(0, 0, 70)},
-	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'corner-radius': 5,
+	'background-color': [hsb(0, 0, 90), hsb(0, 0, 70)],
+	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.8)
 });
 ART.Sheet.defineStyle('button:focus', {
-	'background-color': {0: hsb(0, 0, 80), 1: hsb(0, 0, 60)},
-	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'background-color': [hsb(0, 0, 80), hsb(0, 0, 60)],
+	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.8)
 });
 ART.Sheet.defineStyle('button:active', {
-	//'fill-color': {0: hsb(0, 0, 70), 1: hsb(0, 0, 30, 0)},
 	'background-color': hsb(0, 0, 40),
-	'reflection-color': {0: hsb(0, 0, 30, 1), 1: hsb(0, 0, 0, 0)},
+	'reflection-color': [hsb(0, 0, 30, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.8)
 });
 
 ART.Sheet.defineStyle('button:disabled', {
-	'background-color': {0: hsb(0, 0, 90), 1: hsb(0, 0, 80)},
-	'reflection-color': {0: hsb(0, 0, 100, 1), 1: hsb(0, 0, 0, 0)},
+	'background-color': [hsb(0, 0, 90), hsb(0, 0, 80)],
+	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.5),
 	'glyph-color': hsb(0, 0, 0, 0.3)
 });
@@ -58,9 +60,8 @@ ART.Button = new Class({
 	name: 'button',
 	
 	options: {
-	/*
-		text: '',
-	*/
+		text: null,
+		glyph: null,
 		tabIndex: 0
 	},
 
@@ -68,8 +69,29 @@ ART.Button = new Class({
 		this.requireToRender('button:paint');
 		this.parent(options);
 
-		this.paint = new ART.Paint();
+		this.paint = new ART;
+
+		this.borderLayer = new ART.Rectangle;
+		this.fillLayer = new ART.Rectangle;
+		this.backgroundLayer = new ART.Rectangle;
+		
+		this.paint.push(this.borderLayer, this.fillLayer, this.backgroundLayer);
+		
+		var style = ART.Sheet.lookupStyle(this.getSelector());
+		if (style.glyph) this.options.glyph = style.glyph;
+		
+		if (this.options.text){
+			this.textLayer = new ART.Font(style.fontFamily, style.fontVariant);
+			this.makeText(this.options.text, style.fontSize, true);
+			this.textLayer.inject(this.paint);
+		} else if (this.options.glyph){
+			this.glyphLayer = new ART.Shape;
+			this.makeGlyph(this.options.glyph, true);
+			this.glyphLayer.inject(this.paint);
+		}
+		
 		$(this.paint).inject(this.element);
+		
 		this.readyToRender('button:paint');
 
 		this.element.addEvents({
@@ -138,16 +160,18 @@ ART.Button = new Class({
 		if (options) this.setOptions(options);
 		if (!this.paint) return this;
 		var style = ART.Sheet.lookupStyle(this.getSelector());
-		var font = ART.Paint.lookupFont(style.font);
 		if (this.options.width) style.width = this.options.width;
 		if (this.options.height) style.height = this.options.height;
-		if (this.options.text) {
-			var fontBounds = font.measure(style.fontSize, this.options.text);
-			if (!style.width) style.width = (fontBounds.x + style.padding[1] + style.padding[3] + 2).round();
-			if (!style.height) style.height = (fontBounds.y + style.padding[0] + style.padding[2] + 2).round();
+		
+		if (this.options.text){
+			if (!style.width) style.width = (this.fontBounds.right + style.padding[1] + style.padding[3]).round();
+			if (!style.height) style.height = (this.fontBounds.bottom + style.padding[0] + style.padding[2]).round();
+		} else if (this.options.glyph){
+			if (!style.width) style.width = (this.glyphBounds.right + style.glyphLeft + style.glyphRight).round();
+			if (!style.height) style.height = (this.glyphBounds.bottom + style.glyphTop + style.glyphBottom).round();
 		}
 
-		this.paint.resize({x: style.width, y: style.height});
+		this.paint.resize(style.width, style.height);
 
 		this.element.setStyles({
 			width: style.width, 
@@ -155,58 +179,55 @@ ART.Button = new Class({
 			cursor: style.cursor
 		});
 
-		//make border
-		var shape = (style.pill) ? (style.width > style.height) ? 'horizontal-pill' : 'vertical-pill' : 'rounded-rectangle';
-		this.paint.start({x: 0, y: 0});
-
-
+		//calculate border radius
+		
 		['Top', 'Bottom'].each(function(side, i){
 			['Left', 'Right'].each(function(dir, i) {
 				if (style['cornerRadius'+side+dir] == null) style['cornerRadius'+side+dir] = style.cornerRadius;
 			});
 		});
-		var rad = [style.cornerRadiusTopLeft, style.cornerRadiusTopRight, style.cornerRadiusBottomRight, style.cornerRadiusBottomLeft];
+		var rad0 = [style.cornerRadiusTopLeft, style.cornerRadiusTopRight, style.cornerRadiusBottomRight, style.cornerRadiusBottomLeft];
+		var radM1 = [style.cornerRadiusTopLeft - 1, style.cornerRadiusTopRight - 1, style.cornerRadiusBottomRight - 1, style.cornerRadiusBottomLeft - 1];
 		
 
 		//make the border
-		this.paint.shape(shape, {x: style.width, y: style.height}, rad);
-		this.paint.end({'fill': true, 'fill-color': style.borderColor});
+		this.borderLayer.draw(style.width, style.height, rad0);
+		this.borderLayer.fill.apply(this.borderLayer, $splat(style.borderColor));
 
-		//main button fill
-		this.paint.start({x: 1, y: 1});
-		this.paint.shape(shape, {x: style.width - 2, y: style.height - 2}, rad);
-		this.paint.end({'fill': true, 'fill-color': style.reflectionColor || style.fillColor});
+		//reflection
+		this.fillLayer.draw(style.width - 2, style.height - 2, radM1);
+		this.fillLayer.fill.apply(this.fillLayer, $splat(style.reflectionColor));
+		this.fillLayer.translate(1, 1);
 		
 		//background
-		if (style.backgroundColor) {
-			this.paint.start({x: 1, y: 2});
-			this.paint.shape(shape, {x: style.width - 2, y: style.height - 3}, rad);
-			this.paint.end({'fill': true, 'fill-color': style.backgroundColor});
+		this.backgroundLayer.draw(style.width - 2, style.height - 3, radM1);
+		this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(style.backgroundColor));
+		this.backgroundLayer.translate(1, 2);
+		
+		if (this.options.text){
+			this.textLayer.fill.apply(this.textLayer, $splat(style.fontColor));
+			this.textLayer.translate(style.padding[3], style.padding[0]);
+		} else if (this.options.glyph){
+			this.glyphLayer.fill.apply(this.glyphLayer, $splat(style.glyphColor));
+			this.glyphLayer.translate(style.glyphLeft, style.glyphTop);
 		}
-
-		if (style.glyph) this.makeGlyph();
-	
-		if (this.options.text) this.makeText(this.options.text);
 
 		return this;
 
 	},
 
-	makeGlyph: function(){
-		var style = ART.Sheet.lookupStyle(this.getSelector());
-		this.paint.start({x: style.glyphLeft, y: style.glyphTop});
-		this.paint.shape(style.glyph, {x: style.glyphWidth, y: style.glyphHeight});
-		if (style.glyphStroke) this.paint.end({'stroke': true, 'stroke-width': style.glyphStroke, 'stroke-color': style.glyphColor});
-		else if (style.glyphFill) this.paint.end({fill: true, fillColor: style.glyphColor});
-		else this.paint.end();
+	makeGlyph: function(glyph, nrd){
+		if (!this.glyphLayer) return;
+		this.glyphLayer.draw(glyph);
+		this.glyphBounds = this.glyphLayer.measure();
+		if (!nrd) this.redraw();
 	},
 	
-	makeText: function(text){
-		var style = ART.Sheet.lookupStyle(this.getSelector());
-		var font = ART.Paint.lookupFont(style.font);
-		this.paint.start({x: style.padding[3] + 1, y: style.padding[0] + 1});
-		this.paint.text(font, style.fontSize, this.options.text);
-		this.paint.end({'fill': true, 'fill-color': style.fontColor});
+	makeText: function(text, size, nrd){
+		if (!this.textLayer) return;
+		this.textLayer.draw(text, size);
+		this.fontBounds = this.textLayer.measure();
+		if (!nrd) this.redraw();
 	}
 
 });
