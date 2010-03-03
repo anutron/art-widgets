@@ -11,7 +11,7 @@ ART.Sheet.defineStyle('button', {
 	'font-family': 'Moderna',
 	'font-variant': 'normal',
 	'font-size': 11,
-	'font-color': hsb(0, 100, 10),
+	'font-color': Color.hsb(0, 100, 10),
 	'padding': [5, 5, 5, 5],
 	'cursor': 'pointer',
 
@@ -20,7 +20,7 @@ ART.Sheet.defineStyle('button', {
 
 	'glyph': false,
 	'glyph-stroke': 2,
-	'glyph-color': hsb(0, 0, 0, 0.8),
+	'glyph-color': Color.hsb(0, 0, 0, 0.8),
 	'glyph-height': 10,
 	'glyph-width': 10,
 	'glyph-top': 2,
@@ -31,26 +31,26 @@ ART.Sheet.defineStyle('button', {
 	'pill': false,
 
 	'corner-radius': 5,
-	'background-color': [hsb(0, 0, 90), hsb(0, 0, 70)],
-	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
-	'border-color': hsb(0, 0, 0, 0.8)
+	'background-color': [Color.hsb(0, 0, 90), Color.hsb(0, 0, 70)],
+	'reflection-color': [Color.hsb(0, 0, 100, 1), Color.hsb(0, 0, 0, 0)],
+	'border-color': Color.hsb(0, 0, 0, 0.8)
 });
 ART.Sheet.defineStyle('button:focus', {
-	'background-color': [hsb(0, 0, 80), hsb(0, 0, 60)],
-	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
-	'border-color': hsb(0, 0, 0, 0.8)
+	'background-color': [Color.hsb(0, 0, 80), Color.hsb(0, 0, 60)],
+	'reflection-color': [Color.hsb(0, 0, 100, 1), Color.hsb(0, 0, 0, 0)],
+	'border-color': Color.hsb(0, 0, 0, 0.8)
 });
 ART.Sheet.defineStyle('button:active', {
-	'background-color': hsb(0, 0, 40),
-	'reflection-color': [hsb(0, 0, 30, 1), hsb(0, 0, 0, 0)],
-	'border-color': hsb(0, 0, 0, 0.8)
+	'background-color': Color.hsb(0, 0, 40),
+	'reflection-color': [Color.hsb(0, 0, 30, 1), Color.hsb(0, 0, 0, 0)],
+	'border-color': Color.hsb(0, 0, 0, 0.8)
 });
 
 ART.Sheet.defineStyle('button:disabled', {
-	'background-color': [hsb(0, 0, 90), hsb(0, 0, 80)],
-	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
-	'border-color': hsb(0, 0, 0, 0.5),
-	'glyph-color': hsb(0, 0, 0, 0.3)
+	'background-color': [Color.hsb(0, 0, 90), Color.hsb(0, 0, 80)],
+	'reflection-color': [Color.hsb(0, 0, 100, 1), Color.hsb(0, 0, 0, 0)],
+	'border-color': Color.hsb(0, 0, 0, 0.5),
+	'glyph-color': Color.hsb(0, 0, 0, 0.3)
 });
 
 ART.Button = new Class({
