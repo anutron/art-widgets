@@ -59,6 +59,8 @@ ART.Sheet.defineStyle('history ul', {
 	'display': 'none'
 });
 ART.Sheet.defineStyle('history ul li', {
+	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
+	'font-size': 12,
   'list-style': 'none'
 });
 ART.Sheet.defineStyle('history ul li a', {
@@ -88,8 +90,10 @@ ART.Sheet.defineStyle('history div.location_text', {
 	'left': 7,
 	'overflow': 'hidden',
 	'position': 'absolute',
-	'top': 3,
-	'padding-right': 12
+	'top': 1,
+	'padding-right': 12,
+	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
+	'font-size': 12
 });
 ART.Sheet.defineStyle('history ul li a:hover', {
 	'cursor': 'pointer',
@@ -106,7 +110,7 @@ ART.Sheet.defineStyle('history input', {
 	'position': 'absolute',
 	'height': 9,
 	'left': 54,
-	'top': 1,
+	'top': -1,
 	'background-color': 'transparent',
 	'border': 'none',
 	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
@@ -201,7 +205,7 @@ ART.History = new Class({
 			className: 'navDown'
 			// glyph: ART.Glyphs.triangleDown
 		});
-		this.location_text = new Element('div');
+		this.location_text = new Element('div', {'class': 'location_text'});
 		$(this.location).inject(this.element).addEvent('click', function(){
 			this.toggle();
 		}.bind(this)).adopt(this.location_text);
