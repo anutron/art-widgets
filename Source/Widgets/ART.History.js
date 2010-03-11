@@ -86,7 +86,7 @@ ART.Sheet.defineStyle('history ul li a.current', {
 	'background-color': '#ddd'
 });
 ART.Sheet.defineStyle('history div.location_text', {
-	'height': 12,
+	'height': 16,
 	'left': 7,
 	'overflow': 'hidden',
 	'position': 'absolute',
