@@ -120,7 +120,7 @@ ART.Sheet.defineStyle('window button.maximize', {
 });
 
 ART.Sheet.defineStyle('window:dragging', {
-	'content-visibility': 'hidden',
+	'content-display': 'none',
 	'background-color': hsb(0, 0, 0, 0.1)
 });
 
@@ -430,7 +430,7 @@ ART.Window = new Class({
 		this.contents.setStyles({
 			'height': style.height,
 			'width': style.width,
-			'visibility': style.contentVisibility || 'visible'
+			'display': style.contentDisplay || 'block'
 		});
 		this.renderContent(style);
 		this.renderHeaderText(style);
@@ -447,7 +447,7 @@ ART.Window = new Class({
 			w: contentWidth, 
 			h: contentHeight
 		};
-		if (style.contentVisibility == "hidden") {
+		if (style.contentDisplay == "none") {
 			this.content.setStyle('display', 'none');
 		} else {
 			this.content.setStyles({
@@ -471,7 +471,7 @@ ART.Window = new Class({
 		this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
 		
 		// header layers
-		if (style.contentVisibility == 'hidden') {
+		if (style.contentDisplay == 'none') {
 			this.backgroundLayer.translate(1, 1);
 			this.backgroundLayer.draw(style.width - 2, style.height - 2, style.cornerRadius);
 			this.fill(this.backgroundLayer, style.backgroundColor);
@@ -525,7 +525,7 @@ ART.Window = new Class({
 	},
 	
 	renderHeaderText: function(style){
-		if (style.contentVisibility == 'hidden'){
+		if (style.contentDisplay == 'none'){
 			this.textLayer.hide();
 		} else {
 			this.textLayer.show();
