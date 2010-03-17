@@ -369,7 +369,7 @@ ART.Window = new Class({
 	},
 	
 	setCaption: function(text){
-		this.makeHeaderText(text, ART.Sheet.lookupStyle(this.getSelector()).captionFontSize, true);
+		this.makeHeaderText(text, ART.Sheet.lookupStyle(this.getSelector()).captionFontSize);
 		return this;
 	},
 
