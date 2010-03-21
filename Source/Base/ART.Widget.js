@@ -34,7 +34,8 @@ ART.Widget = new Class({
 		keyboardOptions: {
 			active: false
 		},
-		parentWidget: null
+		parentWidget: null,
+		element: null
 	},
 	
 	initialize: function(options){
@@ -54,11 +55,11 @@ ART.Widget = new Class({
 		}
 		this.setOptions(options);
 		this.prefix = this.ns + '-' + this.name;
-		this.element = new Element('div', {
-			id: this.options.id || this.prefix+new Date().getTime(),
-			'class': this.options.className
+		this.element = this.options.element || new Element('div');
+		this.element.set({
+			id: this.element.get('id') || this.options.id || this.prefix+new Date().getTime()
 		}).store(this.prefix, this).store('widget', this);
-		this.element.addClass(this.ns).addClass(this.prefix);
+		this.element.addClass([this.ns, this.prefix, this.options.className].join(' '));
 		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
 
