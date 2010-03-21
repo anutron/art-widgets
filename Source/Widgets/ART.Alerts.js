@@ -293,7 +293,7 @@ ART.Window.AlertTools = new Class({
 		};
 		enableKB();
 		if (win) {
-			win.fireEvent('alert');
+			win.fireEvent('alert', alert);
 			var shader = function(dragging) {
 				$(alert).setStyle('display', dragging ? 'none' : 'block');
 			};
