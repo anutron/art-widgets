@@ -47,6 +47,9 @@ ART.Browser = new Class({
 		});
 		this.readyToRender('browser:history');
 		this.history.resize();
+		this.addEvent('shade', function(dragging) {
+			if (!dragging) this.history.resize();
+		}.bind(this));
 	},
 
 	redraw: function(){
