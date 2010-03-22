@@ -159,7 +159,7 @@ ART.Button = new Class({
 		this.parent();
 		if (options) this.setOptions(options);
 		if (!this.paint) return this;
-		var style = this.getCurrentStyles();
+		var style = ART.Sheet.lookupStyle(this.getSelector());
 		if (this.options.width) style.width = this.options.width;
 		if (this.options.height) style.height = this.options.height;
 		if (this.options.styles) $extend(style, this.options.styles);
