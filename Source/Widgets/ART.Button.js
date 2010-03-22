@@ -80,14 +80,14 @@ ART.Button = new Class({
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		if (style.glyph) this.options.glyph = style.glyph;
 		
-		if (this.options.text){
-			this.textLayer = new ART.Font(style.fontFamily, style.fontVariant);
-			this.makeText(this.options.text, style.fontSize, true);
-			this.textLayer.inject(this.paint);
-		} else if (this.options.glyph){
+		if (this.options.glyph){
 			this.glyphLayer = new ART.Shape;
 			this.makeGlyph(this.options.glyph, true);
 			this.glyphLayer.inject(this.paint);
+		} else if (this.options.text){
+			this.textLayer = new ART.Font(style.fontFamily, style.fontVariant);
+			this.makeText(this.options.text, style.fontSize, true);
+			this.textLayer.inject(this.paint);
 		}
 		
 		$(this.paint).inject(this.element);
@@ -159,10 +159,11 @@ ART.Button = new Class({
 		this.parent();
 		if (options) this.setOptions(options);
 		if (!this.paint) return this;
-		var style = ART.Sheet.lookupStyle(this.getSelector());
+		var style = this.getCurrentStyles();
 		if (this.options.width) style.width = this.options.width;
 		if (this.options.height) style.height = this.options.height;
-		
+		if (this.options.styles) $extend(style, this.options.styles);
+
 		if (this.options.text){
 			if (!style.width) style.width = (this.fontBounds.right + style.padding[1] + style.padding[3]).round();
 			if (!style.height) style.height = (this.fontBounds.bottom + style.padding[0] + style.padding[2]).round();
@@ -188,7 +189,6 @@ ART.Button = new Class({
 		});
 		var rad0 = [style.cornerRadiusTopLeft, style.cornerRadiusTopRight, style.cornerRadiusBottomRight, style.cornerRadiusBottomLeft];
 		var radM1 = [style.cornerRadiusTopLeft - 1, style.cornerRadiusTopRight - 1, style.cornerRadiusBottomRight - 1, style.cornerRadiusBottomLeft - 1];
-		
 
 		//make the border
 		this.borderLayer.draw(style.width, style.height, rad0);
@@ -204,14 +204,13 @@ ART.Button = new Class({
 		this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(style.backgroundColor));
 		this.backgroundLayer.translate(1, 2);
 		
-		if (this.options.text){
-			this.textLayer.fill.apply(this.textLayer, $splat(style.fontColor));
-			this.textLayer.translate(style.padding[3], style.padding[0]);
-		} else if (this.options.glyph){
+		if (this.options.glyph){
 			this.glyphLayer.fill.apply(this.glyphLayer, $splat(style.glyphColor));
 			this.glyphLayer.translate(style.glyphLeft, style.glyphTop);
+		} else if (this.options.text){
+			this.textLayer.fill.apply(this.textLayer, $splat(style.fontColor));
+			this.textLayer.translate(style.padding[3], style.padding[0]);
 		}
-
 		return this;
 
 	},

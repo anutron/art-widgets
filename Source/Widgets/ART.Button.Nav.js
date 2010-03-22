@@ -57,41 +57,5 @@ ART.Sheet.defineStyle('button.navRight:active', {
 	'border-color': hsb(0, 0, 0, 0.8)
 });
 
-// ART.Button.Nav = {}; //I dont believe this class is needed at all.
-// 
-// ['left', 'right', 'up', 'down'].each(function(dir) {
-// 
-// 	var upper = dir.capitalize();
-// 	
-// 	ART.Button.Nav[upper] = new Class({
-// 
-// 		Extends: ART.Button,
-// 
-// 		options: {
-// 			direction: dir,
-// 			className: 'nav' + upper
-// 		}// ,
-// 		// 
-// 		// 		makeGlyph: function(){
-// 		// 			var style = ART.Sheet.lookupStyle(this.getSelector());
-// 		// 			this.paint.start({x: style.glyphLeft, y: style.glyphTop});
-// 		// 			this.paint.shape(style.glyph, {x: style.glyphWidth, y: style.glyphHeight}, this.options.direction);
-// 		// 			if (style.glyphStroke) this.paint.end({'stroke': true, 'stroke-width': style.glyphStroke, 'stroke-color': style.glyphColor});
-// 		// 			else if (style.glyphFill) this.paint.end({fill: true, fillColor: style.glyphColor});
-// 		// 			else this.paint.end();
-// 		// 		}
-// 
-// 	});
-// 
-// });
-
-// ART.Button.Nav = new Class({
-// 	Extends: ART.Button,
-// 
-// 	options: {
-// 		// direction: dir,
-// 		className: 'nav' + upper
-// 	}
-// });
 
 })();
