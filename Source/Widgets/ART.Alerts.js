@@ -96,8 +96,8 @@ ART.Alert = new Class({
 			
 			tmp.style.cssText = '';
 			
-			style.width = this.contentSize.w - w; //border is hard coded to 1 on each side
-			style.height = this.contentSize.h - h; //border is hard coded to 1 on each side
+			style.width = this.contentSize.x - w; //border is hard coded to 1 on each side
+			style.height = this.contentSize.y - h; //border is hard coded to 1 on each side
 		}
 		this.content.setStyles(style);
 		this.footer.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' footer'));

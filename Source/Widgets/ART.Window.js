@@ -437,15 +437,15 @@ ART.Window = new Class({
 		this.renderResize(style);
 		$(this.paint).setStyles({top: -1, left: -1});
 		if (this.shim) this.shim.position();
-		this.fireEvent('resize', [this.contentSize.w, this.contentSize.h]);
+		this.fireEvent('resize', [this.contentSize.x, this.contentSize.y]);
 	},
 	
 	renderContent: function(style){
 		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
 		var contentWidth = style.width -2;
 		this.contentSize = {
-			w: contentWidth, 
-			h: contentHeight
+			x: contentWidth, 
+			y: contentHeight
 		};
 		if (style.contentDisplay == "none") {
 			this.content.setStyle('display', 'none');

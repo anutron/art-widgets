@@ -80,8 +80,8 @@ ART.SolidWindow = new Class({
 		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
 		var contentWidth = style.width -2;
 		this.contentSize = {
-			w: contentWidth, 
-			h: contentHeight
+			x: contentWidth, 
+			y: contentHeight
 		};
 		if (style.contentVisibility == "hidden") {
 			this.content.setStyle('display', 'none');
