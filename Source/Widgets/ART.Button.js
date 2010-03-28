@@ -102,7 +102,7 @@ ART.Button = new Class({
 				this.blur();
 			}.bind(this),
 			mousedown: function(e) {
-				e.stopPropagation();
+				if (e) e.stopPropagation();
 				this.enable().focus();
 			}.bind(this)
 		});
