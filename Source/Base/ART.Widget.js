@@ -72,6 +72,16 @@ ART.Widget = new Class({
 		if (parent) this.setParent(parent);
 	},
 
+	addClass: function(className){
+		this.classes.include(className);
+		return this;
+	},
+
+	removeClass: function(className) {
+		this.classes.erase(className);
+		return this;
+	},
+
 	getSelector: function(){
 		var selector = (this.parentWidget) ? this.parentWidget.getSelector() + ' ' : '';
 		selector += this.name;
