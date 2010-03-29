@@ -29,6 +29,8 @@ ART.SplitView = new Class({
 	
 	Extends: ART.Widget,
 	
+	Implements: [Options, Events, Chain],
+	
 	options: {
 		fixed: 'left', 
 		resizable: true, 
@@ -179,7 +181,8 @@ ART.SplitView = new Class({
 				});
 				this.splitterHidden = true;
 			}
-		});
+			this.callChain();
+		}.bind(this));
 		return this;
 	},
 
