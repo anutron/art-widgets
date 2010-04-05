@@ -8,6 +8,16 @@ License:
 // Base widget class. Based on » http://gist.github.com/85837
 (function(){
 
+if (Browser.Engine.trident) {
+	var setStyle = Element.prototype.setStyle;
+	Element.implement({
+		setStyle: function(property, style){
+			if (style.toRGB) style = style.toRGB();
+			return setStyle.call(this, property, style);
+		}
+	});
+}
+
 var counting, focused;
 
 ART.Widget = new Class({
