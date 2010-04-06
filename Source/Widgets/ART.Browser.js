@@ -48,18 +48,19 @@ ART.Browser = new Class({
 		this.readyToRender('browser:history');
 		this.history.resize();
 		this.addEvent('shade', function(dragging) {
+			this._dragging = dragging;
 			if (!dragging) this.history.resize();
 		}.bind(this));
 	},
 
 	redraw: function(){
 		this.parent.apply(this, arguments);
-		if (this.history) this.history.render();
+		if (this.history && !this._dragging) this.history.render();
 	},
 	
 	resize: function(){
 		this.parent.apply(this, arguments);
-		if (this.history) this.history.resize();
+		if (this.history && !this._dragging) this.history.resize();
 	},
 
 	show: function() {
