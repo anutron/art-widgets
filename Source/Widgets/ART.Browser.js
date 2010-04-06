@@ -3,16 +3,16 @@ ART.Sheet.defineStyle('window.browser', {
 	'header-overflow': 'visible'
 });
 
-ART.Sheet.defineStyle('history.browser', {
+ART.Sheet.defineCSS('window.browser history', {
 	'top':30,
 	'padding': '0 8px 0 10px'
 });
 
-ART.Sheet.defineStyle('history input', {
+ART.Sheet.defineCSS('window.browser history input', {
 	'left': 66
 });
 
-ART.Sheet.defineStyle('history input.disabled', {
+ART.Sheet.defineCSS('window.browser history input.disabled', {
 	'left': 66
 });
 

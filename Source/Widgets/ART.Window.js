@@ -58,7 +58,7 @@ ART.Sheet.defineStyle('window:disabled', {
 	'content-color': hsb(0, 0, 0)
 });
 
-ART.Sheet.defineStyle('window footer-text', {
+ART.Sheet.defineCSS('window footer-text', {
 	'float': 'left',
 	'margin': '3px 14px 0px 4px'
 });
@@ -206,7 +206,8 @@ ART.Window = new Class({
 			styles: $merge(relative, {
 				top: 1,
 				left: 1,
-				overflow: 'hidden'
+				overflow: 'hidden',
+				zIndex: 1
 			})
 		});
 		this.content = new Element('div', {
@@ -514,7 +515,7 @@ ART.Window = new Class({
 			
 			
 			
-			this.footerText.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' footer-text'));
+			this.footerText.setStyles(ART.Sheet.lookupCSS(this.getSelector() + ' footer-text'));
 		}
 	},
 	

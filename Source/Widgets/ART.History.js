@@ -1,13 +1,15 @@
 ART.Sheet.defineStyle('history button.navLeft', {
-	'float': 'left',
 	'padding': [0, 0, 0, 0]
+}, {
+	'float': 'left'
 });
 ART.Sheet.defineStyle('history button.navRight', {
 	'corner-radius-top-right': 0,
 	'corner-radius-bottom-right': 0,
-	'float': 'left',
-	'marginLeft': -1,
 	'padding': [0, 0, 0, 0]
+}, {
+	'float': 'left',
+	'marginLeft': -1
 });
 ART.Sheet.defineStyle('history button.navDown', {
 	'height': 19,
@@ -18,7 +20,8 @@ ART.Sheet.defineStyle('history button.navDown', {
 	'corner-radius-top-left': 0,
 	'corner-radius-bottom-left': 0,
 	'glyph': false,
-	'padding': [0, 0, 0, 0],
+	'padding': [0, 0, 0, 0]
+}, {
 	'float': 'left',
 	'marginLeft': -1,
 	'position': 'relative'
@@ -27,8 +30,6 @@ ART.Sheet.defineStyle('history button.refresh', {
 	'height': 19,
 	'width': 27,
 	'padding': [0, 0, 0, 0],
-	'float': 'left',
-	'marginLeft': -1,
 	'corner-radius-top-right': 4,
 	'corner-radius-bottom-right': 4,
 	'corner-radius-top-left': 0,
@@ -40,12 +41,15 @@ ART.Sheet.defineStyle('history button.refresh', {
 	'glyph-width': 12,
 	'glyph-top': 4,
 	'glyph-left': 8
+}, {
+	'float': 'left',
+	'marginLeft': -1
 });
-ART.Sheet.defineStyle('history', {
+ART.Sheet.defineCSS('history', {
 	'position': 'relative',
 	'width': 'auto'
 });
-ART.Sheet.defineStyle('history ul', {
+ART.Sheet.defineCSS('history ul', {
 	'left': 0,
 	'overflow': 'visible',
 	'border': 'solid #000',
@@ -55,16 +59,17 @@ ART.Sheet.defineStyle('history ul', {
 	'padding': [0, 0, 0, 0],
 	'margin': 0,
 	'position': 'relative',
-	'top': -4,
+	'top': Browser.Engine.trident ? 0 : -6,
 	'display': 'none'
 });
-ART.Sheet.defineStyle('history ul li', {
+ART.Sheet.defineCSS('history ul li', {
 	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
 	'font-size': 12,
   'list-style': 'none'
 });
-ART.Sheet.defineStyle('history ul li a', {
+ART.Sheet.defineCSS('history ul li a', {
 	'display': 'block',
+	'position': 'relative',
 	'background': '#fff',
 	'border-bottom': '1px solid #000',
 	'padding': [4, 4, 4, 4],
@@ -73,7 +78,7 @@ ART.Sheet.defineStyle('history ul li a', {
 	'color': '#333',
 	'text-decoration': 'none'
 });
-ART.Sheet.defineStyle('history ul li a span', {
+ART.Sheet.defineCSS('history ul li a span', {
 	'padding': '4px 0px 0px',
 	'color': '#888',
 	'font-weight': 'normal',
@@ -81,11 +86,11 @@ ART.Sheet.defineStyle('history ul li a span', {
 	'display': 'block',
 	'font-size': 9
 });
-ART.Sheet.defineStyle('history ul li a.current', {
+ART.Sheet.defineCSS('history ul li a.current', {
 	'font-weight': 'bold',
 	'background-color': '#ddd'
 });
-ART.Sheet.defineStyle('history div.location_text', {
+ART.Sheet.defineCSS('history div.location_text', {
 	'height': 16,
 	'left': 7,
 	'overflow': 'hidden',
@@ -95,22 +100,22 @@ ART.Sheet.defineStyle('history div.location_text', {
 	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
 	'font-size': 12
 });
-ART.Sheet.defineStyle('history ul li a:hover', {
+ART.Sheet.defineCSS('history ul li a:hover', {
 	'cursor': 'pointer',
 	'background-color': '#d5dee5',
 	'color': '#000'
 });
-ART.Sheet.defineStyle('history ul li.hovered a', {
+ART.Sheet.defineCSS('history ul li.hovered a', {
 	'background-color': '#d5dee5',
 	'color': '#000',
 	'cursor': 'pointer'
 });
-ART.Sheet.defineStyle('history input', {
+ART.Sheet.defineCSS('history input', {
 	'display': 'none',
 	'position': 'absolute',
 	'height': 9,
 	'left': 54,
-	'top': -1,
+	'top': 1,
 	'background-color': 'transparent',
 	'border': 'none',
 	'font-family':"'Lucida Grande','Lucida Sans Unicode','Trebuchet MS',Helvetica,Arial,sans-serif",
@@ -122,10 +127,11 @@ ART.Sheet.defineStyle('history input', {
 });
 
 ART.Sheet.defineStyle('history divot', {
+	'color': hsb(0, 0, 33)
+}, {
 	'position': 'absolute',
 	'right': 5,
-	'top': 7,
-	'color': hsb(0, 0, 33)
+	'top': 7
 });
 ART.Sheet.defineStyle('history:disabled divot', {
 	'color': hsb(0, 0, 66)
@@ -175,6 +181,8 @@ ART.History = new Class({
 	
 	resize: function() {
 		var w = this.element.getSize().x - $(this.nav_back).getSize().x - $(this.nav_next).getSize().x - $(this.refresher).getSize().x - 5;
+		//if the width is less than zero, then it usually means that the content is hidden; exit.
+		if (w < 0) return;
 		['padding', 'margin'].each(function(style){
 			this.element.getStyle(style).split(' ').each(function(val, i) {
 				if (i%2) w = w - val.toInt();
@@ -203,7 +211,6 @@ ART.History = new Class({
 		this.location = new ART.Button({
 			parentWidget: this,
 			className: 'navDown'
-			// glyph: ART.Glyphs.triangleDown
 		});
 		this.location_text = new Element('div', {'class': 'location_text'});
 		$(this.location).inject(this.element).addEvent('click', function(){
@@ -212,7 +219,7 @@ ART.History = new Class({
 
 		this.divotContainer = new ART(10, 10);
 		this.divot = new ART.Shape().inject(this.divotContainer).draw("M0,0L8,0L4,8L0,0").translate(0, -1);
-		$(this.divotContainer).inject(this.location).setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' divot'));
+		$(this.divotContainer).inject(this.location).setStyles(ART.Sheet.lookupCSS(this.getSelector() + ' divot'));
 
 		this.refresher = new ART.Button({
 			className: 'refresh',
@@ -227,9 +234,9 @@ ART.History = new Class({
 		//create the list for the history
 		this.nav = new Element('ul').inject(this.location);
 
-		var hoveredStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li.hovered a');
-		var nonHovered = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a');
-		var currentHovered = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a.current');
+		var hoveredStyles = ART.Sheet.lookupCSS(this.getSelector() + ' ul li.hovered a');
+		var nonHovered = ART.Sheet.lookupCSS(this.getSelector() + ' ul li a');
+		var currentHovered = ART.Sheet.lookupCSS(this.getSelector() + ' ul li a.current');
 
 		var arrow = function(e, polarity){
 			e.preventDefault();
@@ -285,23 +292,22 @@ ART.History = new Class({
 		if (!this.nav_back) return;
 		if (this.current_selector == this.getSelector()) return;
 		this.current_selector = this.getSelector();
-		this.element.setStyles(ART.Sheet.lookupStyle(this.getSelector()));
-		
-		$(this.nav_back).setStyles(ART.Sheet.lookupStyle(this.nav_back.getSelector()));
+		this.element.setStyles(ART.Sheet.lookupCSS(this.getSelector()));
+		$(this.nav_back).setStyles(ART.Sheet.lookupCSS(this.nav_back.getSelector()));
 
-		$(this.nav_next).setStyles(ART.Sheet.lookupStyle(this.nav_next.getSelector()));
+		$(this.nav_next).setStyles(ART.Sheet.lookupCSS(this.nav_next.getSelector()));
 
-		this.location_text.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' div.location_text'));
-		$(this.location).setStyles(ART.Sheet.lookupStyle(this.location.getSelector()));
+		this.location_text.setStyles(ART.Sheet.lookupCSS(this.getSelector() + ' div.location_text'));
+		$(this.location).setStyles(ART.Sheet.lookupCSS(this.location.getSelector()));
 
-		$(this.refresher).setStyles(ART.Sheet.lookupStyle(this.refresher.getSelector()));
+		$(this.refresher).setStyles(ART.Sheet.lookupCSS(this.refresher.getSelector()));
 
-		this.nav.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' ul'));
+		this.nav.setStyles(ART.Sheet.lookupCSS(this.getSelector() + ' ul'));
 		
 		var divotStyles = ART.Sheet.lookupStyle(this.getSelector() + ' divot');
 		this.divot.fill.apply(this.divot, $splat(divotStyles.color));
 
-		this.editor.setStyles(ART.Sheet.lookupStyle(this.getSelector() + (this.history.length ? ' input': ' input:disabled')));
+		this.editor.setStyles(ART.Sheet.lookupCSS(this.getSelector() + (this.history.length ? ' input': ' input:disabled')));
 		this.resize();
 	},
 	
@@ -396,11 +402,11 @@ ART.History = new Class({
 		//mark it as active (this makes it stand out a bit more)
 		this.element.addClass('history_location_active');
 		//create list items for each history item
-		var liStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li');
-		var liAnchorStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a');
-		var liCurrentAnchorStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a.current');
-		var hoveredStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li.hovered a');
-		var urlStyles = ART.Sheet.lookupStyle(this.getSelector() + ' ul li a span');
+		var liStyles = ART.Sheet.lookupCSS(this.getSelector() + ' ul li');
+		var liAnchorStyles = ART.Sheet.lookupCSS(this.getSelector() + ' ul li a');
+		var liCurrentAnchorStyles = ART.Sheet.lookupCSS(this.getSelector() + ' ul li a.current');
+		var hoveredStyles = ART.Sheet.lookupCSS(this.getSelector() + ' ul li.hovered a');
+		var urlStyles = ART.Sheet.lookupCSS(this.getSelector() + ' ul li a span');
 		var nav = this.nav;
 
 		var lis = this.history.map(function(hist, index){
