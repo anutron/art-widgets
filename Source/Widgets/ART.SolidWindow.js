@@ -151,13 +151,13 @@ ART.FunkyGlass = new Class({
 		if (width < 0) path.move(width, 0);
 		if (height < 0) path.move(0, height);
 		
-		if (tl > 0) path.arcLeft(tl, -tl);
+		if (tl > 0) path.arc(tl, -tl);
 		path.line(Math.abs(width) - (tr + tl), 0);
 		
-		if (tr > 0) path.arcRight(tr, tr);
+		if (tr > 0) path.counterArc(tr, tr);
 		path.line(0, Math.abs(height * 0.5));
 
-		path.arcRight(-width, height - (height * 0.5));
+		path.counterArc(-width, height - (height * 0.5));
 
 
 		path.line(0, - Math.abs(height * 0.5) + tl);
