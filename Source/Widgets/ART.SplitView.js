@@ -12,7 +12,7 @@ ART.Sheet.defineStyle('splitview', {
 	'max-fixed-width': 400,
 	'min-fixed-width': null,
 	'splitter-width': 3,
-	'splitter-cursor': 'ew-resize',
+	'splitter-cursor': Browser.Engine.trident ? 'e-resize' : 'ew-resize',
 	
 	'splitter-background-color': hsb(0, 0, 50),
 	'left-background-color': '#d6dde5',
