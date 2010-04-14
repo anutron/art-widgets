@@ -9,7 +9,8 @@ ART.Sheet.defineStyle('history button.navRight', {
 	'padding': [0, 0, 0, 0]
 }, {
 	'float': 'left',
-	'marginLeft': -1
+	'left': -1,
+	'position': 'relative'
 });
 ART.Sheet.defineStyle('history button.navDown', {
 	'height': 19,
@@ -23,7 +24,7 @@ ART.Sheet.defineStyle('history button.navDown', {
 	'padding': [0, 0, 0, 0]
 }, {
 	'float': 'left',
-	'marginLeft': -1,
+	'left': -2,
 	'position': 'relative'
 });
 ART.Sheet.defineStyle('history button.refresh', {
@@ -43,7 +44,8 @@ ART.Sheet.defineStyle('history button.refresh', {
 	'glyph-left': 8
 }, {
 	'float': 'left',
-	'marginLeft': -1
+	'left': -3,
+	'position': 'relative'
 });
 ART.Sheet.defineCSS('history', {
 	'position': 'relative',
