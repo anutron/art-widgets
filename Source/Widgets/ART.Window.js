@@ -311,23 +311,17 @@ ART.Window = new Class({
 			this.startHeight = this.contents.offsetHeight;
 			this.startWidth = this.contents.offsetWidth;
 			this.fireEvent('resize:start');
+			this.displayForDrag(true);
 		}.bind(this));
 
 		var dragging;
 		this.touchResize.addEvent('move', function(dx, dy){
 			this.fireEvent('resize:move', [dx, dy]);
-			if (!dragging) {
-				this.displayForDrag(true, false);
-				dragging = true;
-			}
 			this.resize(this.startWidth + dx, this.startHeight + dy);
 		}.bind(this));
 		
 		this.touchResize.addEvent('end', function(){
-			if (dragging) {
-				dragging = false;
-				this.displayForDrag(false);
-			}
+			this.displayForDrag(false);
 			this.fireEvent('resize:end');
 		}.bind(this));
 	},
@@ -426,8 +420,8 @@ ART.Window = new Class({
 		this.currentWidth = style.width;
 
 		var padding = 0;
+		if (this.paused) this.paint.paused = true;
 		this.paint.resize(style.width + padding, style.height + padding);
-		
 		this.contents.setStyles({
 			'height': style.height,
 			'width': style.width,
@@ -540,16 +534,6 @@ ART.Window = new Class({
 		if (text && fontSize) this.textLayer.draw(text, fontSize);
 		this.fontBounds = this.textLayer.measure();
 		if (!nrd) this.redraw();
-	},
-
-	initialSize: $empty,
-
-	displayForDrag: function(dragging, render){
-		render = $pick(render, true);
-		this.element[dragging ? 'addClass' : 'removeClass'](this.prefix + '-dragging');
-		this[dragging ? 'addPseudo' : 'removePseudo']('dragging');
-		if (render) this.render();
-		this.fireEvent('shade', dragging);
 	}
 
 });
