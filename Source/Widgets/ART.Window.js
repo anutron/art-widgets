@@ -159,7 +159,7 @@ ART.Window = new Class({
 		draggable: true,
 		shadow: Browser.Engine.webkit,
 		cascaded: true,
-		buttonSide: Browser.Platform.windows ? 'right' : 'left'
+		buttonSide: Browser.Platform.win ? 'right' : 'left'
 	},
 
 	initialize: function(options){
