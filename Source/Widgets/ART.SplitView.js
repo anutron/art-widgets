@@ -12,6 +12,7 @@ ART.Sheet.defineStyle('splitview', {
 	'max-fixed-width': 400,
 	'min-fixed-width': null,
 	'splitter-width': 3,
+	//IE doesn't support east-west resize cursor; just use east
 	'splitter-cursor': Browser.Engine.trident ? 'e-resize' : 'ew-resize',
 	
 	'splitter-background-color': hsb(0, 0, 50),

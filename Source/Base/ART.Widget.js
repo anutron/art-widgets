@@ -39,10 +39,15 @@ ART.Widget = new Class({
 	},
 	
 	initialize: function(options){
+		//the adoption event latches; i.e. once it has fired, 
+		//any new onAdoption events added to the instance will 
+		//be immediately called; kind of like DomReady.
 		this.latchEvents('adoption');
 		this.pseudos = [];
 		this.childWidgets = [];
 		var parent, kbManager;
+		//due to an issue with $merge (which setOptions uses)
+		//we have to remove any Class instance references from the optoins object
 		if (options) {
 			if (options.parentWidget) {
 				parent = options.parentWidget;
@@ -54,36 +59,44 @@ ART.Widget = new Class({
 			}
 		}
 		this.setOptions(options);
+		//all widgets have a namespace and a name - 'namespace-name' becomes the prefix
 		this.prefix = this.ns + '-' + this.name;
 		this.element = this.options.element || new Element('div');
+		//give an id if there isn't one
+		//store a pointer on teh element to this instance
 		this.element.set({
 			id: this.element.get('id') || this.options.id || this.prefix+new Date().getTime()
 		}).store(this.prefix, this).store('widget', this);
+		//add the namespace, prefix, and className as classes to the element
 		this.element.addClass([this.ns, this.prefix, this.options.className].join(' '));
-		this.classes = this.options.classes;
 		this.classes = (this.options.className) ? this.options.className.split(' ') : [];
 
+		//create a keyboard instance for the widget
 		var kbOptions = $merge(this.options.keyboardOptions, options ? options.keyboardOptions || {} : {});
 		kbOptions.manager = kbManager || (parent ? parent.keyboard : null);
 		this.keyboard = new Keyboard(kbOptions);
 		this.keyboard.widget = this;
 		this.keyboard.addEvent('deactivate', this.blur.bind(this));
 
+		//if there's a parent set in the options, add it
 		if (parent) this.setParent(parent);
 	},
 
+	//adds a class to the widget and redraws it
 	addClass: function(className){
 		this.classes.include(className);
 		this.redraw();
 		return this;
 	},
 
+	//removes a class from the widget and redraws it
 	removeClass: function(className) {
 		this.classes.erase(className);
 		this.redraw();
 		return this;
 	},
 
+	//gets the selector for this widget; includes the selectors of any ancestors
 	getSelector: function(){
 		var selector = (this.parentWidget) ? this.parentWidget.getSelector() + ' ' : '';
 		selector += this.name;
@@ -92,14 +105,23 @@ ART.Widget = new Class({
 		return selector;
 	},
 
+	//adds a psuedo to the instance and redraws
 	addPseudo: function(pseudo){
 		this.pseudos.include(pseudo);
+		this.redraw();
+		return this;
 	},
 
+	//removes a psuedo from the instance and redraws
 	removePseudo: function(pseudo){
 		this.pseudos.erase(pseudo);
+		this.redraw();
+		return this;
 	},
 
+	//assigns another widget as the parent of this one
+	//used for art.sheet selector states as well as bubbling
+	//of certain behaviors and events
 	setParent: function(widget, initing){
 		if (!initing) this.removeParent();
 		this.parentWidget = widget;
@@ -110,6 +132,7 @@ ART.Widget = new Class({
 		return this;
 	},
 
+	//deletes the reference to a parent widget
 	removeParent: function(){
 		this.prevParent = this.parentWidget || this.prevParent;
 		if (!this.prevParent) return;
@@ -123,6 +146,9 @@ ART.Widget = new Class({
 
 	// render
 
+	//takes the arguments passed (strings) and pushes them onto a
+	//stack that acts as a reference counter. So long as items are
+	//in that stack, the render functionality is paused.
 	requireToRender: function(){
 		this.requiredToRender = this.requiredToRender || [];
 		$A(arguments).each(function(requirement) {
@@ -130,6 +156,8 @@ ART.Widget = new Class({
 		}, this);
 	},
 
+	//takes the arguments passed (strings) and removes them from 
+	//the requiredToRender stack (see requireToRender method).
 	readyToRender: function() {
 		if (!this.requiredToRender || !this.requiredToRender.length) return;
 		$A(arguments).each(function(requirement) {
@@ -137,6 +165,8 @@ ART.Widget = new Class({
 		}, this);
 	},
 
+	//re-draws this widget and all its children. intended extension point for
+	//subclasses
 	redraw: function(){
 		if (counting) this._counters();
 		this.childWidgets.each(function(child) {
@@ -145,12 +175,17 @@ ART.Widget = new Class({
 		return this;
 	},
 
+	//returns true if the requiredToRender array is empty and this instance
+	//is not destroyed, (optionally) not hidden, and its parent widget is
+	//also ready to render
 	isReadyToRender: function(){
 		var isReady = (!this.requiredToRender || !this.requiredToRender.length) && !this.destroyed && (this.options.renderWhileHidden || !this.hidden);
 		if (isReady && this.parentWidget) isReady = this.parentWidget.isReadyToRender();
 		return isReady;
 	},
 
+	//checks to see if this instance is ready to render and, if so, calls its 
+	//redraw method. intended to be called (the redraw method is not).
 	render: function(override){
 		if (this.isReadyToRender()) this.redraw(override);
 		return this;
@@ -253,6 +288,7 @@ ART.Widget = new Class({
 	},
 	//the widget is interactable
 	enable: function(){
+		//if the parent widget is disabled, then this one is, too
 		if (this.parentWidget && this.parentWidget.disabled) {
 			this.disabledByParent = true;
 			return this;
@@ -274,6 +310,9 @@ ART.Widget = new Class({
 		return this;
 	},
 
+	/*
+		Keyboard integration / delegation methods
+	*/
 	attachKeys: function(events){
 		this.keyboard.addEvents(events);
 	},
@@ -306,6 +345,7 @@ ART.Widget = new Class({
 		return this.keyboard.getShortcuts();
 	},
 
+	//destroys a widget and its child widgets.
 	destroy: function(){
 		this.removeParent();
 		$A(this.childWidgets).each(function(widget) {
@@ -327,6 +367,9 @@ ART.Widget = new Class({
 		return this.element;
 	},
 	
+	/*
+		Counters used for optimization.
+	*/
 	_redrawCount: 0,
 	_counters: function(){
 		this._redrawCount++;
@@ -339,6 +382,7 @@ ART.Widget = new Class({
 	
 });
 
+//toggles logging of render calls
 ART._counts = function(){
 	counting = !counting;
 	if (counting) console.log('counting widget renders');

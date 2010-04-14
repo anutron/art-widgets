@@ -7,6 +7,11 @@ License:
 
 // Window Widget. Work in progress.
 
+
+/*
+	default window styles
+*/
+
 ART.Sheet.defineStyle('window', {
 	'height': 300,
 	'width': 400,
@@ -178,7 +183,7 @@ ART.Window = new Class({
 		};
 		
 		var style = ART.Sheet.lookupStyle(this.getSelector());
-		
+		// create various ART shapes to draw the window
 		this.paint = new ART;
 		this.borderLayer = new ART.Rectangle;
 		this.resizeLayer = new ART.Shape(ART.Glyphs.resize);
@@ -210,6 +215,7 @@ ART.Window = new Class({
 		$(this.paint).setStyles(absolute).inject(this.element);
 		this.readyToRender('window:paint');
 		
+		// create containers for the header, content, and footer
 		this.contents = new Element('div').inject(this.element);
 		
 		this.header = new Element('div', {
@@ -249,6 +255,7 @@ ART.Window = new Class({
 		layer.fill.apply(layer, $splat(style));
 	},
 
+	//create ART.Button instances for close, maximize, minimize, and help
 	makeButtons: function() {
 		this.buttons = {};
 		var style = ART.Sheet.lookupStyle(this.getSelector());
@@ -285,6 +292,7 @@ ART.Window = new Class({
 		this.minMax('minimize');
 	},
 
+	//minimize/maximize a window; call minimize/maximize methods instead
 	minMax: function(operation){
 		if ($type(this.options[operation]) == "function") {
 			this.options[operation].call(this);
@@ -306,6 +314,7 @@ ART.Window = new Class({
 		this.fireEvent(operation, [w, h]);
 	},
 
+	//create resize handle and make the window instance resizable.
 	makeResizeable: function(){
 		this.resizeHandle = new Element('div', {'class': 'art-window-resize-handle'});
 		this.resizeHandle.setStyles({
@@ -342,6 +351,7 @@ ART.Window = new Class({
 		this.parent(this.header);
 	},
 
+	//sets the content area of the window to the given element, elements, or html string
 	setContent: function(content){
 		if (document.id(content) || $type(content) == "array") this.content.adopt(content);
 		else if ($type(content) == "string") this.content.set('html', content);
@@ -349,6 +359,7 @@ ART.Window = new Class({
 		return this;
 	},
 	
+	//resizes the window to match the contents of the window
 	autosize: function(){
 		if (!this.boundAutoSize) this.boundAutoSize = this.autosize.bind(this);
 		if (this.hidden) {
@@ -375,11 +386,13 @@ ART.Window = new Class({
 		}
 	},
 	
+	//sets the caption for the window
 	setCaption: function(text){
 		this.makeHeaderText(text, ART.Sheet.lookupStyle(this.getSelector()).captionFontSize);
 		return this;
 	},
 
+	//sets the footer text for the window
 	setFooter: function(text) {
 		this.footerText.set('html', text);
 	},
@@ -388,6 +401,7 @@ ART.Window = new Class({
 		return this.parent(this.contents);
 	},
 
+	// returns the current size of the instance
 	getSize: function(){
 		return {
 			width: this.currentWidth,
@@ -395,6 +409,7 @@ ART.Window = new Class({
 		};
 	},
 
+	//gets the min/max potential sizes for the instance
 	getSizeRange: function(override){
 		var style = ART.Sheet.lookupStyle(this.getSelector());
 		var ret = {};
@@ -411,11 +426,12 @@ ART.Window = new Class({
 		return ret;
 	},
 
+	//redraws the instance
 	redraw: function(override){
 		this.parent.apply(this, arguments);
 		var style = ART.Sheet.lookupStyle(this.getSelector());
+		// compute the height and width for the instance
 		var h = style.height, w = style.width;
-		// height / width management
 		
 		delete style.height;
 		delete style.width;
@@ -432,13 +448,15 @@ ART.Window = new Class({
 		this.currentWidth = style.width;
 
 		var padding = 0;
-		if (this.paused) this.paint.paused = true;
+		//resize the SVG/VML object to the proper size
 		this.paint.resize(style.width + padding, style.height + padding);
+		//resize the content
 		this.contents.setStyles({
 			'height': style.height,
 			'width': style.width,
 			'display': style.contentDisplay || 'block'
 		});
+		//render the content, header, and resize
 		this.renderContent(style);
 		this.renderHeaderText(style);
 		this.renderResize(style);
@@ -447,6 +465,8 @@ ART.Window = new Class({
 		this.fireEvent('resize', [this.contentSize.x, this.contentSize.y]);
 	},
 	
+	//renders the content area
+	//pulls values from the ART.Sheet for window
 	renderContent: function(style){
 		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
 		var contentWidth = style.width -2;
@@ -525,12 +545,13 @@ ART.Window = new Class({
 		}
 	},
 	
+	//renders the resize handle
 	renderResize: function(style){
 		if (!this.options.resizable) return;
-		
 		this.resizeLayer.translate(style.width - 15, style.height - 15);
 	},
 	
+	//renders the header text layer
 	renderHeaderText: function(style){
 		if (style.contentDisplay == 'none'){
 			this.textLayer.hide();
@@ -542,6 +563,7 @@ ART.Window = new Class({
 		}
 	},
 	
+	//creates the header text layer
 	makeHeaderText: function(text, fontSize, nrd){
 		if (text && fontSize) this.textLayer.draw(text, fontSize);
 		this.fontBounds = this.textLayer.measure();
@@ -550,6 +572,7 @@ ART.Window = new Class({
 
 });
 
+//adds getWindow and getWindowElement to the windowTools mixin for classes
 ART.WindowTools = new Class({
 
 	getWindow: function(){

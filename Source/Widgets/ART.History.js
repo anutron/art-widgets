@@ -61,6 +61,7 @@ ART.Sheet.defineCSS('history ul', {
 	'padding': [0, 0, 0, 0],
 	'margin': 0,
 	'position': 'relative',
+	//IE doesn't like this offset for the history list
 	'top': Browser.Engine.trident ? 0 : -6,
 	'display': 'none'
 });

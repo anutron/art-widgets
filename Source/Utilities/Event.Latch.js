@@ -1,5 +1,12 @@
 (function(){
 
+	/*
+		patches the Events class to add support for 'lached' events
+		these are events that once fired will invoke any new callbacks
+		added to them immediately. 
+	*/
+	
+
 	Events = Class.refactor(Events, {
 
 		latched: {},

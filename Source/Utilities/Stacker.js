@@ -1,9 +1,15 @@
+/*
+	Manages z-index ordering of objects as well as their enabled state.
+*/
+
 var Stacker = new Class({
 
 	Implements: [Options, Events],
 
 	options: {
+		//the base z-index for the first item in the stack; every other item is incrementally higher
 		zIndexBase: 0,
+		//when cascading, the offset to use
 		offset: {
 			x: 20,
 			y: 10
@@ -15,9 +21,16 @@ var Stacker = new Class({
 	initialize: function(options) {
 		this.setOptions(options);
 		this.layers = $H();
-		this.setLayer('default', this.options.zIndexBase);
+		this.setLayer('default');
 	},
 
+	/*
+		sets / creates a layer and assigns it a zIndex
+		zIndex defaults to the one in the options.
+		a layer an object w/ a zIndex, name, and an array of the instance in that layer
+	*/
+	
+	
 	setLayer: function(name, zIndex) {
 		zIndex = zIndex == undefined ? this.options.zIndexBase : zIndex;
 		if (this.layers[name]) {
@@ -32,13 +45,16 @@ var Stacker = new Class({
 		return this.getLayer(name);
 	},
 
+	//retrieves a layer given a name; will create it if not found
 	getLayer: function(name, defaultZIndex) {
 		if (!this.layers[name]) this.setLayer(name, defaultZIndex);
 		return this.layers[name];
 	},
 
+	//registers an instance on a layer (registers it in the default layer if none specified)
 	register: function(instance, layer){
 		layer = layer || 'default';
+		//if the instance was previously registered, move it to the new layer
 		var registered = this.instances.contains(instance);
 		if (registered && this.getLayerForInstance(instance)) {
 			var instanceLayer = this.getLayerForInstance(instance);
@@ -54,6 +70,7 @@ var Stacker = new Class({
 		this.layers[layer].instances.include(instance);
 	},
 
+	//removes an instance from this stacker's control
 	unregister: function(instance) {
 		var refocus = this.enabled == instance;
 		var iLayer = this.getLayerForInstance(instance);
@@ -70,6 +87,7 @@ var Stacker = new Class({
 		}
 	},
 
+	//retrieves the layer for a given instance
 	getLayerForInstance: function(instance) {
 		var ret;
 		this.layers.each(function(layer) {
@@ -78,6 +96,7 @@ var Stacker = new Class({
 		return ret;
 	},
 
+	//z-index orders a layer so that a specific instance is on top
 	bringToFront: function(instance){
 		if (!instance || (instance == this.enabled && instance.stacked)) return;
 		this.layers.each(function(layer) {
@@ -88,6 +107,7 @@ var Stacker = new Class({
 		}, this);
 	},
 
+	//assigns the zindex order for all the instances in a layer based on their order
 	stack: function(layer) {
 		layer.instances.each(function(win, i){
 			$(win).setStyle('z-index', layer.zIndex + (i*2));
@@ -95,6 +115,7 @@ var Stacker = new Class({
 		}, this);
 	},
 
+	//cycles the zIndex for a given layer forward or back
 	cycle: function(direction, layerName) {
 		direction = direction || 'forward';
 		var instances = this.layers[layerName].instances;
@@ -104,6 +125,7 @@ var Stacker = new Class({
 		this.enable(instances[instances.length -1], true);
 	},
 
+	//enables an instance, (optionally) bringing it to front
 	enable: function(instance, noOrder){
 		if (!instance || (instance == this.enabled && instance.stacked)) return;
 		if (!noOrder) this.bringToFront(instance);
@@ -113,6 +135,7 @@ var Stacker = new Class({
 		this.enabled = instance.focus();
 	},
 
+	//moves all the instances to be in a cascaded line
 	cascade: function(layer, x, y){
 		x = $pick(x, this.options.offset.x);
 		y = $pick(y, this.options.offset.y);
@@ -122,6 +145,7 @@ var Stacker = new Class({
 		});
 	},
 
+	//positions new instances based on the current location of the focused instance
 	positionNew: function(instance, options){
 		var pos = true;
 		//if there are no instances other than this one, or one instance
