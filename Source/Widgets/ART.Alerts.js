@@ -17,22 +17,22 @@ ART.Sheet.defineStyle('window.alert', {
 	'content-border-bottom-color': hsb(0, 0, 91)
 });
 
-ART.Sheet.defineStyle('window.alert footer', {
+ART.Sheet.defineCSS('window.alert footer', {
 	'float': 'right',
 	'width': 'auto'
 });
 
-ART.Sheet.defineStyle('window.alert content', {
+ART.Sheet.defineCSS('window.alert content', {
 	'padding': 20,
 	'font-size': 14,
 	'text-align': 'center'
 });
 
-ART.Sheet.defineStyle('window.alert input.prompt', {
+ART.Sheet.defineCSS('window.alert input.prompt', {
 	'width': '100%'
 });
 
-ART.Sheet.defineStyle('window.alert button.confirmations', {
+ART.Sheet.defineCSS('window.alert button.confirmations', {
 	'padding-right': 15,
 	'border':'none',
 	'float': 'left'
@@ -82,7 +82,7 @@ ART.Alert = new Class({
 	redraw: function(){
 		this.parent.apply(this, arguments);
 		if (!this.content) return;
-		var style = ART.Sheet.lookupStyle(this.getSelector() + ' content');
+		var style = ART.Sheet.lookupCSS(this.getSelector() + ' content');
 		if (style.margin || style.padding) {
 			tmp.setStyles(style);
 			var w = 0,
@@ -100,7 +100,7 @@ ART.Alert = new Class({
 			style.height = this.contentSize.y - h; //border is hard coded to 1 on each side
 		}
 		this.content.setStyles(style);
-		this.footer.setStyles(ART.Sheet.lookupStyle(this.getSelector() + ' footer'));
+		this.footer.setStyles(ART.Sheet.lookupCSS(this.getSelector() + ' footer'));
 	},
 
 	makeButtons: function(){
@@ -120,7 +120,7 @@ ART.Alert = new Class({
 			if (!button.properties['class']) button.properties['class'] = this.options.closeClass;
 			$(b).set(button.properties);
 
-			$(b).inject(this.footer).setStyles(ART.Sheet.lookupStyle(b.getSelector()));
+			$(b).inject(this.footer).setStyles(ART.Sheet.lookupCSS(b.getSelector()));
 			return b;
 		}, this);
 		if (this.alertButtons[0]) this.alertButtons[0].enable().focus();
