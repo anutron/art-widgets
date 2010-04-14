@@ -143,7 +143,8 @@ ART.Window = new Class({
 		resizable: true,
 		draggable: true,
 		shadow: Browser.Engine.webkit,
-		cascaded: true
+		cascaded: true,
+		buttonSide: Browser.Platform.windows ? 'right' : 'left'
 	},
 
 	initialize: function(options){
@@ -256,9 +257,9 @@ ART.Window = new Class({
 				});
 				$(this.buttons[button]).setStyles({
 					'position': 'absolute',
-					'top': style.headerPaddingTop, 
-					'left': baseLeft
-				}).inject(this.header);
+					'top': style.headerPaddingTop
+				}).setStyle(this.options.buttonSide, baseLeft).inject(this.header);
+				
 				baseLeft = baseLeft + style.buttonSpacing;
 				this.buttons[button].addEvent('press', actions[button]);
 			}
