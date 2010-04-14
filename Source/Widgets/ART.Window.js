@@ -101,6 +101,15 @@ ART.Sheet.defineStyle('window button.close', {
 	'glyph-left': 1
 });
 
+ART.Sheet.defineStyle('window button.help', {
+	'glyph': ART.Glyphs.help,
+	
+	'glyph-height': 4,
+	'glyph-width': 4,
+	'glyph-top': 3,
+	'glyph-left': 4
+});
+
 ART.Sheet.defineStyle('window button.minimize', {
 	'glyph': ART.Glyphs.smallMinus,
 
@@ -138,6 +147,7 @@ ART.Window = new Class({
 		min: {/* height: null, width: null */},
 		max: {/* height: null, width: null */},
 		close: true,
+		help: false, // help is a function: eg: function(){ console.log('help!'); },
 		minimize: true,
 		maximize: true,
 		resizable: true,
@@ -247,8 +257,9 @@ ART.Window = new Class({
 			maximize: this.maximize.bind(this),
 			minimize: this.minimize.bind(this)
 		};
+		if (this.options.help) actions.help = this.options.help.bind(this);
 		var baseLeft = 6;
-		['close', 'minimize', 'maximize'].each(function(button){
+		['close', 'minimize', 'maximize', 'help'].each(function(button){
 			if (this.options[button]) {
 				this.buttons[button] = new ART.Button({
 					className: button + ' wincontrol',
