@@ -74,11 +74,13 @@ ART.Widget = new Class({
 
 	addClass: function(className){
 		this.classes.include(className);
+		this.redraw();
 		return this;
 	},
 
 	removeClass: function(className) {
 		this.classes.erase(className);
+		this.redraw();
 		return this;
 	},
 
