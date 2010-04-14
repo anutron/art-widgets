@@ -68,7 +68,6 @@ ART.StickyWin = new Class({
 		*/
 		maskOptions: {},
 		hideOnMaskClick: true,
-		greyContentsOnDrag: true,
 		closeClass: 'closeWin',
 		close: true,
 		draggable: false,
@@ -263,6 +262,7 @@ ART.StickyWin = new Class({
 				containerSize;
 		this.touchDrag.addEvent('start', function(){
 			this.fireEvent('drag:start');
+			this.displayForDrag(true);
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
 			if (this.options.constrainToContainer) {
@@ -271,12 +271,7 @@ ART.StickyWin = new Class({
 				containerSize = container.getSize();
 			}
 		}.bind(this));
-		var dragging;
 		this.touchDrag.addEvent('move', function(dx, dy){
-			if (!dragging) {
-				this.displayForDrag(true);
-				dragging = true;
-			}
 			var top = this.startTop + dy;
 			var left = this.startLeft + dx;
 			if (top < 0) top = 0;
@@ -292,31 +287,18 @@ ART.StickyWin = new Class({
 			this.fireEvent('drag:move', [top, left]);
 		}.bind(this));
 		var end = function(){
-			if (dragging) {
-				this.displayForDrag(false);
-				dragging = false;
-			}
+			this.displayForDrag(false);
 			this.fireEvent('drag:end');
 		}.bind(this);
 		this.touchDrag.addEvent('end', end);
 		this.touchDrag.addEvent('cancel', end);
 	},
 
-	displayForDrag: function(dragging) {
-		if (!this.options.greyContentsOnDrag) return;
-		if (dragging) {
-			this.element.getChildren().setStyle('visibility', 'hidden');
-			this.element.setStyles({
-				background: '#000',
-				opacity: 0.3
-			});
-		} else {
-			this.element.getChildren().setStyle('visibility', 'visible');
-			this.element.setStyles({
-				background: 'none',
-				opacity: 1
-			});
-		}
+	displayForDrag: function(dragging, render) {
+		render = $pick(render, true);
+		this.element[dragging ? 'addClass' : 'removeClass'](this.prefix + '-dragging');
+		this[dragging ? 'addPseudo' : 'removePseudo']('dragging');
+		if (render) this.render();
 		this.fireEvent('shade', dragging);
 	},
 
