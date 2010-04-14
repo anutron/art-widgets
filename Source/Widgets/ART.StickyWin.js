@@ -363,7 +363,7 @@ ART.StickyWin = new Class({
 		var size = this.element.getSize();
 		var bottom = pos.y + size.y;
 		var right = pos.x + size.x;
-		var containerSize = $(document.body).getSize();
+		var containerSize = $(window.getDocument()).getSize();
 		if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y);
 		if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x);
 		return true;
