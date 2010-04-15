@@ -85,14 +85,14 @@ ART.Widget = new Class({
 	//adds a class to the widget and redraws it
 	addClass: function(className){
 		this.classes.include(className);
-		this.redraw();
+		this.render();
 		return this;
 	},
 
 	//removes a class from the widget and redraws it
 	removeClass: function(className) {
 		this.classes.erase(className);
-		this.redraw();
+		this.render();
 		return this;
 	},
 
@@ -108,14 +108,14 @@ ART.Widget = new Class({
 	//adds a psuedo to the instance and redraws
 	addPseudo: function(pseudo){
 		this.pseudos.include(pseudo);
-		this.redraw();
+		this.render();
 		return this;
 	},
 
 	//removes a psuedo from the instance and redraws
 	removePseudo: function(pseudo){
 		this.pseudos.erase(pseudo);
-		this.redraw();
+		this.render();
 		return this;
 	},
 
@@ -187,7 +187,7 @@ ART.Widget = new Class({
 	//checks to see if this instance is ready to render and, if so, calls its 
 	//redraw method. intended to be called (the redraw method is not).
 	render: function(override){
-		if (this.isReadyToRender()) this.redraw(override);
+		if (this.isReadyToRender() && !this.destroyed) this.redraw(override);
 		return this;
 	},
 

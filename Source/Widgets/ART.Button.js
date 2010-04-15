@@ -219,14 +219,14 @@ ART.Button = new Class({
 		if (!this.glyphLayer) return;
 		this.glyphLayer.draw(glyph);
 		this.glyphBounds = this.glyphLayer.measure();
-		if (!nrd) this.redraw();
+		if (!nrd) this.render();
 	},
 	
 	makeText: function(text, size, nrd){
 		if (!this.textLayer) return;
 		this.textLayer.draw(text, size);
 		this.fontBounds = this.textLayer.measure();
-		if (!nrd) this.redraw();
+		if (!nrd) this.render();
 	}
 
 });

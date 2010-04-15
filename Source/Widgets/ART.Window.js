@@ -567,7 +567,7 @@ ART.Window = new Class({
 	makeHeaderText: function(text, fontSize, nrd){
 		if (text && fontSize) this.textLayer.draw(text, fontSize);
 		this.fontBounds = this.textLayer.measure();
-		if (!nrd) this.redraw();
+		if (!nrd) this.render();
 	}
 
 });
