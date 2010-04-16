@@ -42,7 +42,14 @@ ART.Sheet.defineCSS('window.alert button.confirmations', {
 ART.StickyWin.DefaultManager.setLayer('alerts', 99);
 (function(){
 
-var tmp = new Element('div');
+var holder = new Element('div', {
+	styles: {
+		position: 'absolute',
+		visibility: 'hidden',
+		zIndex: -1
+	}
+});
+var tmp = new Element('div').inject(holder);
 
 ART.Alert = new Class({
 	
@@ -84,6 +91,7 @@ ART.Alert = new Class({
 		if (!this.content) return;
 		var style = ART.Sheet.lookupCSS(this.getSelector() + ' content');
 		if (style.margin || style.padding) {
+			if (Browser.Engine.trident) holder.inject(document.body);
 			tmp.setStyles(style);
 			var w = 0,
 					h = 0;
@@ -95,6 +103,7 @@ ART.Alert = new Class({
 			});
 			
 			tmp.style.cssText = '';
+			if (Browser.Engine.trident) holder.dispose();
 			
 			style.width = this.contentSize.x - w; //border is hard coded to 1 on each side
 			style.height = this.contentSize.y - h; //border is hard coded to 1 on each side
