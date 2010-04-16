@@ -118,7 +118,7 @@ ART.Button = new Class({
 			}.bind(this),
 			cancel: function(e){
 				this.deactivate();
-				this.fireEvent('press', e);
+				this.fireEvent('press', new Event(e));
 			}.bind(this)
 		});
 		this.attachKeys({
