@@ -2,7 +2,7 @@
 ---
 name: ART.Button
 description: Base Button Class
-requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART/ART.Font]
+requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART/ART.Font, Touch/Touch, ART/Moderna]
 provides: ART.Button
 ...
 */
