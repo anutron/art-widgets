@@ -12,9 +12,6 @@ provides: ART.Widget
 var Widget = ART.Widget = new Class({
 	Extends: UI.Widget,
 	options: {
-		/*
-			element: null,
-		*/
 		tabIndex: -1,
 		onHide: function(){
 			$(this).setStyle('display', 'none');
