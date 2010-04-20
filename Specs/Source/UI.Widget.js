@@ -35,23 +35,23 @@ test('should add and remove classNames', function(){
 
 test('should enable and disable, read the disabled status', function(){
 	g.widget.disable();
-	equals(g.widget.isDisabled(), true);
+	equals(g.widget.getState('disabled'), true);
 	g.widget.enable();
-	equals(g.widget.isDisabled(), false);
+	equals(g.widget.getState('disabled'), false);
 });
 
 test('should focus and blur, read the focused status', function(){
 	g.widget.focus();
-	equals(g.widget.isFocused(), true);
+	equals(g.widget.getState('focus'), true);
 	g.widget.blur();
-	equals(g.widget.isFocused(), false);
+	equals(g.widget.getState('focus'), false);
 });
 
 test('should activate and deactivate, read the active status', function(){
 	g.widget.activate();
-	equals(g.widget.isActive(), true);
+	equals(g.widget.getState('active'), true);
 	g.widget.deactivate();
-	equals(g.widget.isActive(), false);
+	equals(g.widget.getState('active'), false);
 });
 
 // states that affect each other
@@ -59,20 +59,20 @@ test('should activate and deactivate, read the active status', function(){
 test('should not be able to activate if disabled', function(){
 	g.widget.disable();
 	g.widget.activate();
-	equals(g.widget.isActive(), false);
+	equals(g.widget.getState('active'), false);
 	g.widget.enable();
 });
 
 test('should not be able to focus if disabled', function(){
 	g.widget.disable();
 	g.widget.focus();
-	equals(g.widget.isFocused(), false);
+	equals(g.widget.getState('focus'), false);
 	g.widget.enable();
 });
 
 test('should focus when active', function(){
 	g.widget.activate();
-	equals(g.widget.isFocused(), true);
+	equals(g.widget.getState('focus'), true);
 	g.widget.deactivate();
 });
 
@@ -80,8 +80,8 @@ test('should blur and deactivate when disabled', function(){
 	g.widget.focus();
 	g.widget.activate();
 	g.widget.disable();
-	equals(g.widget.isFocused(), false);
-	equals(g.widget.isActive(), false);
+	equals(g.widget.getState('focus'), false);
+	equals(g.widget.getState('active'), false);
 	g.widget.enable();
 });
 
