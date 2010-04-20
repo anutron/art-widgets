@@ -33,39 +33,49 @@ ART.Widget.Keyboard = new Class({
 			});
 		},
 
+		getKeyboard: function(){
+			if (!this._keyboard) this._keyboardSetup();
+			return this._keyboard;
+		},
 		/*
 			Keyboard integration / delegation methods
 		*/
 		attachKeys: function(events){
-			this._keyboard.addEvents(events);
+			this.getKeyboard().addEvents(events);
+			return this;
 		},
 
 		detachKeys: function(events) {
-			this._keyboard.removeEvents(events);
+			this.getKeyboard().removeEvents(events);
+			return this;
 		},
 
 		addShortcut: function(name, shortcut) {
-			this._keyboard.addShortcut(name, shortcut);
+			this.getKeyboard().addShortcut(name, shortcut);
+			return this;
 		},
 
 		addShortcuts: function(obj) {
-			this._keyboard.addShortcuts(obj);
+			this.getKeyboard().addShortcuts(obj);
+			return this;
 		},
 
 		removeShortcut: function(name) {
-			this._keyboard.removeShortcut(name);
+			this.getKeyboard().removeShortcut(name);
+			return this;
 		},
 
 		removeShortcuts: function(names) {
-			this._keyboard.removeShortcuts(names);
+			this.getKeyboard().removeShortcuts(names);
+			return this;
 		},
 
 		getShortcut: function(name) {
-			return this._keyboard.getShortcut(name);
+			return this.getKeyboard().getShortcut(name);
 		},
 
 		getShortcuts: function() {
-			return this._keyboard.getShortcuts();
+			return this.getKeyboard().getShortcuts();
 		}
 
 });
