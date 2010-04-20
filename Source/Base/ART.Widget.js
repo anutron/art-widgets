@@ -45,13 +45,11 @@ var Widget = ART.Widget = new Class({
 			}
 			
 		});
-		
-		widgets.push(this);
-		
+
 	},
 	
 	_createElement: function(){
-		return new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'});
+		this.element = this.element || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'});
 	},
 	
 	/* tab indices */
