@@ -1,3 +1,12 @@
+/*
+---
+name: ART.History
+description: A history component with forward, back, location, and reload buttons.
+requires: [ART.Button, Core/Element.Dimensions, More/Element.Forms, More/Element.Shortcuts, ART.Glyphs]
+provides: ART.History
+...
+*/
+
 ART.Sheet.defineStyle('history button.navLeft', {
 	'padding': [0, 0, 0, 0]
 }, {

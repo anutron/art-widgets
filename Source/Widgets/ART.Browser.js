@@ -1,3 +1,12 @@
+/*
+---
+name: ART.Browser
+description: A window with navigation controls.
+requires: [ART.Window, ART.History]
+provides: ART.Browser
+...
+*/
+
 ART.Sheet.defineStyle('window.browser', {
 	'header-height': 60,
 	'header-overflow': 'visible'

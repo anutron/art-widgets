@@ -1,8 +1,10 @@
 /*
-Script: ART.SolidWindow.js
-
-License:
-	MIT-style license.
+---
+name: ART.SolidWindow
+description: A solid window class with only a header and a body.
+requires: ART.Window
+provides: ART.SolidWindow
+...
 */
 
 // Window Widget. Work in progress.

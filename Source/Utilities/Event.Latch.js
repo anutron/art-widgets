@@ -1,3 +1,12 @@
+/*
+---
+name: ART.Alerts
+description: Alert popups.
+requires: [Core/Class.Extras, Core/Element.Event, More/Class.Refactor]
+provides: Event.Latch
+...
+*/
+
 (function(){
 
 	/*

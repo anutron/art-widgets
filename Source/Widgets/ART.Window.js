@@ -1,11 +1,11 @@
 /*
-Script: ART.Window.js
-
-License:
-	MIT-style license.
+---
+name: ART.Window
+description: Base Window Class
+requires: [ART.Button, ART.StickyWin, Core/Fx.Morph, ART/Moderna, ART/Moderna.Bold, ART.Glyphs]
+provides: ART.Window
+...
 */
-
-// Window Widget. Work in progress.
 
 
 /*

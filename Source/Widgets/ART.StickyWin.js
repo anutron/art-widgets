@@ -1,7 +1,12 @@
 /*
-	ART.WindowManager is a custom extension of Stacker that integrates with 
-	StickyWin to manage keyboard state.
+---
+name: ART.Popup
+description: Base class for windows and other popups.
+requires: [ART.Widget, Core/Fx.Tween, More/IframeShim, More/Element.Position, Stacker, Touch/Touch, More/Mask]
+provides: [ART.StickyWin, ART.WindowManager]
+...
 */
+
 
 ART.WindowManager = new Class({
 

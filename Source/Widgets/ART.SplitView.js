@@ -1,8 +1,10 @@
 /*
-Script: ART.SplitView.js
-
-License:
-	MIT-style license.
+---
+name: ART.SplitView
+description: A simple horizonal double-pane split view.
+requires: [ART.Widget, ART.Sheet, Core/Element.Event, Core/Element.Style, Touch/Touch, Core/Fx.Tween]
+provides: ART.SplitView
+...
 */
 
 ART.Sheet.defineStyle('splitview', {

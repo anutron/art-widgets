@@ -1,8 +1,10 @@
 /*
-Script: ART.Alerts.js
-
-License:
-	MIT-style license.
+---
+name: ART.Alerts
+description: Alert popups.
+requires: [ART.Window]
+provides: [ART.Alert, ART.Confirm, ART.Prompt, ART.Window.AlertTools, ART.Alerts]
+...
 */
 
 // Window Widget. Work in progress.

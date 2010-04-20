@@ -1,4 +1,13 @@
 /*
+---
+name: Stacker
+description: A z-index manager for ART widgets.
+requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Style]
+provides: Stacker
+...
+*/
+
+/*
 	Manages z-index ordering of objects as well as their enabled state.
 */
 
