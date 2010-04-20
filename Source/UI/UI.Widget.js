@@ -116,7 +116,7 @@ var Widget = UI.Widget = new Class({
 		this.blur();
 					
 		this._childWidgets.each(function(child){
-			if (!child.states.disabled){
+			if (!child._states.disabled){
 				child._disabledByParent = true;
 				child.disable();
 			}
@@ -185,7 +185,7 @@ var Widget = UI.Widget = new Class({
 		if (parentWidget && (parentWidget instanceof Widget) && this._parentWidget !== parentWidget){
 			this._parentWidget && this._parentWidget._childWidgets.erase(this);
 			this._parentWidget = parentWidget;
-			widget._childWidgets.push(this);
+			parentWidget._childWidgets.push(this);
 			this.fireEvent('register', parentWidget.fireEvent('registered', this));
 		}
 		return this;
