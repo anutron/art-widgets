@@ -186,12 +186,16 @@ var Widget = ART.Widget = new Class({
 		element = (element) ? $(element) : $(widget);
 
 		if (element && this.element.parentNode !== element){
-			this.register(widget);
 			this.element.inject(element);
-			this.deferDraw();
+			this.register(widget);
 		}
 
 		return this;
+	},
+
+	register: function(widget) {
+		this.parent(widget);
+		this.deferDraw();
 	},
 	
 	eject: function(){
