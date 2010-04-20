@@ -180,12 +180,13 @@ var Widget = UI.Widget = new Class({
 
 	/* child & parent relationship, registration */
 	
-	register: function(widget){
+	register: function(parentWidget){
 		widgets[this.uid] = this;
-		if (widget && (widget instanceof Widget) && this._parentWidget !== widget){
+		if (parentWidget && (parentWidget instanceof Widget) && this._parentWidget !== parentWidget){
 			this._parentWidget && this._parentWidget._childWidgets.erase(this);
-			this._parentWidget = widget;
+			this._parentWidget = parentWidget;
 			widget._childWidgets.push(this);
+			this.fireEvent('register', parentWidget.fireEvent('registered', this));
 		}
 		return this;
 	},
@@ -196,6 +197,8 @@ var Widget = UI.Widget = new Class({
 			this.blur();
 			if (this._parentWidget){
 				this._parentWidget._childWidgets.erase(this);
+				this.fireEvent('unregister', this._parentWidget);
+				this._parentWidget.fireEvent('unregistered', this);
 				this._parentWidget = null;
 			}
 		}

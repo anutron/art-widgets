@@ -9,36 +9,28 @@ provides: ART.Widget.Keyboard
 
 ART.Widget.Keyboard = new Class({
 
-		_keyboardSetup: function(options){
-			var kbManager;
-			if (options && options.keyboardOptions && options.keyboardOptions.manager) {
-				kbManager = options.keyboardOptions.manager;
-				delete options.keyboardOptions.manager;
-			}
-			
+		options: {
+			keyboardOptions: {}
+		},
+
+		keyboardSetup: function(options){
 			//create a keyboard instance for the widget
-			var kbOptions = $merge(this.options.keyboardOptions, options ? options.keyboardOptions || {} : {});
-			kbOptions.manager = kbManager || (parent ? parent.keyboard : null);
-			var keyboard = this._keyboard = new Keyboard(kbOptions);
+			var keyboard = this._keyboard = new Keyboard($merge(this.options.keyboardOptions, (options && options.keyboardOptions) || {}));
 			keyboard.widget = this;
 			this.addEvents({
-				inject: function(parent) {
+				register: function(parent) {
 					if (parent.keyboard) parent.keyboard.manage(keyboard);
 				},
-				eject: function(parent) {
-					if (parent.keyboard) Keyboard.manager.manage(keyboard);
+				unregister: function(parent) {
+					if (parent.keyboard && pareng.keyboard == keyboard.manager) Keyboard.manager.manage(keyboard);
 				},
 				focus: function(){
 					keyboard.activate();
 				},
 				blur: function(){
 					keyboard.deactivate();
-				},
-				desroy: function(){
-					keyboard.deactivate();
 				}
 			});
-			
 		},
 
 		/*
