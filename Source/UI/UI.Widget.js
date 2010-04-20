@@ -182,7 +182,6 @@ var Widget = UI.Widget = new Class({
 	
 	register: function(widget){
 		widgets[this.uid] = this;
-		var parentWidget = this.getParent();
 		if (widget && (widget instanceof Widget) && this._parentWidget !== widget){
 			this._parentWidget && this._parentWidget._childWidgets.erase(this);
 			this._parentWidget = widget;

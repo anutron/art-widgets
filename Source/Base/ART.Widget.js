@@ -16,27 +16,24 @@ var Widget = ART.Widget = new Class({
 			element: null,
 		*/
 		tabIndex: -1,
-		renderWhileHidden: false,
 		onHide: function(){
 			$(this).setStyle('display', 'none');
 		},
 		onShow: function(){
 			$(this).setStyle('display', 'inline-block');
 		}
-	}
-});
-	
-var widgets = ART.widgets = [];
-
-Widget.implement({
+	},
 
 	initialize: function(options){
 		this._createElement(options);
-		
 		this.canvas = new ART;
 		$(this.canvas).setStyles({position: 'absolute', top: 0, left: 0}).inject(this.element);
 		
 		this.currentSheet = {};
+		
+		this.parent(options);
+		
+		this.setTabIndex(this.options.tabIndex);
 		
 		var self = this;
 		
@@ -52,12 +49,8 @@ Widget.implement({
 			
 		});
 		
-		this.parent(options);
-		this.setTabIndex(this.options.tabIndex);
-		
 		widgets.push(this);
 		
-		this.deferDraw();
 	},
 	
 	_createElement: function(){
@@ -89,11 +82,10 @@ Widget.implement({
 	},
 	
 	deferDraw: function(){
-		if (this._states.destroyed || (!this.options.renderWhileHidden && this.getState('hidden'))) return;
+		if (!this.element.parentNode || this.getState('hidden')) return;
 		var self = this;
 		clearTimeout(this.drawTimer);
 		this.drawTimer = setTimeout(function(){
-			// console.log('»', self.id, ':', 'The method', name, 'succeded in getting a redraw.');
 			self.draw();
 		}, 1);
 	},
@@ -184,6 +176,30 @@ Widget.implement({
 			this.setState('hidden', false);
 			this.fireEvent('hide');
 			this.deferDraw();
+		}
+		return this;
+	},
+	
+	/* DOM + Registration */
+	
+	inject: function(widget, element){
+		element = (element) ? $(element) : $(widget);
+
+		if (element && this.element.parentNode !== element){
+			this.register(widget);
+			this.element.inject(element);
+			this.deferDraw();
+		}
+
+		return this;
+	},
+	
+	eject: function(){
+		if (this.element.parentNode){ // continue only if the element is in the dom
+			this.element.dispose();
+			this.unregister();
+			// even though deferDraw will not fire when the element is not in the dom, this will cancel any pre-existing draw request.
+			clearTimeout(this.drawTimer);
 		}
 		return this;
 	},
