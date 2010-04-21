@@ -2,7 +2,7 @@
 ---
 name: ART.Popup
 description: Base class for windows and other popups.
-requires: [ART.Widget, Core/Fx.Tween, More/IframeShim, More/Element.Position, Stacker, Touch/Touch, More/Mask]
+requires: [ART.Widget, Core/Fx.Tween, More/IframeShim, More/Element.Position, Stacker, Touch/Touch, More/Mask, More/Element.Delegation]
 provides: [ART.StickyWin, ART.WindowManager]
 ...
 */
@@ -28,7 +28,7 @@ ART.WindowManager = new Class({
 
 	unregister: function(instance) {
 		this.parent.apply(this, arguments);
-		Keyboard.manager.drop(instance.keyboard);
+		this.keyboard.drop(instance.keyboard);
 	}
 
 });
@@ -55,12 +55,13 @@ ART.StickyWin = new Class({
 		windowManager: instanceOfStacker,
 		destroyOnClose: false,
 		windowManagerLayer: 'default',
-		
+		keyboardOptions: {},
 		//events:
 		'drag:start': $empty,
 		'drag:move': $empty(x,y),
 		'drag:end': $empty,
 		'shade': $empty
+		'unshade': $empty,
 
 		//these are the defaults for Element.position anyway
 		************************************************
@@ -88,12 +89,7 @@ ART.StickyWin = new Class({
 		constrainToContainer: false
 	},
 
-	hidden: true,
-
 	initialize: function(options) {
-		//before rendering, ensure that the window is managed by an ART.WindowManager
-		//and that it is visible
-		this.requireToRender('window:managed', 'window:displayed');
 		//by default, inject instances into the document.body
 		if (!this.options.inject) {
 			this.options.inject = {
@@ -106,38 +102,49 @@ ART.StickyWin = new Class({
 		this.windowManager = options.windowManager || this.options.windowManager || ART.StickyWin.DefaultManager;
 		delete this.options.windowManager;
 		delete options.windowManager;
-		if (!options.keyboardOptions) options.keyboardOptions = {};
-		options.keyboardOptions.manager = options.keyboardOptions.manager || this.windowManager.keyboard;
+
 		//the window manager enables the windows; so we must start with disabled = true
 		this.disabled = true;
+
 		this.parent(options);
+
 		//store a reference to this instance on the element
 		this.element.store('StickyWin', this);
-		//configure this instances element
-		this.build();
+
+		//configure this instance's element
+		this._build();
+
+		this._artKB = new ART.Keyboard(this, this.options.keyboardOptions);
+
 		//register this instance
 		this.windowManager.register(this, this.options.windowManagerLayer);
-		this.readyToRender('window:managed');
 		
 		if (this.options.content) this.setContent(this.options.content);
 		
 		if (this.options.draggable) this.makeDraggable();
+		
 		if (this.options.timeout) {
 			//hide this instance after the specified timeout
 			this.addEvent('show', function(){
 				this.hide.delay(this.options.timeout, this);
 			}.bind(this));
 		}
+		
 		this.attach();
+		
 		if (this.options.destroyOnClose) this.addEvent('hide', this.destroy.bind(this));
 		this.element.setStyle('display', 'none');
+		
 		if (this.options.useIframeShim) this.hideIframeShim();
-		this.hidden = true;
+		this.setState('hidden', true);
+		
 		if (this.options.showNow) this.show();
 		//add event to hide the instance whenever an element with the closeClass is clicked
+		
 		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
 			this.hide();
 		}.bind(this));
+
 	},
 
 	attach: function(attach){
@@ -145,9 +152,15 @@ ART.StickyWin = new Class({
 		//add events for closing on escape and closing on clicking outside of the window
 		var method = $pick(attach, true) ? 'addEvents' : 'removeEvents';
 		var events = {};
-		if (this.options.closeOnClickOut) events.click = this.esc;
-		if (this.options.closeOnEsc) events.keyup = this.esc;
+		this._boundEsc = this._boundEsc || this.esc.bind(this);
+		if (this.options.closeOnClickOut) events.click = this._boundEsc;
+		if (this.options.closeOnEsc) events.keyup = this._boundEsc;
 		document[method](events);
+		return this;
+	},
+
+	detach: function(){
+		return this.attach(false);
 	},
 
 	//check if the user hit the escape key and, if so, close the window
@@ -156,7 +169,7 @@ ART.StickyWin = new Class({
 	},
 
 	//set up the element
-	build: function(){
+	_build: function(){
 		//hide it and inject it into the document.
 		this.element.setStyles({
 			display: 'none',
@@ -166,10 +179,11 @@ ART.StickyWin = new Class({
 
 	//hides the instance
 	hide: function(){
-		if (!this.hidden){
+		if (!this.getState('hidden')){
 			this.element.setStyle('display', 'none');
 			if (this.options.useIframeShim) this.hideIframeShim();
-			this.parent();
+			this.fireEvent('hide');
+			this.deferDraw();
 		}
 	},
 
@@ -179,6 +193,7 @@ ART.StickyWin = new Class({
 		if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
 			target = $(this.options.maskOptions.inject.target) || $(document.body);
 		else target = $(document.body);
+
 		var mask = target.retrieve('StickyWin:mask');
 		if (!mask) {
 			//compute the zindex of the mask to be just above the target
@@ -199,24 +214,23 @@ ART.StickyWin = new Class({
 					hideOnClick: this.options.hideOnMaskClick
 				}, this.options.maskOptions)
 			).addEvent('hide', function(){
-				if (!this.hidden) this.hide();
+				if (!this.getState('hidden')) this.hide();
 			}.bind(this));
 			this.addEvent('hide', function(){
 				if (!mask.hidden) mask.hide();
 			});
+			target.store('StickyWin:mask', mask);
 		}
 		mask.show();
 	},
 
 	//show this instance
 	show: function(){
-		if (this.hidden){
-			this.readyToRender('window:displayed');
+		if (this.getState('hidden')){
 			this.element.setStyles({
 				opacity: 0,
 				display: 'block'
 			});
-			this.parent();
 			this.windowManager.enable(this);
 			this.fireEvent('display');
 			if (!this.positioned) this.position();
@@ -287,7 +301,7 @@ ART.StickyWin = new Class({
 		var size, containerSize;
 		this.touchDrag.addEvent('start', function(){
 			this.fireEvent('drag:start');
-			this.displayForDrag(true);
+			this._displayForDrag(true);
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
 			if (this.options.constrainToContainer) {
@@ -312,7 +326,7 @@ ART.StickyWin = new Class({
 			this.fireEvent('drag:move', [top, left]);
 		}.bind(this));
 		var end = function(){
-			this.displayForDrag(false);
+			this._displayForDrag(false);
 			this.fireEvent('drag:end');
 		}.bind(this);
 		this.touchDrag.addEvent('end', end);
@@ -320,12 +334,11 @@ ART.StickyWin = new Class({
 	},
 
 	//add pseudo for dragging and fire the shade event when dragging starts/stops
-	displayForDrag: function(dragging, render) {
+	_displayForDrag: function(dragging, render) {
 		render = $pick(render, true);
-		this.element[dragging ? 'addClass' : 'removeClass'](this.prefix + '-dragging');
-		this[dragging ? 'addPseudo' : 'removePseudo']('dragging');
+		this.setState('dragging', dragging);
 		if (render) this.render();
-		this.fireEvent('shade', dragging);
+		this.fireEvent(dragging ? 'shade' : 'unshade');
 	},
 
 	disableDrag: function(){
@@ -362,7 +375,10 @@ ART.StickyWin = new Class({
 	destroy: function(){
 		this.windowManager.unregister(this);
 		if (this.options.useIframeShim && this.shim) this.shim.destroy();
-		return this.parent();
+		this.eject();
+		this.element.destroy();
+		this.fireEvent('destroy');
+		return this;
 	},
 
 	//creates an IframeShim for this instance if one is required.
