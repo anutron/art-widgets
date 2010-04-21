@@ -32,7 +32,7 @@ var Widget = UI.Widget = new Class({
 	initialize: function(options){
 		this.uid = ART.uniqueID();
 		
-		this._parentWidget = null;
+		this.parentWidget = null;
 		this._childWidgets = [];
 		
 		var parent;
@@ -98,7 +98,7 @@ var Widget = UI.Widget = new Class({
 	/* enable, disable */
 	
 	enable: function(){
-		if ((this._parentWidget && this._parentWidget.getState('disabled')) || !this.getState('disabled')) return false;
+		if ((this.parentWidget && this.parentWidget.getState('disabled')) || !this.getState('disabled')) return false;
 		this._disabledByParent = false;
 		this.setState('disabled', false);
 		this.fireEvent('enable');
@@ -182,9 +182,9 @@ var Widget = UI.Widget = new Class({
 	
 	register: function(parentWidget){
 		widgets[this.uid] = this;
-		if (parentWidget && (parentWidget instanceof Widget) && this._parentWidget !== parentWidget){
-			this._parentWidget && this._parentWidget._childWidgets.erase(this);
-			this._parentWidget = parentWidget;
+		if (parentWidget && (parentWidget instanceof Widget) && this.parentWidget !== parentWidget){
+			this.parentWidget && this.parentWidget._childWidgets.erase(this);
+			this.parentWidget = parentWidget;
 			parentWidget._childWidgets.push(this);
 			this.fireEvent('register', parentWidget.fireEvent('registered', this));
 		}
@@ -195,11 +195,11 @@ var Widget = UI.Widget = new Class({
 		if (widgets[this.uid]){
 			delete widgets[this.uid];
 			this.blur();
-			if (this._parentWidget){
-				this._parentWidget._childWidgets.erase(this);
-				this.fireEvent('unregister', this._parentWidget);
-				this._parentWidget.fireEvent('unregistered', this);
-				this._parentWidget = null;
+			if (this.parentWidget){
+				this.parentWidget._childWidgets.erase(this);
+				this.fireEvent('unregister', this.parentWidget);
+				this.parentWidget.fireEvent('unregistered', this);
+				this.parentWidget = null;
 			}
 		}
 		return this;
@@ -248,7 +248,7 @@ Widget.prototype.toString = function(){
 		if (this._states[s]) string += ':' + s;
 	}
 	
-	var parentWidget = this._parentWidget;
+	var parentWidget = this.parentWidget;
 	if (parentWidget) string = parentWidget.toString() + ' ' + string;
 	
 	return string;

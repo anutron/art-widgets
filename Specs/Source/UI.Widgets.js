@@ -12,8 +12,8 @@ test('should be able to register with a parent widget', function(){
 	g.widget1.register(g.parentWidget);
 	g.widget2.register(g.parentWidget);
 	
-	equals(g.widget1._parentWidget === g.parentWidget, true);
-	equals(g.widget2._parentWidget === g.parentWidget, true);
+	equals(g.widget1.parentWidget === g.parentWidget, true);
+	equals(g.widget2.parentWidget === g.parentWidget, true);
 });
 
 test('the parent widget should have as children the child widgets', function(){
@@ -27,8 +27,8 @@ test('the parent widget should have as children the child widgets', function(){
 test('should unregister widgets', function(){
 	g.widget1.unregister();
 	g.widget2.unregister();
-	equals(g.widget1._parentWidget, null);
-	equals(g.widget2._parentWidget, null);
+	equals(g.widget1.parentWidget, null);
+	equals(g.widget2.parentWidget, null);
 	
 	var children = g.parentWidget._childWidgets;
 	
