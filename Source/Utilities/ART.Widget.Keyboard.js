@@ -1,81 +1,107 @@
 /*
 ---
-name: ART.Widget.Keyboard
+name: ART.Keyboard
 description: ART Widget Keyboard Methods
 requires: [ART.Widget, More/Keyboard]
-provides: ART.Widget.Keyboard
+provides: ART.Keyboard
 ...
 */
 
-ART.Widget.Keyboard = new Class({
+ART.Keyboard = new Class({
 
-		options: {
-			keyboardOptions: {}
-		},
+	initialize: function(widget, keyboardOptions){
+		this.widget = widget;
+		var keyboard = this._keyboard = new Keyboard(keyboardOptions);
+		keyboard.widget = widget;
+		var self = this;
+		this._widgetEvents = {
+			register: function() {
+				self.attachToParent();
+			},
+			unregister: function(parent) {
+				Keyboard.manager.manage(keyboard);
+			},
+			focus: function(){
+				keyboard.activate();
+			},
+			blur: function(){
+				keyboard.deactivate();
+			}
+		};
+		self.attachToParent();
+		this.attach();
+	},
 
-		keyboardSetup: function(options){
-			//create a keyboard instance for the widget
-			var keyboard = this._keyboard = new Keyboard($merge(this.options.keyboardOptions, (options && options.keyboardOptions) || {}));
-			keyboard.widget = this;
-			this.addEvents({
-				register: function(parent) {
-					if (parent.keyboard) parent.keyboard.manage(keyboard);
-				},
-				unregister: function(parent) {
-					if (parent.keyboard && pareng.keyboard == keyboard.manager) Keyboard.manager.manage(keyboard);
-				},
-				focus: function(){
-					keyboard.activate();
-				},
-				blur: function(){
-					keyboard.deactivate();
-				}
-			});
-		},
-
-		getKeyboard: function(){
-			if (!this._keyboard) this._keyboardSetup();
-			return this._keyboard;
-		},
-		/*
-			Keyboard integration / delegation methods
-		*/
-		attachKeys: function(events){
-			this.getKeyboard().addEvents(events);
-			return this;
-		},
-
-		detachKeys: function(events) {
-			this.getKeyboard().removeEvents(events);
-			return this;
-		},
-
-		addShortcut: function(name, shortcut) {
-			this.getKeyboard().addShortcut(name, shortcut);
-			return this;
-		},
-
-		addShortcuts: function(obj) {
-			this.getKeyboard().addShortcuts(obj);
-			return this;
-		},
-
-		removeShortcut: function(name) {
-			this.getKeyboard().removeShortcut(name);
-			return this;
-		},
-
-		removeShortcuts: function(names) {
-			this.getKeyboard().removeShortcuts(names);
-			return this;
-		},
-
-		getShortcut: function(name) {
-			return this.getKeyboard().getShortcut(name);
-		},
-
-		getShortcuts: function() {
-			return this.getKeyboard().getShortcuts();
+	attachToParent: function(){
+		var parent = this.widget.parentWidget;
+		var keyboard;
+		while (parent && parent.parentWidget && !keyboard) {
+			parent = parent.parentWidget;
+			if (parent) keyboard = parent.parentWidget.keyboard;
 		}
+		if (keyboard) keyboard.manage(this.keyboard);
+	},
+
+	attach: function(){
+		this.widget.addEvents(this._widgetEvents);
+		$extend(widget, {
+			
+			keyboard: this._keyboard,
+			
+			/*
+				Keyboard integration / delegation methods
+			*/
+			attachKeys: function(events){
+				keyboard.addEvents(events);
+				return this;
+			},
+
+			detachKeys: function(events) {
+				keyboard.removeEvents(events);
+				return this;
+			},
+
+			addShortcut: function(name, shortcut) {
+				keyboard.addShortcut(name, shortcut);
+				return this;
+			},
+
+			addShortcuts: function(obj) {
+				keyboard.addShortcuts(obj);
+				return this;
+			},
+
+			removeShortcut: function(name) {
+				keyboard.removeShortcut(name);
+				return this;
+			},
+
+			removeShortcuts: function(names) {
+				keyboard.removeShortcuts(names);
+				return this;
+			},
+
+			getShortcut: function(name) {
+				return keyboard.getShortcut(name);
+			},
+
+			getShortcuts: function() {
+				return keyboard.getShortcuts();
+			}
+		});
+	},
+
+	detach: function(){
+		this.widget.removeEvents(this._widgetEvents);
+		
+		['attachKeys', 'detachKeys', 'addShortcut', 'addShortcuts', 'removeShortcut',
+			'removeShortcuts', 'getShortcut', 'getShortcuts'].each(function(method){
+			delete this.wigdet[method];
+		}, this);
+	},
+
+	getKeyboard: function(){
+		return this._keyboard;
+	}
 
 });
