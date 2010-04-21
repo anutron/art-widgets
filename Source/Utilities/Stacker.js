@@ -56,8 +56,8 @@ var Stacker = new Class({
 
 	//retrieves a layer given a name; will create it if not found
 	getLayer: function(name, defaultZIndex) {
-		if (!this.layers[name]) this.setLayer(name, defaultZIndex);
-		return this.layers[name];
+		if ($type(layer) == "string" && !this.layers[name]) this.setLayer(name, defaultZIndex);
+		return this.layers[name] || layer;
 	},
 
 	//registers an instance on a layer (registers it in the default layer if none specified)
@@ -119,6 +119,12 @@ var Stacker = new Class({
 			$(win).setStyle('z-index', layer.zIndex + (i*2));
 			win._stacked = true;
 		}, this);
+	},
+
+	enableTop: function(layer) {
+		layer = this.getLayer(layer || "default");
+		var instance = layer.instances.getLast();
+		if (instance) this.enable(instance);
 	},
 
 	//cycles the zIndex for a given layer forward or back

@@ -183,6 +183,7 @@ ART.StickyWin = new Class({
 			this.element.setStyle('display', 'none');
 			if (this.options.useIframeShim) this.hideIframeShim();
 			this.fireEvent('hide');
+			this.windowManager.enableTop(this.options.windowManagerLayer);
 			this.deferDraw();
 		}
 	},
