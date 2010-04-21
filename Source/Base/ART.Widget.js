@@ -69,11 +69,15 @@ var Widget = ART.Widget = new Class({
 		this.canvas.resize(width, height);
 		return this;
 	},
+
+	setSheet: function(newSheet) {
+		var sheet = $merge(this.diffSheet(), newSheet || {});
+		for (var property in sheet) this.currentSheets[selector][namespace][property] = sheet[property];
+		return sheet;
+	},
 	
 	draw: function(newSheet){
-		var sheet = $merge(this.diffSheet(), newSheet || {});
-		for (var property in sheet) this.currentSheet[property] = sheet[property];
-		return sheet;
+		return this.setSheet(newSheet);
 	},
 	
 	deferDraw: function(){
