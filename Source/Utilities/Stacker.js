@@ -2,7 +2,7 @@
 ---
 name: Stacker
 description: A z-index manager for ART widgets.
-requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Style]
+requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Style, More/Keyboard]
 provides: Stacker
 ...
 */
@@ -55,9 +55,10 @@ var Stacker = new Class({
 	},
 
 	//retrieves a layer given a name; will create it if not found
-	getLayer: function(name, defaultZIndex) {
-		if ($type(layer) == "string" && !this.layers[name]) this.setLayer(name, defaultZIndex);
-		return this.layers[name] || layer;
+	//if passed a layer it returns it
+	getLayer: function(layer, defaultZIndex) {
+		if ($type(layer) == "string" && !this.layers[layer]) this.setLayer(layer, defaultZIndex);
+		return this.layers[layer] || layer;
 	},
 
 	//registers an instance on a layer (registers it in the default layer if none specified)
