@@ -41,7 +41,7 @@ ART.Sheet.defineCSS('window.alert button.confirmations', {
 });
 
 
-ART.StickyWin.DefaultManager.setLayer('alerts', 99);
+ART.Popup.DefaultManager.setLayer('alerts', 99);
 (function(){
 
 var holder = new Element('div', {

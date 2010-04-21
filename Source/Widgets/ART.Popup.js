@@ -3,7 +3,7 @@
 name: ART.Popup
 description: Base class for windows and other popups.
 requires: [ART.Widget, Core/Fx.Tween, More/IframeShim, More/Element.Position, Stacker, Touch/Touch, More/Mask, More/Element.Delegation]
-provides: [ART.StickyWin, ART.WindowManager]
+provides: [ART.Popup, ART.WindowManager]
 ...
 */
 
@@ -33,11 +33,11 @@ ART.WindowManager = new Class({
 
 });
 
-ART.StickyWin = new Class({
+ART.Popup = new Class({
 
 	Extends: ART.Widget,
 
-	name: 'stickywin',
+	name: 'popup',
 
 	options: { 
 		/*
@@ -99,7 +99,7 @@ ART.StickyWin = new Class({
 		}
 		options = options || {};
 		//delete any Class instance references from the options to avoid recurssion errors
-		this.windowManager = options.windowManager || this.options.windowManager || ART.StickyWin.DefaultManager;
+		this.windowManager = options.windowManager || this.options.windowManager || ART.Popup.DefaultManager;
 		delete this.options.windowManager;
 		delete options.windowManager;
 
@@ -109,7 +109,7 @@ ART.StickyWin = new Class({
 		this.parent(options);
 
 		//store a reference to this instance on the element
-		this.element.store('StickyWin', this);
+		this.element.store('Popup', this);
 
 		//configure this instance's element
 		this._build();
@@ -195,7 +195,7 @@ ART.StickyWin = new Class({
 			target = $(this.options.maskOptions.inject.target) || $(document.body);
 		else target = $(document.body);
 
-		var mask = target.retrieve('StickyWin:mask');
+		var mask = target.retrieve('Popup:mask');
 		if (!mask) {
 			//compute the zindex of the mask to be just above the target
 			//unless it's the document body, in which case put it just below this instance
@@ -220,7 +220,7 @@ ART.StickyWin = new Class({
 			this.addEvent('hide', function(){
 				if (!mask.hidden) mask.hide();
 			});
-			target.store('StickyWin:mask', mask);
+			target.store('Popup:mask', mask);
 		}
 		mask.show();
 	},
@@ -419,4 +419,4 @@ ART.StickyWin = new Class({
 
 });
 
-ART.StickyWin.DefaultManager = new ART.WindowManager();
+ART.Popup.DefaultManager = new ART.WindowManager();

@@ -2,7 +2,7 @@
 ---
 name: ART.Window
 description: Base Window Class
-requires: [ART.Button, ART.StickyWin, Core/Fx.Morph, ART/Moderna, ART/Moderna.Bold, ART.Glyphs]
+requires: [ART.Button, ART.Popup, Core/Fx.Morph, ART/Moderna, ART/Moderna.Bold, ART.Glyphs]
 provides: ART.Window
 ...
 */
@@ -140,7 +140,7 @@ ART.Sheet.defineStyle('window:dragging', {
 
 ART.Window = new Class({
 	
-	Extends: ART.StickyWin,
+	Extends: ART.Popup,
 	
 	name: 'window',
 	
