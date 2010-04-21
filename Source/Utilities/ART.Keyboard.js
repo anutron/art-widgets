@@ -44,7 +44,7 @@ ART.Keyboard = new Class({
 
 	attach: function(){
 		this.widget.addEvents(this._widgetEvents);
-		$extend(widget, {
+		$extend(this.widget, {
 			
 			keyboard: this._keyboard,
 			
