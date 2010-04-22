@@ -40,9 +40,21 @@
 		'font-size': 13,
 		'font-color': 'black'
 	});
+
+	UI.Sheet.define('button.cross', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'padding': [1,1,1,1],
+		'pill': true,
+		'height': 14,
+		'width': 14,
+		'cornerRadius': 7,
+		'cursor': 'pointer',
+		'glyph-color': hsb(0, 0, 0, 0.6)
+	});
 	
 	document.addEvent('domready', function(){
-		window.gs = new ART.Button('Google Search', {className: 'button', id: 'GoogleSearch', tabIndex: 1});
+		window.gs = new ART.Button({text: 'Google Search', className: 'button', id: 'GoogleSearch', tabIndex: 1});
 		
 		gs.inject($('container'));
 		
@@ -50,13 +62,17 @@
 			console.log('searching google...');
 		});
 		
-		window.fl = new ART.Button('I\'m Feeling Lucky', {className: 'button', id: 'FeelingLucky', tabIndex: 2});
+		window.fl = new ART.Button({text: 'I\'m Feeling Lucky', className: 'button', id: 'FeelingLucky', tabIndex: 2});
 		
 		fl.inject($('container'));
 		
 		fl.addEvent('press', function(){
 			console.log('feeling lucky...');
 		});
+		
+		window.cross = new ART.Button({glyph: ART.Glyphs.smallCross, className: 'cross'});
+		
+		cross.inject($('container'));
 		
 	});
 		
