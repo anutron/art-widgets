@@ -18,6 +18,9 @@ var rules = {};
 var parseSelector = function(selector){
 	return selector.map(function(chunk){
 		var result = [];
+		if (chunk.id){
+			result.push('#' + chunk.id);
+		}
 		if (chunk.tag && chunk.tag != '*'){
 			result.push(chunk.tag);
 		}
@@ -36,6 +39,7 @@ var parseSelector = function(selector){
 var getSpecificity = function(selector){
 	specificity = 0;
 	selector.each(function(chunk){
+		if (chunk.id) specificity += 10000;
 		if (chunk.tag && chunk.tag != '*') specificity++;
 		specificity += (chunk.pseudos || []).length;
 		specificity += (chunk.classes || []).length * 100;
