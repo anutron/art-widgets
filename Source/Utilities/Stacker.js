@@ -144,7 +144,8 @@ var Stacker = new Class({
 		if (!noOrder) this.bringToFront(instance);
 		if (this.enabled && this.enabled != instance) this.enabled.disable();
 		if (instance.getState('disabled')) instance.enable(true);
-		this.enabled = instance.focus();
+		instance.focus();
+		this.enabled = instance;
 	},
 
 	//moves all the instances to be in a cascaded line
