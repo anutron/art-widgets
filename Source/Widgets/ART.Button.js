@@ -110,11 +110,11 @@ var Button = ART.Button = new Class({
 		var cs = this.currentSheet;
 		console.log('»', this.id, ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
-		var boxChanged = !!(sheet.padding || sheet.borderRadius || fontChanged);
+		var boxChanged = !!(sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
 		if (sheet.glyph || (this.options.glyph && !this.glyphLayer)){
 			if (sheet.glyph) this.options.glyph = sheet.glyph;
-			if (!this.glyphLayer) this.glyphLayer = new ART[cs.pill ? 'Pill' : 'Rectangle'];
+			if (!this.glyphLayer) this.glyphLayer = new ART.Shape;
 			this.makeGlyph(this.options.glyph, true);
 			this.canvas.grab(this.glyphLayer);
 			boxChanged = true;
@@ -134,11 +134,12 @@ var Button = ART.Button = new Class({
 			
 			var brt = cs.borderRadius[0], brr = cs.borderRadius[1];
 			var brb = cs.borderRadius[2], brl = cs.borderRadius[3];
-			
-			this.shadowLayer.draw(cs.width, cs.height, cs.borderRadius).translate(0, 1);
-			this.borderLayer.draw(cs.width, cs.height, cs.borderRadius);
-			this.reflectionLayer.draw(cs.width - 2, cs.height - 2, [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
-			this.backgroundLayer.draw(cs.width - 2, cs.height - 3, [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 2);
+
+			var pill = ((cs.width < cs.height) ? cs.width : cs.height) / 2;
+			this.shadowLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius).translate(0, 1);
+			this.borderLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius);
+			this.reflectionLayer.draw(cs.width - 2, cs.height - 2, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
+			this.backgroundLayer.draw(cs.width - 2, cs.height - 3, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 2);
 			
 			(this.textLayer || this.glyphLayer).translate(cs.padding[3], cs.padding[0]);
 		}
