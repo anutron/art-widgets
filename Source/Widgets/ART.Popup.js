@@ -118,7 +118,7 @@ ART.Popup = new Class({
 
 		//register this instance
 		this.windowManager.register(this, this.options.windowManagerLayer);
-		
+
 		if (this.options.content) this.setContent(this.options.content);
 		
 		if (this.options.draggable) this.makeDraggable();
@@ -228,6 +228,7 @@ ART.Popup = new Class({
 	//show this instance
 	show: function(){
 		if (this.getState('hidden')){
+			this.setState('hidden', false);
 			this.element.setStyles({
 				opacity: 0,
 				display: 'block'
@@ -338,7 +339,7 @@ ART.Popup = new Class({
 	_displayForDrag: function(dragging, render) {
 		render = $pick(render, true);
 		this.setState('dragging', dragging);
-		if (render) this.render();
+		if (render) this.deferDraw();
 		this.fireEvent(dragging ? 'shade' : 'unshade');
 	},
 
@@ -362,7 +363,7 @@ ART.Popup = new Class({
 
 	//resize this instance to a given size
 	resize: function(width, height){
-		this.render({'height': height, 'width': width});
+		this.draw({'height': height, 'width': width});
 		if (this.shim) this.shim.position();
 		return this;
 	},
