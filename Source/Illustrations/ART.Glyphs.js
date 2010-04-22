@@ -2,6 +2,7 @@
 ---
 name: ART.Glyphs
 description: A collection of illustrations for ART.
+requires: ART/ART
 provides: ART.Glyphs
 ...
 */

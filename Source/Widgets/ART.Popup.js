@@ -2,7 +2,7 @@
 ---
 name: ART.Popup
 description: Base class for windows and other popups.
-requires: [ART.Widget, Core/Fx.Tween, More/IframeShim, More/Element.Position, Stacker, Touch/Touch, More/Mask, More/Element.Delegation]
+requires: [ART.Widget, Core/Fx.Tween, More/IframeShim, More/Element.Position, Stacker, Touch/Touch, More/Mask, More/Element.Delegation, ART.Keyboard]
 provides: [ART.Popup, ART.WindowManager]
 ...
 */
