@@ -232,7 +232,12 @@ var Widget = UI.Widget = new Class({
 				mixSheet[p] = oldSheet[p] = newValue;
 			}
 		}
-		
+		for (var mp in oldSheet) {
+			if (newSheet[mp] == undefined) {
+				delete this._oldSheet[mp];
+				mixSheet[mp] = null;
+			}
+		}
 		return mixSheet;
 	}
 	
