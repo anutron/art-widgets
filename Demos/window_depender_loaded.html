@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART Windows</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+	</style>
+	
+	<!-- compiled assets -->
+
+	<!-- depender must be configured on localhost 8000 and have the following modules loaded:
+
+		mootools-core
+		mootools-more
+		table
+		touch
+		art
+		slick
+		color
+		widgets
+
+	-->
+	<script src="loadScripts.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		loadViaDepender('require=ART.Window,DomReady,ART.Glyphs');
+	</script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript">
+		
+	window.addEvent('domready', function(){
+		var c = $('container');
+		var b = new ART.Button({glyph: ART.Glyphs.refresh});
+		
+		b.inject(c);
+		
+		// window.win = new ART.Window({caption: 'Window'});
+		// win.inject(c);
+		// win.show();
+	});
+
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	
+</body>
+</html>
