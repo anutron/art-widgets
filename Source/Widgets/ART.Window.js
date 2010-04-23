@@ -272,6 +272,8 @@ ART.Window = new Class({
 				this.buttons[button] = new ART.Button({
 					className: button + ' wincontrol art',
 					tabIndex: -1
+				}).addEvent('press:start', function(event) {
+					event.stopPropagation();
 				}).inject(this, this.header);
 				$(this.buttons[button]).setStyles({
 					'position': 'absolute',
