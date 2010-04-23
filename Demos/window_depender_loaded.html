@@ -40,16 +40,19 @@
 	<!-- this package -->
 	
 	<script type="text/javascript">
-		
+	UI.Sheet.define('window.art button.art.wincontrol', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+	
 	window.addEvent('domready', function(){
 		var c = $('container');
-		var b = new ART.Button({glyph: ART.Glyphs.refresh});
-		
-		b.inject(c);
-		
-		// window.win = new ART.Window({caption: 'Window'});
-		// win.inject(c);
-		// win.show();
+		window.win = new ART.Window({caption: 'Window'});
+		win.inject(c);
+		win.show();
 	});
 
 	</script>
