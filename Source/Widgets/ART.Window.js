@@ -574,7 +574,7 @@ ART.Window = new Class({
 	//creates the header text layer
 	makeHeaderText: function(text, nrd){
 		var cs = this.currentSheet;
-		if (text && fontSize) this.textLayer.draw(text, cs.captionFontSize, cs.captionFontFamily, cs.captionFontVariant);
+		if (text) this.textLayer.draw(cs.captionFontFamily, cs.captionFontVariant, text, cs.captionFontSize);
 		this.textBox = this.textLayer.measure();
 		if (!nrd) this.deferDraw();
 	}
