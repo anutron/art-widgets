@@ -12,7 +12,7 @@ provides: ART.Window
 	default window styles
 */
 
-ART.Sheet.define('window', {
+ART.Sheet.define('window.art', {
 	'height': 300,
 	'width': 400,
 	
@@ -50,7 +50,7 @@ ART.Sheet.define('window', {
 
 });
 
-ART.Sheet.define('window:disabled', {
+ART.Sheet.define('window.art:disabled', {
 	'caption-font-color': hsb(0, 0, 30),
 	'header-background-color': [hsb(0, 0, 95), hsb(0, 0, 80)],
 	'footer-background-color': [hsb(0, 0, 95), hsb(0, 0, 90)],
@@ -63,12 +63,12 @@ ART.Sheet.define('window:disabled', {
 	'content-color': hsb(0, 0, 0)
 });
 
-ART.Sheet.define('window footer-text', {
+ART.Sheet.define('window.art footer-text', {
 	'float': 'left',
 	'margin': '3px 14px 0px 4px'
 }, 'css');
 
-ART.Sheet.define('window button.wincontrol', {
+ART.Sheet.define('window.art button.art.wincontrol', {
 	'padding': [1,1,1,1],
 	'pill': true,
 	'height': 14,
@@ -82,7 +82,11 @@ ART.Sheet.define('window button.wincontrol', {
 	'glyph-color': hsb(0, 0, 0, 0.6)
 });
 
-ART.Sheet.define('window button.wincontrol:disabled', {
+ART.Sheet.define('window.art:dragging button.art.wincontrol', {
+	'display': 'none'
+});
+
+ART.Sheet.define('window.art button.art.wincontrol:disabled', {
 	'background-color': [hsb(0, 0, 100, 0.6), hsb(0, 0, 100, 0.6)],
 	'reflection-color': [hsb(0, 0, 100), hsb(0, 0, 0, 0)],
 	'shadow-color': hsb(0, 0, 100, 0.2),
@@ -90,14 +94,14 @@ ART.Sheet.define('window button.wincontrol:disabled', {
 	'glyph-color': hsb(0, 0, 0, 0.4)
 });
 
-ART.Sheet.define('window button.wincontrol:active', {
+ART.Sheet.define('window.art button.art.wincontrol:active', {
 	'background-color': hsb(0, 0, 65),
 	'reflection-color': [hsb(0, 0, 65), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 45),
 	'glyph-color': hsb(0, 0, 100)
 });
 
-ART.Sheet.define('window button.close', {
+ART.Sheet.define('window.art button.art.close', {
 	'glyph': ART.Glyphs.smallCross,
 	
 	'glyph-height': 4,
@@ -106,7 +110,7 @@ ART.Sheet.define('window button.close', {
 	'glyph-left': 1
 });
 
-ART.Sheet.define('window button.help', {
+ART.Sheet.define('window.art button.help', {
 	'glyph': ART.Glyphs.help,
 	
 	'glyph-height': 4,
@@ -115,7 +119,7 @@ ART.Sheet.define('window button.help', {
 	'glyph-left': 4
 });
 
-ART.Sheet.define('window button.minimize', {
+ART.Sheet.define('window.art button.art.minimize', {
 	'glyph': ART.Glyphs.smallMinus,
 
 	'glyph-height': 6,
@@ -124,7 +128,7 @@ ART.Sheet.define('window button.minimize', {
 	'glyph-left': 1
 });
 
-ART.Sheet.define('window button.maximize', {
+ART.Sheet.define('window.art button.art.maximize', {
 	'glyph': ART.Glyphs.smallPlus,
 
 	'glyph-height': 6,
@@ -133,7 +137,7 @@ ART.Sheet.define('window button.maximize', {
 	'glyph-left': 1
 });
 
-ART.Sheet.define('window:dragging', {
+ART.Sheet.define('window.art:dragging', {
 	'content-display': 'none',
 	'background-color': hsb(0, 0, 0, 0.1)
 });
@@ -265,8 +269,8 @@ ART.Window = new Class({
 		var baseLeft = 6;
 		['close', 'minimize', 'maximize', 'help'].each(function(button){
 			if (this.options[button]) {
-				this.buttons[button] = new ART.Button(ART.Glyphs.smallCross, {
-					className: button + ' wincontrol',
+				this.buttons[button] = new ART.Button({
+					className: button + ' wincontrol art',
 					tabIndex: -1
 				}).inject(this, this.header);
 				$(this.buttons[button]).setStyles({
