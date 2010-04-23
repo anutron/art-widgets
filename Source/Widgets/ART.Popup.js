@@ -235,9 +235,14 @@ ART.Popup = new Class({
 			});
 			this.windowManager.enable(this);
 			this.fireEvent('display');
-			if (!this.positioned) this.position();
+			if (!this.positioned) {
+				this.position(null, function(){
+					this.element.setStyle('opacity', 1);
+				}.bind(this));
+			} else {
+				this.element.setStyle('opacity', 1);
+			}
 			this.showIframeShim();
-			this.element.setStyle('opacity', 1);
 			if (this.options.mask) this.maskTarget();
 		}
 	},
@@ -250,11 +255,11 @@ ART.Popup = new Class({
 
 	//positions this instance to the position specified in the options
 	//pass in new options (same as those passed in on init) to override
-	position: function(options){
+	position: function(options, callback){
 		this.positioned = true;
 		this.setOptions(options);
 		//if cascading is enabled and the window manager doesn't want to do this positioning for us
-		if (this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
+		if (true && this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
 			//if top/left options defined in options, put the window there
 			if ($defined(this.options.top) && $defined(this.options.left)) {
 				this.element.setStyles({
@@ -262,6 +267,10 @@ ART.Popup = new Class({
 					left: this.options.left
 				});
 			} else {
+				if (!this.drawn) {
+					this.position.delay(1, this, arguments);
+					return this;
+				}
 				//else position it using the other options specified
 				this.element.position({
 					allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
@@ -274,8 +283,14 @@ ART.Popup = new Class({
 				});
 			}
 		}
+		if (callback) callback();
 		if (this.shim) this.shim.position();
 		return this;
+	},
+	
+	draw: function(){
+		this.drawn = true;
+		return this.parent.apply(this, arguments);
 	},
 
 	//pins an instance to a specific fixed location using Element.Pin
