@@ -7,7 +7,7 @@ provides: ART.Button
 ...
 */
 
-ART.Sheet.define('button', {
+ART.Sheet.define('button.art', {
 	'border-color': ['hsb(0, 0, 0, 0.6)', 'hsb(0, 0, 0, 0.7)'],
 	'reflection-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 0, 0)'],
 	'background-color': ['hsb(0, 0, 90)', 'hsb(0, 0, 70)'],
@@ -18,6 +18,8 @@ ART.Sheet.define('button', {
 	'font-size': 12,
 	'font-color': 'hsb(0, 0, 5)',
 	'padding': [6, 8, 5, 8],
+	'display': 'inline-block',
+	'cursor': 'pointer',
 	
 	'glyph': false,
 	'glyph-stroke': 2,
@@ -30,18 +32,18 @@ ART.Sheet.define('button', {
 	'glyph-right': 2
 });
 
-ART.Sheet.define('button:focus', {
+ART.Sheet.define('button.art:focus', {
 	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
 	'border-color': ['hsb(205, 80, 100)', 'hsb(205, 100, 95)']
 });
 
-ART.Sheet.define('button:active', {
+ART.Sheet.define('button.art:active', {
 	'border-color': ['hsb(0, 0, 0, 0.7)', 'hsb(0, 0, 0, 0.8)'],
 	'reflection-color': ['hsb(0, 0, 50)', 'hsb(0, 0, 0, 0)'],
 	'background-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 70)']
 });
 
-ART.Sheet.define('button:disabled', {
+ART.Sheet.define('button.art:disabled', {
 	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
 	'border-color': ['hsb(0, 0, 0, 0.4)', 'hsb(0, 0, 0, 0.5)'],
 	'font-color': 'hsb(0, 0, 5, 0.5)'
@@ -73,6 +75,8 @@ var Button = ART.Button = new Class({
 		
 		var element = this.element, self = this;
 		
+		var mouseleave;
+		
 		element.addEvents({
 
 			keydown: function(event){
@@ -81,6 +85,10 @@ var Button = ART.Button = new Class({
 			
 			keyup: function(event){
 				if (event.key.match(/space|enter/) && self.deactivate()) self.fireEvent('press');
+			},
+			
+			mouseleave: function(){
+				mouseleave = true;
 			}
 
 		});
@@ -89,16 +97,18 @@ var Button = ART.Button = new Class({
 		
 		this.touch.addEvents({
 			
-			start: function(){
+			start: function(event){
+				self.fireEvent('press:start', event);
+				mouseleave = false;
 				self.activate();
 			},
 			
-			end: function(){
-				self.deactivate();
+			end: function(event){
+				if (self.deactivate() && !mouseleave) self.fireEvent('press', event);
 			},
 			
-			cancel: function(){
-				if (self.deactivate()) self.fireEvent('press');
+			cancel: function(event){
+				if (self.deactivate()) self.fireEvent('press', event);
 			}
 		
 		});
@@ -108,7 +118,16 @@ var Button = ART.Button = new Class({
 	draw: function(newSheet){
 		var sheet = this.parent(newSheet);
 		var cs = this.currentSheet;
-		console.log('»', this.id, ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
+		if (sheet.display) {
+			if (sheet.display == "none") {
+				$(this).setStyle('display', 'none');
+				return;
+			} else {
+				$(this).setStyle('display', cs.display);
+			}
+		}
+		if (sheet.cursor) $(this).setStyle('cursor', cs.cursor);
+		// console.log('»', this.id, ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
 		var boxChanged = !!(sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
@@ -151,7 +170,6 @@ var Button = ART.Button = new Class({
 		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(sheet.glyphColor));
 		else if (sheet.fontColor && this.textLayer) this.textLayer.fill.apply(this.textLayer, $splat(sheet.fontColor));
 		
-		
 		return this;
 		
 	},
@@ -182,7 +200,6 @@ var Button = ART.Button = new Class({
 		var cs = this.currentSheet;
 		if (!this.textLayer || !text) return;
 		this.options.text = text;
-		console.log(cs.fontFamily, cs.fontVariant, text, cs.fontSize);
 		this.textLayer.draw(cs.fontFamily, cs.fontVariant, text, cs.fontSize);
 		this.textBox = this.textLayer.measure();
 		cs.width = Math.round(this.textBox.width) + cs.padding[1] + cs.padding[3];
