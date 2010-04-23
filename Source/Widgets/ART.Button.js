@@ -46,7 +46,8 @@ ART.Sheet.define('button.art:active', {
 ART.Sheet.define('button.art:disabled', {
 	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
 	'border-color': ['hsb(0, 0, 0, 0.4)', 'hsb(0, 0, 0, 0.5)'],
-	'font-color': 'hsb(0, 0, 5, 0.5)'
+	'font-color': 'hsb(0, 0, 5, 0.5)',
+	'glyph-color': 'hsb(0, 0, 5, 0.5)'
 });
 
 (function(){
@@ -159,8 +160,8 @@ var Button = ART.Button = new Class({
 			this.borderLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius);
 			this.reflectionLayer.draw(cs.width - 2, cs.height - 2, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
 			this.backgroundLayer.draw(cs.width - 2, cs.height - 3, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 2);
-			
-			(this.textLayer || this.glyphLayer).translate(cs.padding[3], cs.padding[0]);
+			if (this.textLayer) this.textLayer.translate(cs.padding[3], cs.padding[0]);
+			if (this.glyphLayer) this.glyphLayer.translate(cs.glyphLeft, cs.glyphTop);
 		}
 		
 		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(sheet.shadowColor));
@@ -191,8 +192,8 @@ var Button = ART.Button = new Class({
 		if (!this.glyphLayer) return;
 		this.glyphLayer.draw(glyph);
 		this.glyphBounds = this.glyphLayer.measure();
-		// cs.width = (this.glyphBounds.right + cs.glyphLeft + cs.glyphRight).round();
-		// 		cs.height = (this.glyphBounds.bottom + cs.glyphTop + cs.glyphBottom).round();
+		if (!cs.width) cs.width = (this.glyphBounds.right + cs.glyphLeft + cs.glyphRight).round();
+		if (!cs.height) cs.height = (this.glyphBounds.bottom + cs.glyphTop + cs.glyphBottom).round();
 		if (!noDraw) this.deferDraw();
 	},
 	
