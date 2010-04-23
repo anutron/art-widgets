@@ -12,6 +12,7 @@ provides: ART.Widget
 var Widget = ART.Widget = new Class({
 	Extends: UI.Widget,
 	options: {
+		className: 'art',
 		tabIndex: -1,
 		onHide: function(){
 			$(this).setStyle('display', 'none');
@@ -77,6 +78,9 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	draw: function(newSheet){
+		for (var i = 0; i < this._childWidgets.length; i++) {
+			this._childWidgets[i].draw();
+		}
 		return this.setSheet(newSheet);
 	},
 	
