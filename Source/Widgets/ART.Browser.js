@@ -44,11 +44,7 @@ ART.Browser = new Class({
 
 	build: function(){
 		this.parent.apply(this, arguments);
-		this.history = new ART.History(
-			$extend(this.options.historyOptions, {
-				parentWidget: this
-			})
-		);
+		this.history = new ART.History(this.options.historyOptions).register(this);
 		$(this.history).inject(this.header);
 		var styles = ART.Sheet.lookupStyle(this.getSelector());
 		this.header.setStyles({
