@@ -99,6 +99,7 @@ var Button = ART.Button = new Class({
 		this.touch.addEvents({
 			
 			start: function(event){
+
 				self.fireEvent('press:start', event);
 				mouseleave = false;
 				self.activate();
@@ -130,7 +131,7 @@ var Button = ART.Button = new Class({
 		if (sheet.cursor) $(this).setStyle('cursor', cs.cursor);
 		// console.log('»', this.id, ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
-		var boxChanged = !!(sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
+		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
 		if (sheet.glyph || (this.options.glyph && !this.glyphLayer)){
 			if (sheet.glyph) this.options.glyph = sheet.glyph;
