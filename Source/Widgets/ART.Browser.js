@@ -7,32 +7,44 @@ provides: ART.Browser
 ...
 */
 
-ART.Sheet.defineStyle('window.browser', {
+ART.Sheet.define('window.art.browser', {
 	'header-height': 60,
 	'header-overflow': 'visible'
 });
 
-ART.Sheet.defineCSS('window.browser history', {
+ART.Sheet.define('window.art.browser history.art', {
 	'top':30,
 	'padding': '0 8px 0 10px'
+}, 'css');
+
+ART.Sheet.define('window.art.browser history.art button.art', {
+	'shadow-color': hsb(0, 0, 100, 0.4)
 });
 
-ART.Sheet.defineCSS('window.browser history input', {
-	'left': 66
-});
+ART.Sheet.define('window.art.browser history.art input', {
+	'left': 58
+}, 'css');
 
-ART.Sheet.defineCSS('window.browser history input.disabled', {
-	'left': 66
-});
+ART.Sheet.define('window.art.browser history.art input.disabled', {
+	'left': 58
+}, 'css');
+
+ART.Sheet.define('window.art.browser:dragging history.art', {
+	'display': 'none'
+}, 'css');
+
+ART.Sheet.define('window.art.browser history.art', {
+	'display': 'block'
+}, 'css');
 
 ART.Browser = new Class({
 
 	Extends: ART.Window,
 
 	options: {
-		className: 'browser',
+		className: 'art browser',
 		historyOptions: {
-			className: 'browser',
+			className: 'art browser',
 			editable: false
 		}
 	},
