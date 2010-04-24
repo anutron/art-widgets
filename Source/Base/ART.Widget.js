@@ -88,8 +88,9 @@ var Widget = ART.Widget = new Class({
 		if (!this.element.parentNode || this.getState('hidden')) return;
 		var self = this;
 		clearTimeout(this.drawTimer);
+		var args = arguments;
 		this.drawTimer = setTimeout(function(){
-			self.draw();
+			self.draw.apply(self, arguments);
 		}, 1);
 	},
 	
