@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>UI ART Windows</title>
+	<title>UI ART Browsers</title>
 	
 	<!--[if IE]>
 	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
@@ -34,7 +34,7 @@
 	-->
 	<script src="loadScripts.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		loadViaDepender('require=ART.Window,DomReady');
+		loadViaDepender('require=ART.Browser,DomReady');
 	</script>
 	
 	<!-- this package -->
@@ -50,7 +50,26 @@
 	
 	window.addEvent('domready', function(){
 		var c = $('container');
-		window.win = new ART.Window({caption: 'Window'});
+		window.win = new ART.Browser({
+			caption: 'Browser',
+			historyOptions: {
+				editable: true,
+				history: [
+					{
+						title: '/a',
+						path: '/a'
+					},
+					{
+						title: '/b',
+						path: '/b'
+					},
+					{
+						title: '/c',
+						path: '/c'
+					}
+				]
+			}
+		});
 		win.inject(c);
 		win.show();
 	});
