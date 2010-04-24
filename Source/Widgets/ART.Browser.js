@@ -49,20 +49,13 @@ ART.Browser = new Class({
 		}
 	},
 
-	initialize: function(){
-		this.requireToRender('browser:history');
+	_build: function(){
 		this.parent.apply(this, arguments);
-	},
-
-	build: function(){
-		this.parent.apply(this, arguments);
-		this.history = new ART.History(this.options.historyOptions).register(this);
-		$(this.history).inject(this.header);
-		var styles = ART.Sheet.lookupStyle(this.getSelector());
+		this.history = new ART.History(this.options.historyOptions).inject(this, this.header);
+		var styles = ART.Sheet.lookup(this.toString());
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
-		this.readyToRender('browser:history');
 		this.history.resize();
 		this.addEvent('shade', function(dragging) {
 			this._dragging = dragging;
@@ -70,11 +63,6 @@ ART.Browser = new Class({
 		}.bind(this));
 	},
 
-	redraw: function(){
-		this.parent.apply(this, arguments);
-		if (this.history && !this._dragging) this.history.render();
-	},
-	
 	resize: function(){
 		this.parent.apply(this, arguments);
 		if (this.history && !this._dragging) this.history.resize();
