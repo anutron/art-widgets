@@ -6,13 +6,18 @@ requires: [ART.Button, Core/Element.Dimensions, More/Element.Forms, More/Element
 provides: ART.History
 ...
 */
-
+ART.Sheet.define('history.art', {
+	'height': 20
+}, 'css');
+ART.Sheet.define('history.art button.art', {
+	'shadow-color': hsb(0, 0, 0, 0)
+});
 ART.Sheet.define('history.art button.art.navLeft', {
 	'padding': [0, 0, 0, 0],
 	'border-radius': [4, 0, 0, 4],
 	'glyph-top': 5,
-	'glyph-left': 8,
-	'glyph-right': 6,
+	'glyph-left': 6,
+	'glyph-right': 8,
 	'glyph-bottom': 6
 });
 ART.Sheet.define('history.art button.art.navLeft', {
@@ -37,6 +42,10 @@ ART.Sheet.define('history.art button.art.navDown', {
 	'border-radius': [0, 0, 0, 0],
 	'glyph': false,
 	'padding': [0, 0, 0, 0]
+});
+ART.Sheet.define('history.art button.art.navDown:editing', {
+	'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 95)'],
+	'border-color': ['hsb(0, 0, 0)', 'hsb(0, 0, 0)']
 });
 ART.Sheet.define('history.art button.art.navDown', {
 	'float': 'left',
@@ -75,7 +84,7 @@ ART.Sheet.define('history.art ul', {
 	'padding': [0, 0, 0, 0],
 	'margin': 0,
 	'position': 'relative',
-	'top': 0,
+	'top': 19,
 	'display': 'none'
 }, 'css');
 ART.Sheet.define('history.art ul li', {
@@ -143,7 +152,9 @@ ART.Sheet.define('history.art input', {
 }, 'css');
 
 ART.Sheet.define('history.art divot', {
-	'color': hsb(0, 0, 33)
+	'color': hsb(0, 0, 33),
+	'width': 20,
+	'height': 20
 });
 ART.Sheet.define('history.art divot', {
 	'position': 'absolute',
@@ -192,7 +203,11 @@ ART.History = new Class({
 		this.setNavState();
 		this.attach();
 	},
-	
+
+	_createElement: function(){
+		this.element = this.element || new Element('div').setStyles({display: 'block', position: 'relative', outline: 'none'});
+	},
+
 	history: [],
 	
 	resize: function() {
@@ -204,43 +219,58 @@ ART.History = new Class({
 				if (i%2) w = w - val.toInt();
 			});
 		}, this);
-		this.location.deferDraw({
+		this.location.draw({
 			width: w
 		});
 	},
 	
 	build: function(){
+		var cancel = function(e) {
+			e.stopPropagation();
+		};
 		this.nav_back = new ART.Button({
 			className: 'art navLeft',
+			tabIndex: 1,
 			glyph: ART.Glyphs.triangleLeft,
 			onPress: this.back.bind(this)
 		}).inject(this);
+		$(this.nav_back).addEvent('mousedown', cancel);
 
 		this.nav_next = new ART.Button({
 			className: 'art navRight',
+			tabIndex: 1,
 			glyph: ART.Glyphs.triangleRight,
 			onPress: this.next.bind(this)
 		}).inject(this);
+		$(this.nav_next).addEvent('mousedown', cancel);
 
 		this.location = new ART.Button({
 			className: 'art navDown',
+			tabIndex: 1,
 			onPress: this.toggle.bind(this)
 		}).inject(this);
 		this.location_text = new Element('div', {'class': 'location_text'});
-		$(this.location).adopt(this.location_text);
+		$(this.location).adopt(this.location_text).addEvent('mousedown', cancel);
 
-		this.divotContainer = new ART(10, 10);
-		this.divot = new ART.Shape().inject(this.divotContainer).draw("M0,0L8,0L4,8L0,0").translate(0, -1);
-		this.divotContainer.inject(this.location);
-		$(this.divotContainer).setStyles(ART.Sheet.lookup(this.toString() + ' divot'), 'css');
+		this.divotContainer = new ART().resize(10, 10).inject(this.location);
+		this.divot = new ART.Shape("M0,0L8,0L4,8L0,0")
+		                    .inject(this.divotContainer)
+		                    .translate(0, -1);
+		$(this.divotContainer).setStyles(ART.Sheet.lookup(this.toString() + ' divot', 'css'));
+		this.divotContainer.grab(this.divot);
+		window.dc = this.divotContainer;
+		window.divot = this.divot;
 
 		this.refresher = new ART.Button({
 			className: 'art refresh',
-			onActivate: function(){
+			tabIndex: 1,
+			onPress: function(e){
 				var hist = this.history[this.selected] || {};
 				this.fireEvent('refresh', [ this.options.pathBuilder(hist.path), hist.title, this.selected ]);
 			}.bind(this)
 		}).inject(this);
+		$(this.refresher).addEvent('mousedown', cancel);
+		
 
 		//create the list for the history
 		this.nav = new Element('ul').inject(this.location);
@@ -320,7 +350,7 @@ ART.History = new Class({
 		this.divot.fill.apply(this.divot, $splat(divotStyles.color));
 
 		this.editor.setStyles(ART.Sheet.lookup(this.toString() + (this.history.length ? ' input': ' input:disabled'), 'css'));
-		this.resize();
+		this.resize.delay(1, this);
 	},
 	
 	destroy: function(){
@@ -384,8 +414,7 @@ ART.History = new Class({
 		this.history = this.history.slice(0, this.selected + 1);
 	},
 	
-	toggle: function(){
-		console.log('toggle', this.nav.getStyle('display'));
+	toggle: function(e){
 		//if the nav is already displayed, hide it (so this toggles);
 		if (this.nav.getStyle('display') != 'none') return this.hide();
 		else return this.show();
@@ -393,7 +422,8 @@ ART.History = new Class({
 
 	showEditor: function(show){
 		if ($pick(show, true) && this.history.length) {
-			this.editor.setStyle('display', 'block').set('value', this.options.pathFilter(this.history[this.selected].path)).select();
+			this.editor.setStyle('display', 'block')
+			    .set('value', this.options.pathFilter(this.history[this.selected].path)).select();
 			this.editor.setStyle('width', $(this.location).getSize().x - 30);
 			this.location_text.setStyle('display', 'none');
 		} else {
@@ -404,12 +434,12 @@ ART.History = new Class({
 	},
 
 	//displays the dropdown list of your history
-	show: function(){
-		console.log('show!', this.nav.isDisplayed());
+	show: function(e){
 		if(this.nav.isDisplayed()) return this;
 		//activate this keyboard watcher
 		this.keyboard.activate();
-		this.location.activate();
+		this.location.setState('editing', true);
+		$(this.divotContainer).setStyle('display', 'none');
 		if (this.options.editable) this.showEditor();
 		
 		//mark it as active (this makes it stand out a bit more)
@@ -466,10 +496,12 @@ ART.History = new Class({
 		return this;
 	},
 	
-	hide: function(){
+	hide: function(e){
 		if (!this.location) return;
 		this.element.removeClass('history_location_active');
-		this.location.deactivate();
+		this.location.setState('editing', false);
+		this.location.draw();
+		$(this.divotContainer).setStyle('display', 'block');
 		this.keyboard.relinquish(); //disable the main keyboard
 		this.nav.setStyle('display', 'none'); //hide the nav
 		this.showEditor(false);
@@ -517,7 +549,7 @@ ART.History = new Class({
 		}
 	},
 
-	back: function(){
+	back: function(e){
 		var hist = this.history[this.selected - 1];
 		if (hist) {
 			this.select(hist);
@@ -525,7 +557,7 @@ ART.History = new Class({
 		}
 	},
 
-	next: function(){
+	next: function(e){
 		var hist = this.history[this.selected + 1];
 		if (hist) {
 			this.select(hist);
