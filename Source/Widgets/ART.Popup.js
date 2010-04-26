@@ -24,11 +24,24 @@ ART.WindowManager = new Class({
 	register: function(instance){
 		this.parent.apply(this, arguments);
 		this.keyboard.manage(instance.keyboard);
+		self = this;
+		instance._stackerEvents = events = {
+			hide: function(){
+				var layer = self.getLayerForInstance(instance);
+				self.cycle('back', (layer && layer.name) || 'default');
+			}
+		};
+		instance.addEvents(instance._stackerEvents);
+
 	},
 
 	unregister: function(instance) {
+		var cycle = (this.enabled == instance);
+		var layer = this.getLayerForInstance(instance);
 		this.parent.apply(this, arguments);
 		this.keyboard.drop(instance.keyboard);
+		this.enableTop(layer);
+		if (instance._stackerEvents) widget.removeEvents(instance._stackerEvents);
 	}
 
 });
