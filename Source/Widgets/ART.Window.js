@@ -188,8 +188,6 @@ ART.Window = new Class({
 		var sheet = this.setSheet();
 		// create various ART shapes to draw the window
 		this.borderLayer = new ART.Rectangle;
-		this.resizeLayer = new ART.Shape(ART.Glyphs.resize);
-		this.resizeLayer.fill(hsb(0, 0, 0, 0.4));
 
 		this.textLayer = new ART.Font;
 		this.makeHeaderText(this.options.caption, sheet.captionFontSize, true);
@@ -210,7 +208,6 @@ ART.Window = new Class({
 			this.footerBackgroundLayer,
 			this.contentBorderTopLayer,
 			this.contentBorderBottomLayer,
-			this.resizeLayer,
 			this.textLayer
 		);
 
@@ -320,6 +317,7 @@ ART.Window = new Class({
 	makeResizeable: function(){
 		this.resizeHandle = new Element('div', {'class': 'art-window-resize-handle'});
 		this.resizeHandle.setStyles({
+			cursor: 'se-resize',
 			position: 'absolute',
 			height: 17,
 			width: 17,
@@ -334,11 +332,11 @@ ART.Window = new Class({
 			this.startHeight = this.contents.offsetHeight;
 			this.startWidth = this.contents.offsetWidth;
 			this.fireEvent('resize:start');
-			this._displayForDrag(true);
 		}.bind(this));
 
 		var dragging;
 		this.touchResize.addEvent('move', function(dx, dy){
+			this._displayForDrag(true);
 			this.fireEvent('resize:move', [dx, dy]);
 			this.resize(this.startWidth + dx, this.startHeight + dy);
 		}.bind(this));
@@ -517,10 +515,9 @@ ART.Window = new Class({
 			this.contentBorderBottomLayer.hide();
 			this.footerReflectionLayer.hide();
 			this.footerBackgroundLayer.hide();
-			this.resizeLayer.hide();
+			if (this.resizeLayer) this.resizeLayer.hide();
 		} else {
-			if (this.options.resizable) this.resizeLayer.show();
-			else this.resizeLayer.hide();
+			if (this.resizeLayer) this.resizeLayer.show();
 			this.headerReflectionLayer.show().translate(1, 1);
 			this.headerReflectionLayer.draw(cs.width - 2, cs.headerHeight - 2, [cs.cornerRadius, cs.cornerRadius, 0, 0]);
 			this.fill(this.headerReflectionLayer, cs.headerReflectionColor);
@@ -555,6 +552,11 @@ ART.Window = new Class({
 	//renders the resize handle
 	renderResize: function(style){
 		if (!this.options.resizable) return;
+		if (!this.resizeLayer) {
+			this.resizeLayer = new ART.Shape(ART.Glyphs.resize);
+			this.resizeLayer.fill(hsb(0, 0, 0, 0.4));
+			this.canvas.grab(this.resizeLayer);
+		}
 		this.resizeLayer.translate(this.currentSheet.width - 15, this.currentSheet.height - 15);
 	},
 	
