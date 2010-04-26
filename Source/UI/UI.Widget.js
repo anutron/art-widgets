@@ -89,6 +89,7 @@ var Widget = UI.Widget = new Class({
 	
 	setState: function(name, state) {
 		this._states[name] = state;
+		return this;
 	},
 
 	getState: function(name) {
