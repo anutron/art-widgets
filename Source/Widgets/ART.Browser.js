@@ -51,7 +51,9 @@ ART.Browser = new Class({
 
 	_build: function(){
 		this.parent.apply(this, arguments);
-		this.history = new ART.History(this.options.historyOptions).inject(this, this.header);
+		this.history = new ART.History(this.options.historyOptions).setState('hidden', true).inject(this, this.header);
+		this.history._firstHidden = true;
+		document.id(this.history).setStyle('opacity', 0);
 		var styles = ART.Sheet.lookup(this.toString());
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
@@ -69,10 +71,18 @@ ART.Browser = new Class({
 	},
 
 	show: function() {
-		this.parent.apply(this, arguments);
+		var ret = this.parent.apply(this, arguments);
 		if (this.history) this.history.resize();
-	}
+		return ret;
+	},
 
+	draw: function(){
+		this.parent.apply(this, arguments);
+		if (this.history._firstHidden) {
+			this.history._firstHidden = false;
+			document.id(this.history).setStyle('opacity', 1);
+		}
+	}
 
 });
 
