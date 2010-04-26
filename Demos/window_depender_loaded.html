@@ -16,6 +16,12 @@
 			float: left;
 		}
 		
+		a {
+			cursor: pointer;
+			color: #855;
+			font-family: Verdana;
+		}
+		
 	</style>
 	
 	<!-- compiled assets -->
@@ -48,11 +54,20 @@
 		'font-color': 'black'
 	});
 	
-	window.addEvent('domready', function(){
+	var makeWindow = function(){
+		var count = 0;
 		var c = $('container');
-		window.win = new ART.Window({caption: 'Window'});
-		win.inject(c);
-		win.show();
+		return function(caption, content){
+			return new ART.Window({
+				caption: caption || '',
+				content: content || ''
+			}).inject(c).show();
+		};
+	}();
+	
+	window.addEvent('domready', function(){
+		window.win = makeWindow('Window');
+		$('maker').addEvent('click', makeWindow.pass('Window'));
 	});
 
 	</script>
@@ -62,6 +77,7 @@
 <body>
 	
 	<div id="container"></div>
-	
+	<a id="maker">Make a window</a>
+
 </body>
 </html>

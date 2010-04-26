@@ -15,6 +15,12 @@
 			margin: 5px;
 			float: left;
 		}
+	
+		a {
+			cursor: pointer;
+			color: #855;
+			font-family: Verdana;
+		}
 		
 	</style>
 	
@@ -48,32 +54,39 @@
 		'font-color': 'black'
 	});
 	
-	window.addEvent('domready', function(){
+	var makeWindow = function(){
+		var count = 0;
 		var c = $('container');
-		window.win = new ART.Browser({
-			caption: 'Browser',
-			historyOptions: {
-				editable: true,
-				history: [
-					{
-						title: '/a',
-						path: '/a'
-					},
-					{
-						title: '/b',
-						path: '/b'
-					},
-					{
-						title: '/c',
-						path: '/c'
-					}
-				]
-			}
-		});
-		win.inject(c);
-		win.show();
+		return function(caption, content){
+			return new ART.Browser({
+				caption: caption || '',
+				content: content || '',
+				historyOptions: {
+					editable: true,
+					history: [
+						{
+							title: '/a',
+							path: '/a'
+						},
+						{
+							title: '/b',
+							path: '/b'
+						},
+						{
+							title: '/c',
+							path: '/c'
+						}
+					]
+				}
+			}).inject(c).show();
+		};
+	}();
+	
+	window.addEvent('domready', function(){
+		window.win = makeWindow('Browser');
+		$('maker').addEvent('click', makeWindow.pass('Browser'));
 	});
-
+	
 	</script>
 
 </head>
@@ -81,6 +94,7 @@
 <body>
 	
 	<div id="container"></div>
+	<a id="maker">Make a window</a>
 	
 </body>
 </html>
