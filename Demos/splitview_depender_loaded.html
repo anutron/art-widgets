@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART SplitView</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+		a {
+			cursor: pointer;
+			color: #855;
+			font-family: Verdana;
+		}
+		
+		.some-content {
+			display: none;
+		}
+	</style>
+	
+	<!-- compiled assets -->
+
+	<!-- depender must be configured on localhost 8000 and have the following modules loaded:
+
+		mootools-core
+		mootools-more
+		table
+		touch
+		art
+		slick
+		color
+		widgets
+
+	-->
+	<script src="loadScripts.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		loadViaDepender('require=ART.Window,ART.SplitView,DomReady');
+	</script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript">
+	UI.Sheet.define('window.art button.art.wincontrol', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+
+	ART.Sheet.define('window.split', {
+		'content-overflow': 'hidden'
+	});
+	
+	var makeWindow = function(){
+		var count = 0;
+		var c = $('container');
+		return function(caption){
+
+			var split = new ART.SplitView({resizable: true});
+			split.setLeftContent($$('.some-content')[0].clone());
+			split.setRightContent($$('.some-content')[0].clone());
+
+			var w = new ART.Window({
+				caption: caption || 'Window', 
+				className: 'art split', 
+				onResize: function(w, h){
+					split.resize(w, h);
+				},
+				inject: {
+					target: 'container'
+				}
+			});
+
+			split.inject(w, w.content);
+
+			return w;
+		};
+	}();
+	
+	window.addEvent('domready', function(){
+		window.win = makeWindow('Window');
+		$('maker').addEvent('click', makeWindow.pass('Window'));
+	});
+
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	<a id="maker">Make a window</a>
+
+
+	<div class="some-content">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	</div>
+
+</body>
+</html>
