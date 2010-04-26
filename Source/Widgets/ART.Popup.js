@@ -199,14 +199,15 @@ ART.Popup = new Class({
 			this.windowManager.enableTop(this.options.windowManagerLayer);
 			this.deferDraw();
 		}
+		return this;
 	},
 
 	//masks a target beneath the window (such as the document body)
 	maskTarget: function(){
-		var target = $(this.options.maskTarget);
+		var target = document.id(this.options.maskTarget);
 		if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
-			target = $(this.options.maskOptions.inject.target) || $(document.body);
-		else target = $(document.body);
+			target = document.id(this.options.maskOptions.inject.target) || document.id(document.body);
+		else target = document.id(document.body);
 
 		var mask = target.retrieve('Popup:mask');
 		if (!mask) {
@@ -214,12 +215,12 @@ ART.Popup = new Class({
 			//unless it's the document body, in which case put it just below this instance
 			var zIndex = this.options.maskOptions.zIndex;
 			if (zIndex == null) {
-				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = $(target).getStyle('zIndex').toInt() + 1;
-				if (target == document.body || zIndex > $(this).getStyle('zIndex').toInt() || zIndex == null)
-					zIndex = $(this).getStyle('zIndex').toInt() - 1;
+				if (target != document.body && target.getStyle('zIndex') != "auto") zIndex = document.id(target).getStyle('zIndex').toInt() + 1;
+				if (target == document.body || zIndex > document.id(this).getStyle('zIndex').toInt() || zIndex == null)
+					zIndex = document.id(this).getStyle('zIndex').toInt() - 1;
 				if (zIndex < 0 || isNaN(NaN)) zIndex = 0;
 			}
-			if (zIndex >= $(this).getStyle('zIndex').toInt()) $(this).setStyle('z-index', zIndex + 1);
+			if (zIndex >= document.id(this).getStyle('zIndex').toInt()) document.id(this).setStyle('z-index', zIndex + 1);
 			mask = new Mask(target, $merge({
 					style: {
 						zIndex: zIndex
@@ -258,6 +259,7 @@ ART.Popup = new Class({
 			this.showIframeShim();
 			if (this.options.mask) this.maskTarget();
 		}
+		return this;
 	},
 
 	//bring this instance to the front
@@ -287,7 +289,7 @@ ART.Popup = new Class({
 				//else position it using the other options specified
 				this.element.position({
 					allowNegative: $pick(this.options.allowNegative, this.options.relativeTo != document.body),
-					relativeTo: $(this.options.relativeTo) || $(document.body),
+					relativeTo: document.id(this.options.relativeTo) || document.id(document.body),
 					position: this.options.position,
 					offset: this.options.offset,
 					edge: this.options.edge,
@@ -331,16 +333,16 @@ ART.Popup = new Class({
 		var size, containerSize;
 		this.touchDrag.addEvent('start', function(){
 			this.fireEvent('drag:start');
-			this._displayForDrag(true);
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
 			if (this.options.constrainToContainer) {
 				size = this.element.getSize();
-				var container = $(this.options.constrainToContainer) || this.element.getParent();
+				var container = document.id(this.options.constrainToContainer) || this.element.getParent();
 				containerSize = container.getSize();
 			}
 		}.bind(this));
 		this.touchDrag.addEvent('move', function(dx, dy){
+			this._displayForDrag(true);
 			var top = this.startTop + dy;
 			var left = this.startLeft + dx;
 			if (top < 0) top = 0;
@@ -365,6 +367,7 @@ ART.Popup = new Class({
 
 	//add pseudo for dragging and fire the shade event when dragging starts/stops
 	_displayForDrag: function(dragging, render) {
+		if (this.getState('dragging') == dragging) return;
 		render = $pick(render, true);
 		this.setState('dragging', dragging);
 		if (render) this.deferDraw();
@@ -440,7 +443,7 @@ ART.Popup = new Class({
 		var size = this.element.getSize();
 		var bottom = pos.y + size.y;
 		var right = pos.x + size.x;
-		var containerSize = $(window.getDocument()).getSize();
+		var containerSize = document.id(window.getDocument()).getSize();
 		if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y);
 		if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x);
 		return true;
