@@ -71,7 +71,7 @@ var Stacker = new Class({
 			if (instanceLayer == layer) return;
 			instanceLayer.instances.erase(instance);
 		} else  {
-			$(instance).addEvent('mousedown', function(){
+			document.id(instance).addEvent('mousedown', function(){
 				if (instance.getState('disabled')) this.enable(instance);
 			}.bind(this));
 			this.instances.include(instance);
@@ -117,7 +117,7 @@ var Stacker = new Class({
 	//assigns the zindex order for all the instances in a layer based on their order
 	stack: function(layer) {
 		layer.instances.each(function(win, i){
-			$(win).setStyle('z-index', layer.zIndex + (i*2));
+			document.id(win).setStyle('z-index', layer.zIndex + (i*2));
 			win._stacked = true;
 		}, this);
 	},
@@ -132,6 +132,7 @@ var Stacker = new Class({
 	cycle: function(direction, layerName) {
 		direction = direction || 'forward';
 		var instances = this.layers[layerName].instances;
+		if (!instances.length) return;
 		if (direction == 'forward') instances.push(instances.shift());
 		else instances.unshift(instances.pop());
 		this.stack(this.layers[layerName]);
@@ -154,7 +155,7 @@ var Stacker = new Class({
 		y = $pick(y, this.options.offset.y);
 		this.layers[layer].instances.each(function(current, i){
 			var styles = {top: (y * i) + y, left: (x * i) + x};
-			$(current).setStyles(styles);
+			document.id(current).setStyles(styles);
 		});
 	},
 
@@ -166,10 +167,10 @@ var Stacker = new Class({
 		//then return; and let the window be positioned as the class would normally.
 		var current;
 		var instances = this.getLayerForInstance(instance).instances.filter(function(instance){
-			return !instance.getState('hidden') && $(instance);
+			return !instance.getState('hidden') && document.id(instance);
 		});
 		instances.reverse().some(function(win){
-			if (win != instance && $(win) && $(win).getStyle('display') != 'none') {
+			if (win != instance && document.id(win) && document.id(win).getStyle('display') != 'none') {
 				current = win;
 				return true;
 			}
@@ -186,10 +187,10 @@ var Stacker = new Class({
 		}
 		this.enable(instance);
 		if (instances.length < 1 || !pos || !current) return false;
-		var instanceEl = $(instance);
+		var instanceEl = document.id(instance);
 		//position near the enabled instance, with an offset as defined in the options
 		instanceEl.position({
-			relativeTo: $(current),
+			relativeTo: document.id(current),
 			offset: this.options.offset,
 			edge: 'upperLeft',
 			position: 'upperLeft'
@@ -198,7 +199,7 @@ var Stacker = new Class({
 		var size = instanceEl.getSize();
 		var bottom = pos.y + size.y;
 		var right = pos.x + size.x;
-		var containerSize = $(document.body).getSize();
+		var containerSize = document.id(document.body).getSize();
 		if (bottom > containerSize.y || right > containerSize.x) {
 			instanceEl.position({
 				relativeTo: instance.options.inject.target,

@@ -15,17 +15,17 @@ var Widget = ART.Widget = new Class({
 		className: 'art',
 		tabIndex: -1,
 		onHide: function(){
-			$(this).setStyle('display', 'none');
+			document.id(this).setStyle('display', 'none');
 		},
 		onShow: function(){
-			$(this).setStyle('display', 'inline-block');
+			document.id(this).setStyle('display', 'inline-block');
 		}
 	},
 
 	initialize: function(options){
 		this._createElement(options);
 		this.canvas = new ART;
-		$(this.canvas).setStyles({position: 'absolute', top: 0, left: 0}).inject(this.element);
+		document.id(this.canvas).setStyles({position: 'absolute', top: 0, left: 0}).inject(this.element);
 		
 		this.currentSheet = {};
 		
@@ -187,7 +187,7 @@ var Widget = ART.Widget = new Class({
 	/* DOM + Registration */
 	
 	inject: function(widget, element){
-		element = (element) ? $(element) : $(widget);
+		element = (element) ? document.id(element) : document.id(widget);
 
 		if (element && this.element.parentNode !== element){
 			this.element.inject(element);

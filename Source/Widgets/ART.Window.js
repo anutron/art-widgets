@@ -214,7 +214,7 @@ ART.Window = new Class({
 			this.textLayer
 		);
 
-		$(this.canvas).setStyles(absolute).inject(this.element);
+		document.id(this.canvas).setStyles(absolute).inject(this.element);
 		
 		// create containers for the header, content, and footer
 		this.contents = new Element('div').inject(this.element);
@@ -275,7 +275,7 @@ ART.Window = new Class({
 				}).addEvent('press:start', function(event) {
 					event.stopPropagation();
 				}).inject(this, this.header);
-				$(this.buttons[button]).setStyles({
+				document.id(this.buttons[button]).setStyles({
 					'position': 'absolute',
 					'top': cs.headerPaddingTop
 				}).setStyle(this.options.buttonSide, baseLeft);
@@ -464,7 +464,7 @@ ART.Window = new Class({
 		this.renderContent(style);
 		this.renderHeaderText(style);
 		this.renderResize();
-		$(this.canvas).setStyles({top: -1, left: -1});
+		document.id(this.canvas).setStyles({top: -1, left: -1});
 		if (this.shim) this.shim.position();
 		if (sizeChanged) this.fireEvent('resize', [this.contentSize.x, this.contentSize.y]);
 	},
@@ -589,7 +589,7 @@ ART.WindowTools = new Class({
 	},
 
 	getWindowElement: function(){
-		return $(this).hasClass('art-window') ? $(this) : $(this).getParent('.art-window');
+		return document.id(this).hasClass('art-window') ? document.id(this) : document.id(this).getParent('.art-window');
 	}
 
 });

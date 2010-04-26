@@ -122,14 +122,14 @@ var Button = ART.Button = new Class({
 		var cs = this.currentSheet;
 		if (sheet.display) {
 			if (sheet.display == "none") {
-				$(this).setStyle('display', 'none');
+				document.id(this).setStyle('display', 'none');
 				return;
 			} else {
-				$(this).setStyle('display', cs.display);
+				document.id(this).setStyle('display', cs.display);
 			}
 		}
-		if (sheet.cursor) $(this).setStyle('cursor', cs.cursor);
-		// console.log('»', this.id, ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
+		if (sheet.cursor) document.id(this).setStyle('cursor', cs.cursor);
+		// if (Hash.getLength(sheet)) console.log('»', this._classNames.join(' '), ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
 		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 

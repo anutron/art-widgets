@@ -121,7 +121,7 @@ ART.Alert = new Class({
 			button.parentWidget = this;
 			var b = new ART.Button(button);
 			b.addEvent('press', function(e){
-				if ($(b).hasClass(this.options.closeClass)) {
+				if (document.id(b).hasClass(this.options.closeClass)) {
 					if (e) e.preventDefault();
 					this.hide();
 				}
@@ -129,9 +129,9 @@ ART.Alert = new Class({
 
 			button.properties = button.properties || {};
 			if (!button.properties['class']) button.properties['class'] = this.options.closeClass;
-			$(b).set(button.properties);
+			document.id(b).set(button.properties);
 
-			$(b).inject(this.footer).setStyles(ART.Sheet.lookupCSS(b.getSelector()));
+			document.id(b).inject(this.footer).setStyles(ART.Sheet.lookupCSS(b.getSelector()));
 			return b;
 		}, this);
 		if (this.alertButtons[0]) this.alertButtons[0].enable().focus();
@@ -276,15 +276,15 @@ ART.Window.AlertTools = new Class({
 		}
 		var winsize = win.getSize();
 		options = $merge({
-			relativeTo: $(win) || $(this),
+			relativeTo: document.id(win) || document.id(this),
 			inject: {
-				target: $(win) || $(this),
+				target: document.id(win) || document.id(this),
 				where: 'bottom'
 			},
 			mask: true,
 			maskOptions: {
 				inject: {
-					target: $(this.getWindow().content),
+					target: document.id(this.getWindow().content),
 					where: 'after'
 				}
 			},
@@ -306,7 +306,7 @@ ART.Window.AlertTools = new Class({
 		if (win) {
 			win.fireEvent('alert', alert);
 			var shader = function(dragging) {
-				$(alert).setStyle('display', dragging ? 'none' : 'block');
+				document.id(alert).setStyle('display', dragging ? 'none' : 'block');
 			};
 			alert.addEvents({
 				destroy: function(){

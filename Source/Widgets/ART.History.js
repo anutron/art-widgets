@@ -211,7 +211,7 @@ ART.History = new Class({
 	history: [],
 	
 	resize: function() {
-		var w = this.element.getSize().x - $(this.nav_back).getSize().x - $(this.nav_next).getSize().x - $(this.refresher).getSize().x - 5;
+		var w = this.element.getSize().x - document.id(this.nav_back).getSize().x - document.id(this.nav_next).getSize().x - document.id(this.refresher).getSize().x - 5;
 		//if the width is less than zero, then it usually means that the content is hidden; exit.
 		if (w < 0) return;
 		['padding', 'margin'].each(function(style){
@@ -234,7 +234,7 @@ ART.History = new Class({
 			glyph: ART.Glyphs.triangleLeft,
 			onPress: this.back.bind(this)
 		}).inject(this);
-		$(this.nav_back).addEvent('mousedown', cancel);
+		document.id(this.nav_back).addEvent('mousedown', cancel);
 
 		this.nav_next = new ART.Button({
 			className: 'art navRight',
@@ -242,7 +242,7 @@ ART.History = new Class({
 			glyph: ART.Glyphs.triangleRight,
 			onPress: this.next.bind(this)
 		}).inject(this);
-		$(this.nav_next).addEvent('mousedown', cancel);
+		document.id(this.nav_next).addEvent('mousedown', cancel);
 
 		this.location = new ART.Button({
 			className: 'art navDown',
@@ -250,13 +250,13 @@ ART.History = new Class({
 			onPress: this.toggle.bind(this)
 		}).inject(this);
 		this.location_text = new Element('div', {'class': 'location_text'});
-		$(this.location).adopt(this.location_text).addEvent('mousedown', cancel);
+		document.id(this.location).adopt(this.location_text).addEvent('mousedown', cancel);
 
 		this.divotContainer = new ART().resize(10, 10).inject(this.location);
 		this.divot = new ART.Shape("M0,0L8,0L4,8L0,0")
 		                    .inject(this.divotContainer)
 		                    .translate(0, -1);
-		$(this.divotContainer).setStyles(ART.Sheet.lookup(this.toString() + ' divot', 'css'));
+		document.id(this.divotContainer).setStyles(ART.Sheet.lookup(this.toString() + ' divot', 'css'));
 		this.divotContainer.grab(this.divot);
 		window.dc = this.divotContainer;
 		window.divot = this.divot;
@@ -269,7 +269,7 @@ ART.History = new Class({
 				this.fireEvent('refresh', [ this.options.pathBuilder(hist.path), hist.title, this.selected ]);
 			}.bind(this)
 		}).inject(this);
-		$(this.refresher).addEvent('mousedown', cancel);
+		document.id(this.refresher).addEvent('mousedown', cancel);
 		
 
 		//create the list for the history
@@ -335,14 +335,14 @@ ART.History = new Class({
 		if (this.current_selector == this.toString()) return;
 		this.current_selector = this.toString();
 		this.element.setStyles(ART.Sheet.lookup(this.toString(), 'css'));
-		$(this.nav_back).setStyles(ART.Sheet.lookup(this.nav_back.toString(), 'css'));
+		document.id(this.nav_back).setStyles(ART.Sheet.lookup(this.nav_back.toString(), 'css'));
 
-		$(this.nav_next).setStyles(ART.Sheet.lookup(this.nav_next.toString(), 'css'));
+		document.id(this.nav_next).setStyles(ART.Sheet.lookup(this.nav_next.toString(), 'css'));
 
 		this.location_text.setStyles(ART.Sheet.lookup(this.toString() + ' div.location_text', 'css'));
-		$(this.location).setStyles(ART.Sheet.lookup(this.location.toString(), 'css'));
+		document.id(this.location).setStyles(ART.Sheet.lookup(this.location.toString(), 'css'));
 
-		$(this.refresher).setStyles(ART.Sheet.lookup(this.refresher.toString(), 'css'));
+		document.id(this.refresher).setStyles(ART.Sheet.lookup(this.refresher.toString(), 'css'));
 
 		this.nav.setStyles(ART.Sheet.lookup(this.toString() + ' ul', 'css'));
 		
@@ -364,7 +364,7 @@ ART.History = new Class({
 		this.outClick = this.outClick || function(e){
 			if (!this.element.hasChild(e.target) && this.element != e.target) this.hide();
 		}.bind(this);
-		$(document)[method]({
+		document.id(document)[method]({
 			click: this.outClick
 		});
 	},
@@ -424,7 +424,7 @@ ART.History = new Class({
 		if ($pick(show, true) && this.history.length) {
 			this.editor.setStyle('display', 'block')
 			    .set('value', this.options.pathFilter(this.history[this.selected].path)).select();
-			this.editor.setStyle('width', $(this.location).getSize().x - 30);
+			this.editor.setStyle('width', document.id(this.location).getSize().x - 30);
 			this.location_text.setStyle('display', 'none');
 		} else {
 			this.editor.setStyle('display', 'none');
@@ -439,7 +439,7 @@ ART.History = new Class({
 		//activate this keyboard watcher
 		this.keyboard.activate();
 		this.location.setState('editing', true);
-		$(this.divotContainer).setStyle('display', 'none');
+		document.id(this.divotContainer).setStyle('display', 'none');
 		if (this.options.editable) this.showEditor();
 		
 		//mark it as active (this makes it stand out a bit more)
@@ -501,7 +501,7 @@ ART.History = new Class({
 		this.element.removeClass('history_location_active');
 		this.location.setState('editing', false);
 		this.location.draw();
-		$(this.divotContainer).setStyle('display', 'block');
+		document.id(this.divotContainer).setStyle('display', 'block');
 		this.keyboard.relinquish(); //disable the main keyboard
 		this.nav.setStyle('display', 'none'); //hide the nav
 		this.showEditor(false);
