@@ -1,8 +1,10 @@
 /*
-Script: ART.Button.Nav.js
-
-License:
-	MIT-style license.
+---
+name: ART.Button.Nav
+description: Navigation buttons (left, right, refresh, down).
+requires: ART.Button
+provides: ART.Button.Nav
+...
 */
 
 // Button Widget. Work in progress.

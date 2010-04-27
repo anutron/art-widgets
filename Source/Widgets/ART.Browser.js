@@ -1,51 +1,63 @@
-ART.Sheet.defineStyle('window.browser', {
+/*
+---
+name: ART.Browser
+description: A window with navigation controls.
+requires: [ART.Window, ART.History]
+provides: ART.Browser
+...
+*/
+
+ART.Sheet.define('window.art.browser', {
 	'header-height': 60,
 	'header-overflow': 'visible'
 });
 
-ART.Sheet.defineCSS('window.browser history', {
+ART.Sheet.define('window.art.browser history.art', {
 	'top':30,
 	'padding': '0 8px 0 10px'
+}, 'css');
+
+ART.Sheet.define('window.art.browser history.art button.art', {
+	'shadow-color': hsb(0, 0, 100, 0.4)
 });
 
-ART.Sheet.defineCSS('window.browser history input', {
-	'left': 66
-});
+ART.Sheet.define('window.art.browser history.art input', {
+	'left': 58
+}, 'css');
 
-ART.Sheet.defineCSS('window.browser history input.disabled', {
-	'left': 66
-});
+ART.Sheet.define('window.art.browser history.art input.disabled', {
+	'left': 58
+}, 'css');
+
+ART.Sheet.define('window.art.browser:dragging history.art', {
+	'display': 'none'
+}, 'css');
+
+ART.Sheet.define('window.art.browser history.art', {
+	'display': 'block'
+}, 'css');
 
 ART.Browser = new Class({
 
 	Extends: ART.Window,
 
 	options: {
-		className: 'browser',
+		className: 'art browser',
 		historyOptions: {
-			className: 'browser',
+			className: 'art browser',
 			editable: false
 		}
 	},
 
-	initialize: function(){
-		this.requireToRender('browser:history');
+	_build: function(){
 		this.parent.apply(this, arguments);
-	},
-
-	build: function(){
-		this.parent.apply(this, arguments);
-		this.history = new ART.History(
-			$extend(this.options.historyOptions, {
-				parentWidget: this
-			})
-		);
-		$(this.history).inject(this.header);
-		var styles = ART.Sheet.lookupStyle(this.getSelector());
+		this.history = new ART.History(this.options.historyOptions).setState('hidden', true).inject(this, this.header);
+		this.history._firstHidden = true;
+		document.id(this.history).setStyle('opacity', 0);
+		var styles = ART.Sheet.lookup(this.toString());
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
-		this.readyToRender('browser:history');
 		this.history.resize();
 		this.addEvent('shade', function(dragging) {
 			this._dragging = dragging;
@@ -53,21 +65,24 @@ ART.Browser = new Class({
 		}.bind(this));
 	},
 
-	redraw: function(){
-		this.parent.apply(this, arguments);
-		if (this.history && !this._dragging) this.history.render();
-	},
-	
 	resize: function(){
 		this.parent.apply(this, arguments);
 		if (this.history && !this._dragging) this.history.resize();
 	},
 
 	show: function() {
-		this.parent.apply(this, arguments);
+		var ret = this.parent.apply(this, arguments);
 		if (this.history) this.history.resize();
-	}
+		return ret;
+	},
 
+	draw: function(){
+		this.parent.apply(this, arguments);
+		if (this.history._firstHidden) {
+			this.history._firstHidden = false;
+			document.id(this.history).setStyle('opacity', 1);
+		}
+	}
 
 });
 

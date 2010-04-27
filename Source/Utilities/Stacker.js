@@ -1,4 +1,13 @@
 /*
+---
+name: Stacker
+description: A z-index manager for ART widgets.
+requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Style, More/Keyboard]
+provides: Stacker
+...
+*/
+
+/*
 	Manages z-index ordering of objects as well as their enabled state.
 */
 
@@ -46,9 +55,10 @@ var Stacker = new Class({
 	},
 
 	//retrieves a layer given a name; will create it if not found
-	getLayer: function(name, defaultZIndex) {
-		if (!this.layers[name]) this.setLayer(name, defaultZIndex);
-		return this.layers[name];
+	//if passed a layer it returns it
+	getLayer: function(layer, defaultZIndex) {
+		if ($type(layer) == "string" && !this.layers[layer]) this.setLayer(layer, defaultZIndex);
+		return this.layers[layer] || layer;
 	},
 
 	//registers an instance on a layer (registers it in the default layer if none specified)
@@ -61,8 +71,8 @@ var Stacker = new Class({
 			if (instanceLayer == layer) return;
 			instanceLayer.instances.erase(instance);
 		} else  {
-			$(instance).addEvent('mousedown', function(){
-				if (instance.disabled) this.enable(instance);
+			document.id(instance).addEvent('mousedown', function(){
+				if (instance.getState('disabled')) this.enable(instance);
 			}.bind(this));
 			this.instances.include(instance);
 		}
@@ -79,11 +89,8 @@ var Stacker = new Class({
 			if (layer.instances.contains(instance)) layer.instances.erase(instance);
 		});
 		if (refocus) {
-			if (iLayer.instances.length) {
-				this.enable(iLayer.instances[iLayer.instances.length -1]);
-			} else if (this.instances.length){
-				this.enable(this.instances[this.instances.length -1]);
-			}
+			if (iLayer.instances.length) this.enable(iLayer.instances[iLayer.instances.length -1]);
+			else if (this.instances.length) this.enable(this.instances[this.instances.length -1]);
 		}
 	},
 
@@ -98,7 +105,7 @@ var Stacker = new Class({
 
 	//z-index orders a layer so that a specific instance is on top
 	bringToFront: function(instance){
-		if (!instance || (instance == this.enabled && instance.stacked)) return;
+		if (!instance || (instance == this.enabled && instance._stacked)) return;
 		this.layers.each(function(layer) {
 			var i = 0;
 			if (!layer.instances.contains(instance)) return;
@@ -110,15 +117,22 @@ var Stacker = new Class({
 	//assigns the zindex order for all the instances in a layer based on their order
 	stack: function(layer) {
 		layer.instances.each(function(win, i){
-			$(win).setStyle('z-index', layer.zIndex + (i*2));
-			win.stacked = true;
+			document.id(win).setStyle('z-index', layer.zIndex + (i*2));
+			win._stacked = true;
 		}, this);
+	},
+
+	enableTop: function(layer) {
+		layer = this.getLayer(layer || "default");
+		var instance = layer.instances.getLast();
+		if (instance) this.enable(instance);
 	},
 
 	//cycles the zIndex for a given layer forward or back
 	cycle: function(direction, layerName) {
 		direction = direction || 'forward';
 		var instances = this.layers[layerName].instances;
+		if (!instances.length) return;
 		if (direction == 'forward') instances.push(instances.shift());
 		else instances.unshift(instances.pop());
 		this.stack(this.layers[layerName]);
@@ -127,12 +141,12 @@ var Stacker = new Class({
 
 	//enables an instance, (optionally) bringing it to front
 	enable: function(instance, noOrder){
-		if (!instance || (instance == this.enabled && instance.stacked)) return;
+		if (!instance || (instance == this.enabled && instance._stacked)) return;
 		if (!noOrder) this.bringToFront(instance);
-		//TODO make this shit not so fucking slow
 		if (this.enabled && this.enabled != instance) this.enabled.disable();
-		if (instance.disabled) instance.enable(true);
-		this.enabled = instance.focus();
+		if (instance.getState('disabled')) instance.enable(true);
+		instance.focus();
+		this.enabled = instance;
 	},
 
 	//moves all the instances to be in a cascaded line
@@ -141,7 +155,7 @@ var Stacker = new Class({
 		y = $pick(y, this.options.offset.y);
 		this.layers[layer].instances.each(function(current, i){
 			var styles = {top: (y * i) + y, left: (x * i) + x};
-			$(current).setStyles(styles);
+			document.id(current).setStyles(styles);
 		});
 	},
 
@@ -153,10 +167,10 @@ var Stacker = new Class({
 		//then return; and let the window be positioned as the class would normally.
 		var current;
 		var instances = this.getLayerForInstance(instance).instances.filter(function(instance){
-			return !instance.hidden && $(instance);
+			return !instance.getState('hidden') && document.id(instance);
 		});
 		instances.reverse().some(function(win){
-			if (win != instance && $(win) && $(win).getStyle('display') != 'none') {
+			if (win != instance && document.id(win) && document.id(win).getStyle('display') != 'none') {
 				current = win;
 				return true;
 			}
@@ -173,20 +187,21 @@ var Stacker = new Class({
 		}
 		this.enable(instance);
 		if (instances.length < 1 || !pos || !current) return false;
+		var instanceEl = document.id(instance);
 		//position near the enabled instance, with an offset as defined in the options
-		$(instance).position({
-			relativeTo: $(current),
+		instanceEl.position({
+			relativeTo: document.id(current),
 			offset: this.options.offset,
 			edge: 'upperLeft',
 			position: 'upperLeft'
 		});
-		pos = instance.element.getPosition();
-		var size = instance.element.getSize();
+		pos = instanceEl.getPosition();
+		var size = instanceEl.getSize();
 		var bottom = pos.y + size.y;
 		var right = pos.x + size.x;
-		var containerSize = $(document.body).getSize();
+		var containerSize = document.id(document.body).getSize();
 		if (bottom > containerSize.y || right > containerSize.x) {
-			$(instance).position({
+			instanceEl.position({
 				relativeTo: instance.options.inject.target,
 				offset: this.options.offset,
 				edge: 'upperLeft',

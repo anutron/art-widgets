@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART Buttons</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+	</style>
+	
+	<!-- compiled assets -->
+
+	<!-- depender must be configured on localhost 8000 and have the following modules loaded:
+
+		mootools-core
+		mootools-more
+		table
+		touch
+		art
+		slick
+		color
+		widgets
+
+	-->
+	<script src="loadScripts.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		loadViaDepender('require=ART.Button,DomReady,ART.Glyphs');
+	</script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript">
+	
+	UI.Sheet.define('button.art', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+
+	UI.Sheet.define('button.art.cross', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'padding': [1,1,1,1],
+		'pill': true,
+		'height': 14,
+		'width': 14,
+		'cornerRadius': 7,
+		'cursor': 'pointer',
+		'glyph-color': hsb(0, 0, 0, 0.6),
+		'glyph-height': 4,
+		'glyph-width': 4,
+		'glyph-top': 1,
+		'glyph-left': 1
+	});
+	
+	document.addEvent('domready', function(){
+		window.gs = new ART.Button({text: 'Google Search', className: 'art button', id: 'GoogleSearch', tabIndex: 1});
+		
+		gs.inject($('container'));
+		
+		gs.addEvent('press', function(){
+			console.log('searching google...');
+		});
+		
+		window.fl = new ART.Button({text: 'I\'m Feeling Lucky', className: 'art button', id: 'FeelingLucky', tabIndex: 2});
+		
+		fl.inject($('container'));
+		
+		fl.addEvent('press', function(){
+			console.log('feeling lucky...');
+		});
+		
+		window.cross = new ART.Button({glyph: ART.Glyphs.smallCross, className: 'art button cross', id: 'close'});
+		
+		cross.inject($('container'));
+		
+	});
+		
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	
+</body>
+</html>

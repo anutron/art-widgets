@@ -1,8 +1,10 @@
 /*
-Script: ART.SolidWindow.js
-
-License:
-	MIT-style license.
+---
+name: ART.SolidWindow
+description: A solid window class with only a header and a body.
+requires: ART.Window
+provides: ART.SolidWindow
+...
 */
 
 // Window Widget. Work in progress.
@@ -135,7 +137,7 @@ ART.FunkyGlass = new Class({
 	
 	initialize: function(width, height, radius){
 		this.parent();
-		if (width != null && height != null && radius != null) this.draw(width, height, radius);
+		if (width != null && height != null && radius != null) this.deferDraw(width, height, radius);
 	},
 	
 	draw: function(width, height, radius){
