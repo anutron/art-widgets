@@ -361,35 +361,42 @@ ART.Window = new Class({
 	
 	//resizes the window to match the contents of the window
 	autosize: function(){
+		if (this.isDestroyed()) return;
 		var cs = this.currentSheet;
-		if (!this.boundAutoSize) this.boundAutoSize = this.autosize.bind(this);
-		if (this.hidden) {
+		if (!this.boundAutoSize) {
+			this.boundAutoSize = function(){
+				this.autosize.delay(1, this);
+			}.bind(this);
+		}
+		if (this.getState('hidden')) {
 			this.addEvent('display', this.boundAutoSize);
 		} else {
 			this.removeEvent('display', this.boundAutoSize);
-			var style = ART.Sheet.lookup(this.getSelector());
+			var style = ART.Sheet.lookup(this.toString());
 			this.content.setStyles({
 				'float': 'left',
 				'width': 'auto'
 			});
-			var h = this.content.getScrollSize().y + cs.headerHeight + cs.footerHeight + 2;
-			var w = this.content.getScrollSize().x;
-			if (h > cs.maxHeight) h = cs.maxHeight;
-			if (w > cs.maxWidth) w = cs.maxWidth;
-			this.setOptions({
-				height: h,
-				width: w
-			});
-			this.redraw({
-				width: w, 
-				height: h
-			});
+			this.content.measure(function(){
+				var h = this.content.getScrollSize().y + cs.headerHeight + cs.footerHeight + 2;
+				var w = this.content.getScrollSize().x;
+				if (h > cs.maxHeight) h = cs.maxHeight;
+				if (w > cs.maxWidth) w = cs.maxWidth;
+				this.setOptions({
+					height: h,
+					width: w
+				});
+				this.draw({
+					width: w, 
+					height: h
+				});
+			}.bind(this));
 		}
 	},
 	
 	//sets the caption for the window
 	setCaption: function(text){
-		this.makeHeaderText(text, ART.Sheet.lookup(this.getSelector()).captionFontSize);
+		this.makeHeaderText(text, ART.Sheet.lookup(this.toString()).captionFontSize);
 		return this;
 	},
 
@@ -429,6 +436,7 @@ ART.Window = new Class({
 
 	//redraws the instance
 	draw: function(newSheet){
+		if (this.getState('destroyed')) return;
 		var cs = this.currentSheet;
 		var style = this.parent(newSheet);
 		if (this.currentWidth == undefined || this.currentHeight == undefined) {
