@@ -44,7 +44,7 @@ ART.Keyboard = new Class({
 
 	attach: function(){
 		this.widget.addEvents(this._widgetEvents);
-		var keyboard = this._keyboard;
+		var keyboard = this.widget.keyboard = this._keyboard;
 		$extend(this.widget, {
 			
 			keyboard: this._keyboard,
@@ -96,7 +96,7 @@ ART.Keyboard = new Class({
 		this.widget.removeEvents(this._widgetEvents);
 		
 		['attachKeys', 'detachKeys', 'addShortcut', 'addShortcuts', 'removeShortcut',
-			'removeShortcuts', 'getShortcut', 'getShortcuts'].each(function(method){
+			'removeShortcuts', 'getShortcut', 'getShortcuts', 'keyboard'].each(function(method){
 			delete this.wigdet[method];
 		}, this);
 	},
