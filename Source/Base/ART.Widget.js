@@ -50,7 +50,7 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	_createElement: function(){
-		this.element = this.element || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'});
+		this.element = this.element || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'}).store('widget', this);
 	},
 	
 	/* tab indices */
@@ -85,7 +85,7 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	deferDraw: function(){
-		if (!this.element.parentNode || this.getState('hidden')) return;
+		if (this.isDestroyed()) return;
 		var self = this;
 		clearTimeout(this.drawTimer);
 		var args = arguments;
