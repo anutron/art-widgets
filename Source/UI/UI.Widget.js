@@ -206,6 +206,10 @@ var Widget = UI.Widget = new Class({
 		return this;
 	},
 	
+	isDestroyed: function(){
+		if (!this.element.parentNode || this.getState('hidden')) return;
+	},
+	
 	grab: function(){
 		for (var i = 0; i < arguments.length; i++){
 			var widget = arguments[i];
