@@ -168,6 +168,7 @@ ART.SplitView = new Class({
 	},
 	
 	resize: function(w, h){
+		if (this.isDestroyed()) return;
 		return this.draw({'height': h, 'width': w});
 	},
 	
