@@ -137,7 +137,7 @@ ART.FunkyGlass = new Class({
 	
 	initialize: function(width, height, radius){
 		this.parent();
-		if (width != null && height != null && radius != null) this.draw(width, height, radius);
+		if (width != null && height != null && radius != null) this.deferDraw(width, height, radius);
 	},
 	
 	draw: function(width, height, radius){
