@@ -59,6 +59,9 @@
 		var c = $('container');
 		return function(caption, content){
 			return new ART.Browser({
+				inject: {
+					target: c
+				},
 				caption: caption || '',
 				content: content || '',
 				historyOptions: {
@@ -78,7 +81,7 @@
 						}
 					]
 				}
-			}).inject(c).show();
+			}).show();
 		};
 	}();
 	

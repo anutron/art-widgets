@@ -186,11 +186,11 @@ var Widget = ART.Widget = new Class({
 	
 	/* DOM + Registration */
 	
-	inject: function(widget, element){
+	inject: function(widget, element, where){
 		element = (element) ? document.id(element) : document.id(widget);
 
 		if (element && this.element.parentNode !== element){
-			this.element.inject(element);
+			this.element.inject(element, where);
 			this.register(widget);
 		}
 

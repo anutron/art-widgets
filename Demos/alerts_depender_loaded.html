@@ -59,9 +59,12 @@
 		var c = $('container');
 		return function(type, content){
 			return new ART[type || 'Alert']({
+				inject: {
+					target: c
+				},
 				caption: type || '',
 				content: content || '<p>This is the content.</p>'
-			}).inject(c).show();
+			}).show();
 		};
 	}();
 	

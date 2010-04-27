@@ -59,9 +59,12 @@
 		var c = $('container');
 		return function(caption, content){
 			return new ART.Window({
+				inject: {
+					target: c
+				},
 				caption: caption || '',
 				content: content || ''
-			}).inject(c).show();
+			}).show();
 		};
 	}();
 	

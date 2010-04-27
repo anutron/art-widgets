@@ -187,7 +187,8 @@ ART.Popup = new Class({
 		this.element.setStyles({
 			display: 'none',
 			position: 'absolute'
-		}).inject(this.options.inject.target, this.options.inject.where);
+		});
+		this.inject(null, this.options.inject.target, this.options.inject.where);
 	},
 
 	//hides the instance
