@@ -41,7 +41,7 @@ ART.WindowManager = new Class({
 		this.parent.apply(this, arguments);
 		this.keyboard.drop(instance.keyboard);
 		this.enableTop(layer);
-		if (instance._stackerEvents) widget.removeEvents(instance._stackerEvents);
+		if (instance._stackerEvents) instance.removeEvents(instance._stackerEvents);
 	}
 
 });
@@ -127,13 +127,11 @@ ART.Popup = new Class({
 		//configure this instance's element
 		this._build();
 
-		this._artKB = new ART.Keyboard(this, this.options.keyboardOptions);
+		new ART.Keyboard(this, this.options.keyboardOptions);
 
 		//register this instance
 		this.windowManager.register(this, this.options.windowManagerLayer);
 
-		if (this.options.content) this.setContent(this.options.content);
-		
 		if (this.options.draggable) this.makeDraggable();
 		
 		if (this.options.timeout) {
@@ -151,6 +149,8 @@ ART.Popup = new Class({
 		if (this.options.useIframeShim) this.hideIframeShim();
 		this.setState('hidden', true);
 		
+		if (this.options.content) this.setContent(this.options.content);
+
 		if (this.options.showNow) this.show();
 		//add event to hide the instance whenever an element with the closeClass is clicked
 		
@@ -243,18 +243,10 @@ ART.Popup = new Class({
 	show: function(){
 		if (this.getState('hidden')){
 			this.setState('hidden', false);
-			this.element.setStyles({
-				opacity: 0,
-				display: 'block'
-			});
 			this.windowManager.enable(this);
 			this.fireEvent('display');
 			if (!this.positioned) {
-				this.position(null, function(){
-					this.element.setStyle('opacity', 1);
-				}.bind(this));
-			} else {
-				this.element.setStyle('opacity', 1);
+				this.position();
 			}
 			this.showIframeShim();
 			if (this.options.mask) this.maskTarget();
@@ -282,7 +274,7 @@ ART.Popup = new Class({
 					left: this.options.left
 				});
 			} else {
-				if (!this.drawn) {
+				if (!this._drawn) {
 					this.position.delay(1, this, arguments);
 					return this;
 				}
@@ -304,7 +296,8 @@ ART.Popup = new Class({
 	},
 	
 	draw: function(){
-		this.drawn = true;
+		this._drawn = true;
+		this.element.setStyle('display', this.getState('hidden') ? 'none' : 'block');
 		return this.parent.apply(this, arguments);
 	},
 
@@ -394,6 +387,8 @@ ART.Popup = new Class({
 
 	//resize this instance to a given size
 	resize: function(width, height){
+		if (this.isDestroyed()) return;
+
 		this.draw({'height': height, 'width': width});
 		if (this.shim) this.shim.position();
 		return this;
