@@ -9,14 +9,14 @@ provides: ART.SolidWindow
 
 // Window Widget. Work in progress.
 
-ART.Sheet.defineStyle('window.solid', {
+ART.Sheet.define('window.solid', {
 	'content-overflow': 'hidden',
 	'body-background-color': [hsb(0, 0, 95), hsb(0, 0, 80)],
 	'body-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'body-reflection-shape': 'rounded-rectangle'
 });
 
-ART.Sheet.defineStyle('window.solid.smoke', {
+ART.Sheet.define('window.solid.smoke', {
 	'caption-font-color': hsb(120, 97, 83),
 	'body-background-color': [hsb(0, 0, 0, 0.9), hsb(0, 0, 0, 0.8)],
 	'body-reflection-color': [hsb(0, 0, 100, 0.05), hsb(0, 0, 100, 0.1)],
@@ -26,7 +26,7 @@ ART.Sheet.defineStyle('window.solid.smoke', {
 });
 
 
-ART.Sheet.defineStyle('window.solid.smoke button.wincontrol', {
+ART.Sheet.define('window.solid.smoke button.wincontrol', {
 	'pill': true,
 	'height': 14,
 	'width': 14,
@@ -38,7 +38,7 @@ ART.Sheet.defineStyle('window.solid.smoke button.wincontrol', {
 	'glyph-color': hsb(120, 97, 83)
 });
 
-ART.Sheet.defineStyle('window.solid button.wincontrol', {
+ART.Sheet.define('window.solid button.wincontrol', {
 	'background-color': [hsb(0, 0, 80), hsb(0, 0, 70)],
 	'reflection-color': [hsb(0, 0, 95), hsb(0, 0, 0, 0)],
 	'shadow-color': hsb(0, 0, 100, 0.7),
@@ -46,7 +46,7 @@ ART.Sheet.defineStyle('window.solid button.wincontrol', {
 	'glyph-color': hsb(0, 0, 0, 0.6)
 });
 
-ART.Sheet.defineStyle('window.solid.smoke button.wincontrol:disabled', {
+ART.Sheet.define('window.solid.smoke button.wincontrol:disabled', {
 	'background-color': hsb(0, 0, 100, 0),
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),
@@ -54,7 +54,7 @@ ART.Sheet.defineStyle('window.solid.smoke button.wincontrol:disabled', {
 	'glyph-color': hsb(120, 97, 83)
 });
 
-ART.Sheet.defineStyle('window.solid.smoke button.wincontrol:active', {
+ART.Sheet.define('window.solid.smoke button.wincontrol:active', {
 	'background-color': hsb(0, 0, 100, 0),
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),
