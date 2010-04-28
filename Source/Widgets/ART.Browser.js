@@ -14,7 +14,8 @@ ART.Sheet.define('window.art.browser', {
 
 ART.Sheet.define('window.art.browser history.art', {
 	'top':30,
-	'padding': '0 8px 0 10px'
+	'padding': '0 8px 0 10px',
+	'position': 'absolute'
 }, 'css');
 
 ART.Sheet.define('window.art.browser history.art button.art', {
@@ -58,21 +59,28 @@ ART.Browser = new Class({
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
-		this.history.resize();
 		this.addEvent('shade', function(dragging) {
 			this._dragging = dragging;
 			if (!dragging) this.history.resize();
 		}.bind(this));
 	},
 
+	_resizeHistory: function(){
+		var delta = 0;
+		['margin-left', 'margin-right', 'padding-left', 'padding-right'].each(function(dim) {
+			delta += $(this.history).getStyle(dim).toInt();
+		}, this);
+		this.history.resize(this.currentWidth - delta);
+	},
+
 	resize: function(){
 		this.parent.apply(this, arguments);
-		if (this.history && !this._dragging) this.history.resize();
+		if (this.history && !this._dragging) this._resizeHistory();
 	},
 
 	show: function() {
 		var ret = this.parent.apply(this, arguments);
-		if (this.history) this.history.resize();
+		if (this.history) this._resizeHistory();
 		return ret;
 	},
 
@@ -80,6 +88,7 @@ ART.Browser = new Class({
 		this.parent.apply(this, arguments);
 		if (this.history._firstHidden) {
 			this.history._firstHidden = false;
+			this._resizeHistory();
 			document.id(this.history).setStyle('opacity', 1);
 		}
 	}
