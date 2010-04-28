@@ -72,7 +72,8 @@ ART.Sheet.define('history.art button.art.refresh', {
 }, 'css');
 ART.Sheet.define('history.art', {
 	'position': 'relative',
-	'width': 'auto'
+	'width': 'auto',
+	'display': 'block'
 }, 'css');
 ART.Sheet.define('history.art ul', {
 	'left': 0,
@@ -204,9 +205,6 @@ ART.History = new Class({
 		this.attach();
 	},
 
-	_createElement: function(){
-		this.element = this.element || new Element('div').setStyles({display: 'block', position: 'relative', outline: 'none'});
-	},
 
 	history: [],
 	
