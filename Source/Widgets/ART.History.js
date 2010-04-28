@@ -205,21 +205,20 @@ ART.History = new Class({
 		this.attach();
 	},
 
-
 	history: [],
 	
-	resize: function() {
+	resize: function(w) {
 		if (this.isDestroyed()) return;
-		
-		var w = this.element.getSize().x - document.id(this.nav_back).getSize().x - document.id(this.nav_next).getSize().x - document.id(this.refresher).getSize().x - 5;
-		//if the width is less than zero, then it usually means that the content is hidden; exit.
-		if (w < 0) return;
-		['padding', 'margin'].each(function(style){
-			this.element.getStyle(style).split(' ').each(function(val, i) {
-				if (i%2) w = w - val.toInt();
-			});
-		}, this);
-		
+		if (!w) {
+			w = this.element.getSize().x - document.id(this.nav_back).getSize().x - document.id(this.nav_next).getSize().x - document.id(this.refresher).getSize().x - 5;
+			//if the width is less than zero, then it usually means that the content is hidden; exit.
+			if (w < 0) return;
+			['padding', 'margin'].each(function(style){
+				this.element.getStyle(style).split(' ').each(function(val, i) {
+					if (i%2) w = w - val.toInt();
+				});
+			}, this);
+		}
 		this.location.draw({
 			width: w
 		});
