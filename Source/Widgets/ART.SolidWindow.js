@@ -9,14 +9,14 @@ provides: ART.SolidWindow
 
 // Window Widget. Work in progress.
 
-ART.Sheet.define('window.solid', {
+ART.Sheet.define('window.art.solid', {
 	'content-overflow': 'hidden',
 	'body-background-color': [hsb(0, 0, 95), hsb(0, 0, 80)],
 	'body-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'body-reflection-shape': 'rounded-rectangle'
 });
 
-ART.Sheet.define('window.solid.smoke', {
+ART.Sheet.define('window.art.solid.smoke', {
 	'caption-font-color': hsb(120, 97, 83),
 	'body-background-color': [hsb(0, 0, 0, 0.9), hsb(0, 0, 0, 0.8)],
 	'body-reflection-color': [hsb(0, 0, 100, 0.05), hsb(0, 0, 100, 0.1)],
@@ -26,7 +26,7 @@ ART.Sheet.define('window.solid.smoke', {
 });
 
 
-ART.Sheet.define('window.solid.smoke button.wincontrol', {
+ART.Sheet.define('window.art.solid.smoke button.art.wincontrol', {
 	'pill': true,
 	'height': 14,
 	'width': 14,
@@ -38,7 +38,7 @@ ART.Sheet.define('window.solid.smoke button.wincontrol', {
 	'glyph-color': hsb(120, 97, 83)
 });
 
-ART.Sheet.define('window.solid button.wincontrol', {
+ART.Sheet.define('window.art.solid button.art.wincontrol', {
 	'background-color': [hsb(0, 0, 80), hsb(0, 0, 70)],
 	'reflection-color': [hsb(0, 0, 95), hsb(0, 0, 0, 0)],
 	'shadow-color': hsb(0, 0, 100, 0.7),
@@ -46,7 +46,7 @@ ART.Sheet.define('window.solid button.wincontrol', {
 	'glyph-color': hsb(0, 0, 0, 0.6)
 });
 
-ART.Sheet.define('window.solid.smoke button.wincontrol:disabled', {
+ART.Sheet.define('window.art.solid.smoke button.art.wincontrol:disabled', {
 	'background-color': hsb(0, 0, 100, 0),
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),
@@ -54,7 +54,7 @@ ART.Sheet.define('window.solid.smoke button.wincontrol:disabled', {
 	'glyph-color': hsb(120, 97, 83)
 });
 
-ART.Sheet.define('window.solid.smoke button.wincontrol:active', {
+ART.Sheet.define('window.art.solid.smoke button.art.wincontrol:active', {
 	'background-color': hsb(0, 0, 100, 0),
 	'reflection-color': hsb(0, 0, 100, 0),
 	'shadow-color': hsb(0, 0, 100, 0),
@@ -66,12 +66,10 @@ ART.SolidWindow = new Class({
 	
 	Extends: ART.Window,
 	
-	name: 'window',
-
 	options: {
-		className: 'solid'
+		className: 'art solid'
 	},
-	
+		
 	_build: function(){
 		this.parent();
 		this.vistaReflectionLayer = new ART.FunkyGlass;
@@ -79,41 +77,40 @@ ART.SolidWindow = new Class({
 	},
 
 	renderContent: function(style){
-		var contentHeight = style.height - style.footerHeight - style.headerHeight - 2;
-		var contentWidth = style.width -2;
-		this.contentSize = {
-			x: contentWidth, 
-			y: contentHeight
-		};
-		if (style.contentVisibility == "hidden") {
+		var cs = this.currentSheet;
+		var sizeChanged = style.width != undefined || style.height != undefined;
+			this.contentSize = {
+				x: cs.width -2, 
+				y: cs.height - cs.footerHeight - cs.headerHeight - 2
+			};
+		if (cs.contentVisibility == "hidden") {
 			this.content.setStyle('display', 'none');
 		} else {
 			this.content.setStyles({
 				'top': 1,
 				'left': 0,
-				'height': contentHeight < 0 ? 0 : contentHeight,
-				'width': contentWidth < 0 ? 0 : contentWidth,
-				'overflow': style.contentOverflow,
-				'color': style.contentColor,
+				'height': this.contentSize.y < 0 ? 0 : this.contentSize.y,
+				'width': this.contentSize.x < 0 ? 0 : this.contentSize.x,
+				'overflow': cs.contentOverflow,
+				'color': cs.contentColor,
 				'display': 'block'
 			});
 		}
 
 		// border layer
 		
-		this.borderLayer.draw(style.width, style.height, style.cornerRadius + 1);
-		this.fill(this.borderLayer, style.borderColor);
+		this.borderLayer.draw(cs.width, cs.height, cs.cornerRadius + 1);
+		this.fill(this.borderLayer, cs.borderColor);
 
 		// header layers
+		this.header.setStyles({'width': cs.width - 2, height: cs.headerHeight - 2});
 
-		this.header.setStyles({'width': style.width - 2, height: style.headerHeight - 2});
-		
 		this.headerBackgroundLayer.translate(1, 2);
-		this.headerBackgroundLayer.draw(style.width - 2, style.height - 3, style.cornerRadius);
+		this.headerBackgroundLayer.draw(cs.width - 2, cs.height - 3, style.cornerRadius);
 		this.fill(this.headerBackgroundLayer, style.bodyBackgroundColor);
 		
 		this.headerReflectionLayer.translate(1, 1);
-		this.headerReflectionLayer.draw(style.width - 2, style.headerHeight - 2, style.cornerRadius);
+		this.headerReflectionLayer.draw(cs.width - 2, cs.headerHeight - 2, cs.cornerRadius);
 		this.fill(this.headerReflectionLayer, style.headerReflectionColor);
 		
 		
