@@ -168,6 +168,8 @@ ART.Window = new Class({
 
 	initialize: function(options){
 		this.parent(options);
+		this.addClass('art-window');
+		$(this).store('art-window', this);
 		if (this.options.resizable) this.makeResizeable();
 	},
 
