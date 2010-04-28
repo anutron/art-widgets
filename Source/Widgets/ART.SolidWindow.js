@@ -79,11 +79,13 @@ ART.SolidWindow = new Class({
 	renderContent: function(style){
 		var cs = this.currentSheet;
 		var sizeChanged = style.width != undefined || style.height != undefined;
+		if (sizeChanged) {
 			this.contentSize = {
 				x: cs.width -2, 
 				y: cs.height - cs.footerHeight - cs.headerHeight - 2
 			};
-		if (cs.contentVisibility == "hidden") {
+		}
+		if (cs.contentDisplay == "none") {
 			this.content.setStyle('display', 'none');
 		} else {
 			this.content.setStyles({
@@ -99,29 +101,27 @@ ART.SolidWindow = new Class({
 
 		// border layer
 		
-		this.borderLayer.draw(cs.width, cs.height, cs.cornerRadius + 1);
-		this.fill(this.borderLayer, cs.borderColor);
-
-		// header layers
-		this.header.setStyles({'width': cs.width - 2, height: cs.headerHeight - 2});
-
-		this.headerBackgroundLayer.translate(1, 2);
-		this.headerBackgroundLayer.draw(cs.width - 2, cs.height - 3, style.cornerRadius);
-		this.fill(this.headerBackgroundLayer, style.bodyBackgroundColor);
-		
-		this.headerReflectionLayer.translate(1, 1);
-		this.headerReflectionLayer.draw(cs.width - 2, cs.headerHeight - 2, cs.cornerRadius);
-		this.fill(this.headerReflectionLayer, style.headerReflectionColor);
-		
-		
-		// funky vista reflection
-		style.bodyReflectionPercentSize = style.bodyReflectionPercentSize || 1;
-		this.vistaReflectionLayer.translate(1,1).draw(style.width - 2, (style.bodyReflectionPercentSize * style.height), style.cornerRadius);
-		this.fill(this.vistaReflectionLayer, style.bodyReflectionColor);
-
-		//footer layers
-
-		this.footer.setStyles({'width': style.width - 2, 'height': style.footerHeight});
+		if (sizeChanged) {
+			this.borderLayer.draw(cs.width, cs.height, cs.cornerRadius + 1);
+			this.header.setStyles({'width': cs.width - 2, height: cs.headerHeight - 2});
+			this.headerBackgroundLayer.translate(1, 2);
+			this.headerBackgroundLayer.draw(cs.width - 2, cs.height - 3, cs.cornerRadius);
+			this.headerReflectionLayer.translate(1, 1);
+			this.headerReflectionLayer.draw(cs.width - 2, cs.headerHeight - 2, cs.cornerRadius);
+			cs.bodyReflectionPercentSize = cs.bodyReflectionPercentSize || 1;
+			this.vistaReflectionLayer.translate(1,1).draw(cs.width - 2, (cs.bodyReflectionPercentSize * cs.height), cs.cornerRadius);
+			this.footer.setStyles({'width': cs.width - 2, 'height': cs.footerHeight});
+		}
+		var colorChanged = ['border', 'bodyBackground', 'headerRefletction', 'bodyReflection'].every(function(rule) {
+			return !!style[rule + 'Color'];
+		});
+		if (colorChanged || !this._firstDrawn) {
+			this._firstDrawn = true;
+			this.fill(this.borderLayer, cs.borderColor);
+			this.fill(this.headerBackgroundLayer, cs.bodyBackgroundColor);
+			this.fill(this.headerReflectionLayer, cs.headerReflectionColor);
+			this.fill(this.vistaReflectionLayer, cs.bodyReflectionColor);
+		}
 	}
 
 });
