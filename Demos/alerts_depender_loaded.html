@@ -56,15 +56,14 @@
 	
 	var makeWindow = function(){
 		var count = 0;
-		var c = $('container');
 		return function(type, content){
 			return new ART[type || 'Alert']({
 				inject: {
-					target: c
+					target: 'container'
 				},
 				caption: type || '',
 				content: content || '<p>This is the content.</p>'
-			}).show();
+			}).inject(c).show();
 		};
 	}();
 	

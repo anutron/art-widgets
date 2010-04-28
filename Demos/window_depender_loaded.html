@@ -56,11 +56,10 @@
 	
 	var makeWindow = function(){
 		var count = 0;
-		var c = $('container');
 		return function(caption, content){
 			return new ART.Window({
 				inject: {
-					target: c
+					target: 'container'
 				},
 				caption: caption || '',
 				content: content || ''
