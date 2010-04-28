@@ -199,6 +199,7 @@ ART.Popup = new Class({
 			this.fireEvent('hide');
 			this.windowManager.enableTop(this.options.windowManagerLayer);
 			this.deferDraw();
+			this.setState('hidden', true);
 		}
 		return this;
 	},
@@ -434,14 +435,15 @@ ART.Popup = new Class({
 	},
 
 	//moves the instance to be on the screen
-	getOnScreen: function(){
+	getOnScreen: function(offset){
+		if (!offset) offset = {};
 		var pos = this.element.getPosition();
 		var size = this.element.getSize();
 		var bottom = pos.y + size.y;
 		var right = pos.x + size.x;
 		var containerSize = document.id(window.getDocument()).getSize();
-		if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y);
-		if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x);
+		if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y + (offset.y || 0));
+		if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x + (offset.x || 0));
 		return true;
 	}
 
