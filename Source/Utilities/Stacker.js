@@ -84,6 +84,7 @@ var Stacker = new Class({
 	unregister: function(instance) {
 		var refocus = this.enabled == instance;
 		var iLayer = this.getLayerForInstance(instance);
+		if (!iLayer) return;
 		this.instances.erase(instance);
 		this.layers.each(function(layer) {
 			if (layer.instances.contains(instance)) layer.instances.erase(instance);
@@ -124,7 +125,15 @@ var Stacker = new Class({
 
 	enableTop: function(layer) {
 		layer = this.getLayer(layer || "default");
-		var instance = layer.instances.getLast();
+		var instance;
+
+		for (var i = layer.instances.length - 1; i > 0; i = i-1) {
+			if ($(layer.instances[i]).getStyle('display') != 'none') {
+				instance = layer.instances[i];
+				break;
+			}
+		}
+
 		if (instance) this.enable(instance);
 	},
 
