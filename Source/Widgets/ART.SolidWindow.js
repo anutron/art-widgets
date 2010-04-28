@@ -72,10 +72,10 @@ ART.SolidWindow = new Class({
 		className: 'solid'
 	},
 	
-	build: function(){
+	_build: function(){
 		this.parent();
 		this.vistaReflectionLayer = new ART.FunkyGlass;
-		this.vistaReflectionLayer.inject(this.paint);
+		this.canvas.grab(this.vistaReflectionLayer);
 	},
 
 	renderContent: function(style){
