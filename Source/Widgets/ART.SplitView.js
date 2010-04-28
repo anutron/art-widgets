@@ -14,6 +14,7 @@ ART.Sheet.define('splitview.art', {
 	'max-fixed-width': 400,
 	'min-fixed-width': null,
 	'splitter-width': 3,
+	'display': 'block',
 	//IE doesn't support east-west resize cursor; just use east
 	'splitter-cursor': Browser.Engine.trident ? 'e-resize' : 'ew-resize',
 	
@@ -55,7 +56,8 @@ ART.SplitView = new Class({
 		this.element.addClass('art-splitview').setStyles({
 			'position': 'relative',
 			'width': sheet.width,
-			'height': sheet.height
+			'height': sheet.height,
+			'display': sheet.display
 		});
 		var styles = {'float': 'left', 'overflow-x': 'auto'};
 		
@@ -128,14 +130,13 @@ ART.SplitView = new Class({
 		if (sizeChanged) {
 			this.currentHeight = cs.height;
 			this.currentWidth = cs.width;
-		
-			// render
-		
 			this.element.setStyles({
 				'width': cs.width,
 				'height': cs.height
 			});
 		}
+		
+		if (sheet.display) this.element.setStyle('display', cs.display);
 		
 		if (true || sheet.splitterWidth != undefined) {
 			cs.splitterWidth = cs.splitterWidth;
