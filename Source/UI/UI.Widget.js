@@ -24,6 +24,7 @@ var Widget = UI.Widget = new Class({
 			onEnable: $empty,
 			onDisable: $empty,
 			parentWidgte: null,
+			styles: {},
 		*/
 		id: '',
 		className: ''
@@ -75,6 +76,13 @@ var Widget = UI.Widget = new Class({
 	
 	hasClass: function(className){
 		return this._classNames.contains(className);
+	},
+	
+	setStyles: function(styles){
+		this.setOptions({
+			styles: styles
+		});
+		this.deferDraw();
 	},
 	
 	/*
@@ -221,7 +229,9 @@ var Widget = UI.Widget = new Class({
 	/* Sheet integration */
 	
 	getSheet: function(){
-		return UI.Sheet.lookup(this.toString());
+		var sheet = UI.Sheet.lookup(this.toString());
+		if (this.options.styles) sheet = $merge(sheet, this.options.styles);
+		return sheet;
 	},
 	
 	diffSheet: function(){
