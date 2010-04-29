@@ -209,9 +209,9 @@ ART.Popup = new Class({
 		if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
 			target = document.id(this.options.maskOptions.inject.target) || document.id(document.body);
 		else target = document.id(document.body);
-
 		var mask = target.retrieve('Popup:mask');
-		if (!mask) {
+		if (!mask || !mask.parentNode) {
+			if (mask) mask.destroy();
 			//compute the zindex of the mask to be just above the target
 			//unless it's the document body, in which case put it just below this instance
 			var zIndex = this.options.maskOptions.zIndex;
@@ -229,11 +229,23 @@ ART.Popup = new Class({
 					destroyOnHide: true,
 					hideOnClick: this.options.hideOnMaskClick
 				}, this.options.maskOptions)
-			).addEvent('hide', function(){
-				if (!this.getState('hidden')) this.hide();
-			}.bind(this));
-			this.addEvent('hide', function(){
-				if (!mask.hidden) mask.hide();
+			).addEvents({
+				hide: function(){
+					if (!this.getState('hidden')) this.hide();
+				}.bind(this),
+				destroy: function(){
+					this.removeEvent('hide', mask._popupHider);
+				}.bind(this)
+			});
+			mask._popupHider = function(){
+				mask.hide();
+			};
+			mask._popupDestroyer = function(){
+				mask.destroy();
+			};
+			this.addEvents({
+				hide: mask._popupHider,
+				destroy: mask._popupDestroyer
 			});
 			target.store('Popup:mask', mask);
 		}
