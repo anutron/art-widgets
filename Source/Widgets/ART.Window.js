@@ -13,6 +13,7 @@ provides: ART.Window
 */
 
 ART.Sheet.define('window.art', {
+	'display': 'block',
 	'height': 300,
 	'width': 400,
 	
@@ -441,6 +442,12 @@ ART.Window = new Class({
 		if (this.getState('destroyed')) return;
 		var cs = this.currentSheet;
 		var style = this.parent(newSheet);
+		if (cs.display == "none") {
+			$(this).setStyle('display', 'none');
+			return;
+		} else if (style.display) {
+			$(this).setStyle(cs.display);
+		}
 		if (this.currentWidth == undefined || this.currentHeight == undefined) {
 			style.height = cs.height = this.options.height || cs.height;
 			style.height = cs.width = this.options.width || cs.width;
@@ -490,8 +497,9 @@ ART.Window = new Class({
 			this.contentSize.x = cs.width > 1 ? cs.width - 2 : 0;
 		}
 		if (cs.contentDisplay == "none") {
-			this.content.setStyle('display', 'none');
+			this.contents.setStyle('display', 'none');
 		} else {
+			this.contents.setStyle('display', 'block');
 			this.content.setStyles({
 				'top': 1,
 				'left': 0,
