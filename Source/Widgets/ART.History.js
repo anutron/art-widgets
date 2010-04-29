@@ -199,7 +199,7 @@ ART.History = new Class({
 		this.parent(options);
 		new ART.Keyboard(this, this.options.keyboardOptions);
 		this.selected = $pick(this.options.selected, this.history.length -1);
-		this.build();
+		this._build();
 		this.setHistory(this.options.history);
 		this.setNavState();
 		this.attach();
@@ -210,7 +210,7 @@ ART.History = new Class({
 	resize: function(w) {
 		if (this.isDestroyed()) return;
 		if (!w) {
-			w = this.element.getSize().x - document.id(this.nav_back).getSize().x - document.id(this.nav_next).getSize().x - document.id(this.refresher).getSize().x - 5;
+			w = this.element.getSize().x - document.id(this.nav_back).getSize().x - document.id(this.nav_next).getSize().x - document.id(this.refresher).getSize().x;
 			//if the width is less than zero, then it usually means that the content is hidden; exit.
 			if (w < 0) return;
 			['padding', 'margin'].each(function(style){
@@ -224,7 +224,7 @@ ART.History = new Class({
 		});
 	},
 	
-	build: function(){
+	_build: function(){
 		var cancel = function(e) {
 			e.stopPropagation();
 		};
