@@ -94,7 +94,7 @@ ART.Browser = new Class({
 		if (this.history._firstHidden) {
 			this.history._firstHidden = false;
 			this._resizeHistory();
-			document.id(this.history).setStyle('opacity', 1);
+			document.id(this.history).fade('in');
 		}
 	}
 
