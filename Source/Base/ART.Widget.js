@@ -49,8 +49,20 @@ var Widget = ART.Widget = new Class({
 
 	},
 	
-	_createElement: function(){
-		this.element = this.element || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'}).store('widget', this);
+	_createElement: function(options){
+		this.element = (options && options.element) || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'}).store('widget', this);
+	},
+	
+	setState: function(state, value, nodraw){
+		this.parent.apply(this, arguments);
+		if (!nodraw) this.deferDraw();
+		return this;
+	},
+	
+	setStyles: function(){
+		this.parent.apply(this, arguments);
+		this.deferDraw();
+		return this;
 	},
 	
 	/* tab indices */
@@ -128,7 +140,6 @@ var Widget = ART.Widget = new Class({
 	enable: function(){
 		if (!this.parent()) return false;
 		this.setTabIndex(this.oldTabIndex);
-		this.deferDraw();
 		return true;
 	},
 	
@@ -136,33 +147,28 @@ var Widget = ART.Widget = new Class({
 		if (!this.parent()) return false;
 		this.oldTabIndex = this.tabIndex;
 		this.setTabIndex(-1);
-		this.deferDraw();
 		return true;
 	},
 	
 	focus: function(){
 		if (!this.parent()) return false;
 		this.element.focus();
-		this.deferDraw();
 		return true;
 	},
 	
 	blur: function(){
 		if (!this.parent()) return false;
 		this.element.blur();
-		this.deferDraw();
 		return true;
 	},
 	
 	activate: function(){
 		if (!this.parent()) return false;
-		this.deferDraw();
 		return true;
 	},
 	
 	deactivate: function(){
 		if (!this.parent()) return false;
-		this.deferDraw();
 		return true;
 	},
 	
@@ -170,7 +176,6 @@ var Widget = ART.Widget = new Class({
 		if (!this.getState('hidden')){
 			this.setState('hidden', true);
 			this.fireEvent('hide');
-			this.deferDraw();
 		}
 		return this;
 	},
@@ -179,7 +184,6 @@ var Widget = ART.Widget = new Class({
 		if (this.getState('hidden')){
 			this.setState('hidden', false);
 			this.fireEvent('hide');
-			this.deferDraw();
 		}
 		return this;
 	},

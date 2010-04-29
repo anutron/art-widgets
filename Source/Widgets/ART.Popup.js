@@ -198,7 +198,6 @@ ART.Popup = new Class({
 			if (this.options.useIframeShim) this.hideIframeShim();
 			this.fireEvent('hide');
 			this.windowManager.enableTop(this.options.windowManagerLayer);
-			this.deferDraw();
 			this.setState('hidden', true);
 		}
 		return this;
@@ -364,8 +363,7 @@ ART.Popup = new Class({
 	_displayForDrag: function(dragging, render) {
 		if (this.getState('dragging') == dragging) return;
 		render = $pick(render, true);
-		this.setState('dragging', dragging);
-		if (render) this.deferDraw();
+		this.setState('dragging', dragging, !render);
 		this.fireEvent(dragging ? 'shade' : 'unshade');
 	},
 

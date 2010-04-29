@@ -82,7 +82,6 @@ var Widget = UI.Widget = new Class({
 		this.setOptions({
 			styles: styles
 		});
-		this.deferDraw();
 	},
 	
 	/*
