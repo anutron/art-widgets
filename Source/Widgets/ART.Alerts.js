@@ -254,6 +254,7 @@ ART.Prompt = new Class({
 		if (this.inputContainer) this.inputContainer.dispose();
 		this.parent.apply(this, arguments);
 		if (this.inputContainer) this.inputContainer.inject(this.content);
+		if (this.options.autosize) this.autosize();
 		return this;
 	},
 	show: function(){
@@ -261,6 +262,7 @@ ART.Prompt = new Class({
 		this.alertButtons[0].blur();
 		var input = this.content.getElement('input, textarea');
 		if (input) input.select.delay(5, input);
+		if (this.options.autosize) this.autosize();
 		return this;
 	}
 });
