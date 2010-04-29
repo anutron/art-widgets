@@ -196,9 +196,9 @@ ART.Popup = new Class({
 		if (!this.getState('hidden')){
 			this.element.setStyle('display', 'none');
 			if (this.options.useIframeShim) this.hideIframeShim();
+			this.setState('hidden', true);
 			this.fireEvent('hide');
 			this.windowManager.enableTop(this.options.windowManagerLayer);
-			this.setState('hidden', true);
 		}
 		return this;
 	},
