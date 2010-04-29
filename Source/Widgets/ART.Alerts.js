@@ -18,7 +18,9 @@ ART.Sheet.define('window.art.alert', {
 	'footer-reflection-color': hsb(0, 0, 91),
 	'content-border-bottom-color': hsb(0, 0, 91)
 });
-
+ART.Sheet.define('window.art.alert:hidden', {
+	'display': 'none'
+});
 ART.Sheet.define('window.art.alert footer', {
 	'float': 'right',
 	'width': 'auto'
@@ -318,12 +320,18 @@ ART.Window.AlertTools = new Class({
 		enableKB();
 		if (win) {
 			win.fireEvent('alert', alert);
-			var shader = function(dragging) {
-				document.id(alert).setStyle('display', dragging ? 'none' : 'block');
+			var shader = function() {
+				alert.setState('hidden', true);
+			};
+			var unshader = function() {
+				alert.setState('hidden', false);
 			};
 			alert.addEvents({
 				destroy: function(){
-					win.removeEvent('shade', shader);
+					win.removeEvents({
+						shade: shader,
+						unshade: unshader
+					});
 					win.keyboard.activate(currentKb);
 				},
 				hide: function(){
@@ -335,7 +343,10 @@ ART.Window.AlertTools = new Class({
 					win.fireEvent('alert');
 				}
 			});
-			win.addEvent('shade', shader);
+			win.addEvents({
+				shade: shader,
+				unshade: unshader
+			});
 		}
 		return alert;
 	},
