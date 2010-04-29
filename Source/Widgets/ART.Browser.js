@@ -59,10 +59,15 @@ ART.Browser = new Class({
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
-		this.addEvent('shade', function(dragging) {
-			this._dragging = dragging;
-			if (!dragging) this.history.resize();
-		}.bind(this));
+		this.addEvents({
+			shade: function() {
+				this._dragging = true;
+			}.bind(this),
+			unshade: function(){
+				this._dragging = false;
+				this.history.resize();
+			}
+		});
 	},
 
 	_resizeHistory: function(){
