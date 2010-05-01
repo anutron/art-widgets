@@ -75,12 +75,12 @@ ART.Browser = new Class({
 		['margin-left', 'margin-right', 'padding-left', 'padding-right'].each(function(dim) {
 			delta += $(this.history).getStyle(dim).toInt();
 		}, this);
-		this.history.resize(this.currentWidth - delta);
+		this.history.resize(this.currentWidth - delta - 5);
 	},
 
 	resize: function(){
 		this.parent.apply(this, arguments);
-		if (this.history && !this._dragging) this._resizeHistory();
+		if (this.history) this._resizeHistory();
 	},
 
 	show: function() {
