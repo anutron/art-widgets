@@ -262,7 +262,6 @@ ART.Prompt = new Class({
 		this.alertButtons[0].blur();
 		var input = this.content.getElement('input, textarea');
 		if (input) input.select.delay(5, input);
-		if (this.options.autosize) this.autosize();
 		return this;
 	}
 });
