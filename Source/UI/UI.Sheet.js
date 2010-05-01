@@ -64,36 +64,59 @@ var createRules = function(selectors, style, where){
 //retrieves styles for a given selector, merging them into a single
 //object given an array of rules (the 'where' argument)
 var getStyles = function(selector, where) {
+	var cachedStyle = where.selectorCacheGet(selector);
+	if (cachedStyle) return cachedStyle;
+	
 	var style = {};
 	where.sort(function(a, b){
 		return a.specificity - b.specificity;
 	});
 
-	selector = parseSelector(Slick.parse(selector).expressions[0]);
+	selectorArray = parseSelector(Slick.parse(selector).expressions[0]);
 	where.each(function(rule){
-		var i = rule.selector.length - 1, j = selector.length - 1;
-		if (!containsAll(selector[j], rule.selector[i])) return;
+		var i = rule.selector.length - 1, j = selectorArray.length - 1;
+		if (!containsAll(selectorArray[j], rule.selector[i])) return;
 		while (i-- > 0){
 			while (true){
 				if (j-- <= 0) return;
-				if (containsAll(selector[j], rule.selector[i])) break;
+				if (containsAll(selectorArray[j], rule.selector[i])) break;
 			}
 		}
 		$mixin(style, rule.style);
 	});
+	
+	where.selectorCacheSet(selector, style);
 	return style;
 };
-
 var containsAll = function(self, other){
-	return other.every(function(x){
-		return self.contains(x);
-	}, this);
+	var keys = {};
+	for(var i=0, l=self.length; i<l; i++){
+		keys['__' + self[i]] = true;
+	};
+	for(i=0, l=other.length; i<l; i++){
+		if (keys['__' + other[i]] == null) return false;
+	}
+	return true;
 };
-
 //returns the rules for a given namespace
 var getRules = function(namespace){
 	if (!namespace) namespace = "default";
-	rules[namespace] = rules[namespace] || [];
+	if (!rules[namespace]) {
+		rules[namespace] = [];
+		$extend(rules[namespace], {
+			selectorCacheData: {},
+			selectorCacheInvalidate: function(){
+				this.selectorCacheData = {};
+			},
+			selectorCacheSet: function(selector, value){
+				this.selectorCacheData[selector] = value;
+			},
+			selectorCacheGet: function(selector){
+				var val = this.selectorCacheData[selector]; 
+				return val;
+			}
+		});
+	}
 	return rules[namespace];
 };
 
@@ -101,7 +124,9 @@ var getRules = function(namespace){
 //takes an object for ART.Sheet "styles" - arbitrary key/value pairs used by widgets
 //namespace (string) is optional; allows for the use of ART.Sheet with arbitrary style groups
 Sheet.define = function(selectors, style, namespace){
-	createRules(selectors, style, getRules(namespace));
+	var where = getRules(namespace);
+	where.selectorCacheInvalidate();
+	createRules(selectors, style, where);
 	return this;
 };
 
