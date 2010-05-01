@@ -362,6 +362,11 @@ ART.Window = new Class({
 		return this;
 	},
 	
+	show: function(){
+		this.parent.apply(this, arguments);
+		if (this.options.autosize) this.autosize();
+	},
+	
 	//resizes the window to match the contents of the window
 	autosize: function(){
 		if (this.isDestroyed()) return;
