@@ -244,7 +244,7 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	isDestroyed: function(){
-		if (!this.element.parentNode || this.getState('hidden')) return;
+		if (!this.element.parentNode) return;
 	},
 	
 	grab: function(){
