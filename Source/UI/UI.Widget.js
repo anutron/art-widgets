@@ -105,6 +105,9 @@ var Widget = UI.Widget = new Class({
 	
 	/* enable, disable */
 	
+	//enabled means you can interact with a widget
+	//it can be activated, it can receive focus, it can update itself or animate itself.
+	
 	enable: function(){
 		if ((this.parentWidget && this.parentWidget.getState('disabled')) || !this.getState('disabled')) return false;
 		this._disabledByParent = false;
@@ -117,6 +120,9 @@ var Widget = UI.Widget = new Class({
 		
 		return true;
 	},
+	
+	//disabled means you cannot interact with a widget
+	//it cannot be activated, it cannot receive focus, it cannot update itself or animate itself.
 	
 	disable: function(){
 		if (this.getState('disabled')) return false;
@@ -138,8 +144,11 @@ var Widget = UI.Widget = new Class({
 	
 	/* focus, blur */
 	
- 	focus: function(){
-		if (this.getState('disabled') || this.getState('focus')) return false;
+	//the widget is in the foreground; this is unique among siblings
+	//the widget can be activated
+	
+	focus: function(){
+		if (this.getState('disabled') || this.getState('focused')) return false;
 
 		this.setState('focus', true);
 		this.fireEvent('focus');
@@ -151,6 +160,9 @@ var Widget = UI.Widget = new Class({
 		
 		return true;
 	},
+	
+	//the widget is not in the foreground
+	//it cannot be activated
 	
 	blur: function(){
 		if (this.getState('disabled') || !this.getState('focus')) return false;
@@ -167,6 +179,9 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	/* activate, deactivate */
+	
+	//the widget is being interacted with presently
+	//the button is depressed, the window is being dragged, the select list is dropped open
 	
 	activate: function(){
 		if (this.getState('disabled') || this.getState('active')) return false;
