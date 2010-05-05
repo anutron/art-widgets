@@ -242,6 +242,14 @@ var Widget = UI.Widget = new Class({
 		}
 		return this;
 	},
+
+	contains: function(widget) {
+		if (this._childWidgets.contains(widget)) return true;
+		for(var len = this._childWidgets.length - 1; len > 0; len = len - 1) {
+			if (this._childWidgets[len].contains(widget)) return true;
+		}
+		return false;
+	},
 	
 	isDestroyed: function(){
 		if (!this.element.parentNode) return;
