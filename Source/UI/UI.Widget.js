@@ -10,6 +10,7 @@ provides: UI.Widget
 (function(){
 	
 var widgets = UI.widgets = {}; UID = 0;
+var focusedWidgets = {};
 
 var Widget = UI.Widget = new Class({
 	
@@ -150,13 +151,19 @@ var Widget = UI.Widget = new Class({
 	focus: function(){
 		if (this.getState('disabled') || this.getState('focused')) return false;
 
-		this.setState('focus', true);
+		this.setState('focused', true);
 		this.fireEvent('focus');
+		this._blurredByParent = false;
 		
-		for (var w in widgets){
-			var widget = widgets[w];
-			if (widget != this && !this._childWidgets.contains(widget)) widget.blur();
+		for (var w in focusedWidgets){
+			if (focusedWidgets[w]) var widget = widgets[w];
+			if (widget && widget != this && !widget.contains(this) && !this.contains(widget)) widget.blur();
 		}
+		focusedWidgets[this.uid] = true;
+		
+		this._childWidgets.each(function(child) {
+			if (child._blurredByParent) child.focus();
+		});
 		
 		return true;
 	},
@@ -165,14 +172,18 @@ var Widget = UI.Widget = new Class({
 	//it cannot be activated
 	
 	blur: function(){
-		if (this.getState('disabled') || !this.getState('focus')) return false;
+		if (this.getState('disabled') || !this.getState('focused')) return false;
 
 		this.deactivate();
-		this.setState('focus', false);
+		this.setState('focused', false);
 		this.fireEvent('blur');
+		focusedWidgets[this.uid] = false;
 		
 		this._childWidgets.each(function(child){
-			child.blur();
+			if (child._states.focused){
+				child._blurredByParent = true;
+				child.blur();
+			}
 		});
 		
 		return true;
@@ -211,13 +222,17 @@ var Widget = UI.Widget = new Class({
 			parentWidget._childWidgets.push(this);
 			this.fireEvent('register', parentWidget.fireEvent('registered', this));
 		}
+		if (this._disabledByParent) this.enable();
 		return this;
 	},
 	
 	unregister: function(){
 		if (widgets[this.uid]){
 			delete widgets[this.uid];
-			this.blur();
+			if (this.getState('enabled')) {
+				this.disable();
+				this._disabledByParent = true;
+			}
 			if (this.parentWidget){
 				this.parentWidget._childWidgets.erase(this);
 				this.fireEvent('unregister', this.parentWidget);
