@@ -19,14 +19,11 @@ ART.Sheet.define('window.art.browser history.art', {
 }, 'css');
 
 ART.Sheet.define('window.art.browser history.art button.art', {
+	
 	'shadow-color': hsb(0, 0, 100, 0.4)
 });
 
 ART.Sheet.define('window.art.browser history.art input', {
-	'left': 58
-}, 'css');
-
-ART.Sheet.define('window.art.browser history.art input.disabled', {
 	'left': 58
 }, 'css');
 
@@ -37,6 +34,29 @@ ART.Sheet.define('window.art.browser:dragging history.art', {
 ART.Sheet.define('window.art.browser history.art', {
 	'display': 'block'
 }, 'css');
+
+
+ART.Sheet.define('window.art.browser history.art divot', {
+	'color': hsb(0, 0, 66)
+});
+ART.Sheet.define('window.art.browser:focused history.art divot', {
+	'color': hsb(0, 0, 33)
+});
+
+ART.Sheet.define('window.art.browser history.art button.art', {
+	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
+	'border-color': ['hsb(0, 0, 0, 0.4)', 'hsb(0, 0, 0, 0.5)'],
+	'font-color': 'hsb(0, 0, 5, 0.5)',
+	'glyph-color': 'hsb(0, 0, 5, 0.5)'
+});
+
+ART.Sheet.define('window.art.browser:focused history.art button.art', {
+	'border-color': ['hsb(0, 0, 0, 0.6)', 'hsb(0, 0, 0, 0.7)'],
+	'reflection-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 0, 0)'],
+	'background-color': ['hsb(0, 0, 90)', 'hsb(0, 0, 70)'],
+	'glyph-color': hsb(0, 0, 0, 0.8)
+});
+
 
 ART.Browser = new Class({
 
@@ -62,7 +82,7 @@ ART.Browser = new Class({
 		this.addEvents({
 			shade: function() {
 				this._dragging = true;
-			}.bind(this),
+			},
 			unshade: function(){
 				this._dragging = false;
 				this.history.resize();

@@ -162,9 +162,7 @@ ART.Sheet.define('history.art divot', {
 	'right': 5,
 	'top': 7
 }, 'css');
-ART.Sheet.define('history.art:disabled divot', {
-	'color': hsb(0, 0, 66)
-});
+
 
 ART.History = new Class({
 

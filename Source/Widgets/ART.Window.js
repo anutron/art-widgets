@@ -38,20 +38,7 @@ ART.Sheet.define('window.art', {
 	'corner-radius': 4,
 	'header-height': 24,
 	'footer-height': 17,
-
-	'caption-font-color': hsb(0, 0, 10),
-	'header-background-color': [hsb(0, 0, 80), hsb(0, 0, 60)],
-	'footer-background-color': [hsb(0, 0, 80), hsb(0, 0, 70)],
-	'header-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
-	'footer-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
-	'border-color': hsb(0, 0, 0, 0.4),
-	'content-border-top-color': hsb(0, 0, 30),
-	'content-border-bottom-color': hsb(0, 0, 50),
-	'content-background-color': hsb(0, 0, 100)
-
-});
-
-ART.Sheet.define('window.art:disabled', {
+	
 	'caption-font-color': hsb(0, 0, 30),
 	'header-background-color': [hsb(0, 0, 95), hsb(0, 0, 80)],
 	'footer-background-color': [hsb(0, 0, 95), hsb(0, 0, 90)],
@@ -62,6 +49,19 @@ ART.Sheet.define('window.art:disabled', {
 	'content-border-bottom-color': hsb(0, 0, 70),
 	'content-background-color': hsb(0, 0, 100),
 	'content-color': hsb(0, 0, 0)
+
+});
+
+ART.Sheet.define('window.art:focused', {
+	'caption-font-color': hsb(0, 0, 10),
+	'header-background-color': [hsb(0, 0, 80), hsb(0, 0, 60)],
+	'footer-background-color': [hsb(0, 0, 80), hsb(0, 0, 70)],
+	'header-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
+	'footer-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
+	'border-color': hsb(0, 0, 0, 0.4),
+	'content-border-top-color': hsb(0, 0, 30),
+	'content-border-bottom-color': hsb(0, 0, 50),
+	'content-background-color': hsb(0, 0, 100)
 });
 
 ART.Sheet.define('window.art footer-text', {
@@ -76,23 +76,26 @@ ART.Sheet.define('window.art button.art.wincontrol', {
 	'width': 14,
 	'cornerRadius': 7,
 	'cursor': 'pointer',
-	'background-color': [hsb(0, 0, 75), hsb(0, 0, 55)],
-	'reflection-color': [hsb(0, 0, 95), hsb(0, 0, 0, 0)],
-	'shadow-color': hsb(0, 0, 100, 0.4),
-	'border-color': hsb(0, 0, 45),
-	'glyph-color': hsb(0, 0, 0, 0.6)
+	'background-color': [hsb(0, 0, 100, 0.6), hsb(0, 0, 100, 0.6)],
+	'reflection-color': [hsb(0, 0, 100), hsb(0, 0, 0, 0)],
+	'shadow-color': hsb(0, 0, 100, 0.2),
+	'border-color': hsb(0, 0, 45, 0.5),
+	'glyph-color': hsb(0, 0, 0, 0.4),
+	'display': 'inline-block'
 });
+
 
 ART.Sheet.define('window.art:dragging button.art.wincontrol', {
 	'display': 'none'
 });
 
-ART.Sheet.define('window.art button.art.wincontrol:disabled', {
-	'background-color': [hsb(0, 0, 100, 0.6), hsb(0, 0, 100, 0.6)],
-	'reflection-color': [hsb(0, 0, 100), hsb(0, 0, 0, 0)],
-	'shadow-color': hsb(0, 0, 100, 0.2),
-	'border-color': hsb(0, 0, 45, 0.5),
-	'glyph-color': hsb(0, 0, 0, 0.4)
+ART.Sheet.define('window.art:focused button.art.wincontrol', {
+	'background-color': [hsb(0, 0, 75), hsb(0, 0, 55)],
+	'reflection-color': [hsb(0, 0, 95), hsb(0, 0, 0, 0)],
+	'shadow-color': hsb(0, 0, 100, 0.4),
+	'border-color': hsb(0, 0, 45),
+	'glyph-color': hsb(0, 0, 0, 0.6),
+	'display': 'inline-block'
 });
 
 ART.Sheet.define('window.art button.art.wincontrol:active', {
@@ -610,7 +613,7 @@ ART.Window = new Class({
 ART.WindowTools = new Class({
 
 	getWindow: function(){
-		return this.getWindowElement().retrieve('art-window');
+		return this.getWindowElement().get('widget');
 	},
 
 	getWindowElement: function(){

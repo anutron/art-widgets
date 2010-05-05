@@ -146,10 +146,7 @@ ART.Alert = new Class({
 			return b;
 		}, this);
 		var first = this.alertButtons[0];
-		if (first) {
-			first.enable();
-			first.focus();
-		}
+		if (first) first.focus();
 	}
 
 });

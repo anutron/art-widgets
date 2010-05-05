@@ -8,7 +8,7 @@ provides: Stacker
 */
 
 /*
-	Manages z-index ordering of objects as well as their enabled state.
+	Manages z-index ordering of objects as well as their focused state.
 */
 
 var Stacker = new Class({
@@ -72,7 +72,7 @@ var Stacker = new Class({
 			instanceLayer.instances.erase(instance);
 		} else  {
 			document.id(instance).addEvent('mousedown', function(){
-				if (instance.getState('disabled')) this.enable(instance);
+				if (!instance.getState('focused')) this.focus(instance);
 			}.bind(this));
 			this.instances.include(instance);
 		}
@@ -82,7 +82,7 @@ var Stacker = new Class({
 
 	//removes an instance from this stacker's control
 	unregister: function(instance) {
-		var refocus = this.enabled == instance;
+		var refocus = this.focused == instance;
 		var iLayer = this.getLayerForInstance(instance);
 		if (!iLayer) return;
 		this.instances.erase(instance);
@@ -90,8 +90,8 @@ var Stacker = new Class({
 			if (layer.instances.contains(instance)) layer.instances.erase(instance);
 		});
 		if (refocus) {
-			if (iLayer.instances.length) this.enable(iLayer.instances[iLayer.instances.length -1]);
-			else if (this.instances.length) this.enable(this.instances[this.instances.length -1]);
+			if (iLayer.instances.length) this.focus(iLayer.instances[iLayer.instances.length -1]);
+			else if (this.instances.length) this.focus(this.instances[this.instances.length -1]);
 		}
 	},
 
@@ -106,7 +106,7 @@ var Stacker = new Class({
 
 	//z-index orders a layer so that a specific instance is on top
 	bringToFront: function(instance){
-		if (!instance || (instance == this.enabled && instance._stacked)) return;
+		if (!instance || (instance == this.focused && instance._stacked)) return;
 		this.layers.each(function(layer) {
 			var i = 0;
 			if (!layer.instances.contains(instance)) return;
@@ -123,7 +123,7 @@ var Stacker = new Class({
 		}, this);
 	},
 
-	enableTop: function(layer) {
+	focusTop: function(layer) {
 		layer = this.getLayer(layer || "default");
 		var instance;
 
@@ -134,7 +134,7 @@ var Stacker = new Class({
 			}
 		}
 
-		if (instance) this.enable(instance);
+		if (instance) this.focus(instance);
 	},
 
 	//cycles the zIndex for a given layer forward or back
@@ -145,17 +145,17 @@ var Stacker = new Class({
 		if (direction == 'forward') instances.push(instances.shift());
 		else instances.unshift(instances.pop());
 		this.stack(this.layers[layerName]);
-		this.enable(instances[instances.length -1], true);
+		this.focus(instances[instances.length -1], true);
 	},
 
-	//enables an instance, (optionally) bringing it to front
-	enable: function(instance, noOrder){
-		if (!instance || (instance == this.enabled && instance._stacked)) return;
+	//focus an instance, (optionally) bringing it to front
+	focus: function(instance, noOrder){
+		if (!instance || (instance == this.focused && instance._stacked)) return;
+		if (this.focused && this.focused != instance) this.focused.blur();
+		if (instance.getState('disabled')) return;
 		if (!noOrder) this.bringToFront(instance);
-		if (this.enabled && this.enabled != instance) this.enabled.disable();
-		if (instance.getState('disabled')) instance.enable(true);
-		instance.focus();
-		this.enabled = instance;
+		instance._focus();
+		this.focused = instance;
 	},
 
 	//moves all the instances to be in a cascaded line
@@ -172,7 +172,7 @@ var Stacker = new Class({
 	positionNew: function(instance, options){
 		var pos = true;
 		//if there are no instances other than this one, or one instance
-		//or the position is not set or is equal to the enabled instances options
+		//or the position is not set or is equal to the focused instances options
 		//then return; and let the window be positioned as the class would normally.
 		var current;
 		var instances = this.getLayerForInstance(instance).instances.filter(function(instance){
@@ -186,7 +186,7 @@ var Stacker = new Class({
 		});
 		if (options) {
 			//if the position is not defined in the options
-			//or, if it is, the position is the same as the enabled instance's options
+			//or, if it is, the position is the same as the focused instance's options
 			//such that opening with the same options will place them on top of each other
 			//(assuming the first one hasn't moved)
 			pos = ['top', 'left', 'edge', 'position', 'relativeTo'].every(function(opt){
@@ -194,10 +194,10 @@ var Stacker = new Class({
 				return curOpt == options[opt];
 			}, this);
 		}
-		this.enable(instance);
+		this.focus(instance);
 		if (instances.length < 1 || !pos || !current) return false;
 		var instanceEl = document.id(instance);
-		//position near the enabled instance, with an offset as defined in the options
+		//position near the focused instance, with an offset as defined in the options
 		instanceEl.position({
 			relativeTo: document.id(current),
 			offset: this.options.offset,

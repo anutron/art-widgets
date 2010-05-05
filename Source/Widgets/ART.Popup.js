@@ -36,11 +36,11 @@ ART.WindowManager = new Class({
 	},
 
 	unregister: function(instance) {
-		var cycle = (this.enabled == instance);
+		var cycle = (this.focused == instance);
 		var layer = this.getLayerForInstance(instance);
 		this.parent.apply(this, arguments);
 		this.keyboard.drop(instance.keyboard);
-		this.enableTop(layer);
+		this.focusTop(layer);
 		if (instance._stackerEvents) instance.removeEvents(instance._stackerEvents);
 	}
 
@@ -103,6 +103,8 @@ ART.Popup = new Class({
 	},
 
 	initialize: function(options) {
+		this._focus = this.focus;
+		this.focus = this._focusWindow;
 		//by default, inject instances into the document.body
 		if (!this.options.inject) {
 			this.options.inject = {
@@ -198,7 +200,7 @@ ART.Popup = new Class({
 			if (this.options.useIframeShim) this.hideIframeShim();
 			this.setState('hidden', true);
 			this.fireEvent('hide');
-			this.windowManager.enableTop(this.options.windowManagerLayer);
+			this.windowManager.focusTop(this.options.windowManagerLayer);
 		}
 		return this;
 	},
@@ -256,7 +258,7 @@ ART.Popup = new Class({
 	show: function(){
 		if (this.getState('hidden')){
 			this.setState('hidden', false);
-			this.windowManager.enable(this);
+			this.windowManager.focus(this);
 			this.fireEvent('display');
 			if (!this.positioned) {
 				this.position();
@@ -278,7 +280,7 @@ ART.Popup = new Class({
 	position: function(options, callback){
 		this.positioned = true;
 		this.setOptions(options);
-		//if cascading is enabled and the window manager doesn't want to do this positioning for us
+		//if cascading is focused and the window manager doesn't want to do this positioning for us
 		if (true && this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
 			//if top/left options defined in options, put the window there
 			if ($defined(this.options.top) && $defined(this.options.left)) {
@@ -406,9 +408,8 @@ ART.Popup = new Class({
 		return this;
 	},
 
-	enable: function(callParent){
-		if (callParent) this.parent();
-		else this.windowManager.enable(this);
+	_focusWindow: function(){
+		this.windowManager.focus(this);
 		return this;
 	},
 
