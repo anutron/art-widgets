@@ -223,5 +223,14 @@ var Widget = ART.Widget = new Class({
 	}
 	
 });
+
+Element.Properties.widget = {
+
+	get: function(){
+		return this.retrieve('widget');
+	}
+
+};
+
 	
 })();
