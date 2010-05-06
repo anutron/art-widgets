@@ -109,11 +109,11 @@ var getRules = function(namespace){
 				this.selectorCacheData = {};
 			},
 			selectorCacheSet: function(selector, value){
-				this.selectorCacheData[selector] = value;
+				this.selectorCacheData[selector] = $unlink(value);
 			},
 			selectorCacheGet: function(selector){
 				var val = this.selectorCacheData[selector]; 
-				return val;
+				return $unlink(val);
 			}
 		});
 	}
