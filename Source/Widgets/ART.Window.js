@@ -405,7 +405,7 @@ ART.Window = new Class({
 	
 	//sets the caption for the window
 	setCaption: function(text){
-		this.makeHeaderText(text, ART.Sheet.lookup(this.toString()).captionFontSize);
+		this.makeHeaderText(text);
 		return this;
 	},
 
