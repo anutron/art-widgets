@@ -21,10 +21,6 @@ ART.Sheet.define('window.art.alert', {
 ART.Sheet.define('window.art.alert:hidden', {
 	'display': 'none'
 });
-ART.Sheet.define('window.art.alert footer', {
-	'float': 'right',
-	'width': 'auto'
-}, 'css');
 
 ART.Sheet.define('window.art.alert content', {
 	'padding': 20,
@@ -36,10 +32,15 @@ ART.Sheet.define('window.art.alert input.prompt', {
 	'width': '100%'
 }, 'css');
 
+ART.Sheet.define('window.art.alert buttoncontainer', {
+	'float':'right',
+	'top':'3px',
+	'position':'relative'
+}, 'css');
+
 ART.Sheet.define('window.art.alert button.art.confirmations', {
 	'padding-right': 15,
-	'border':'none',
-	'float': 'left'
+	'border':'none'
 }, 'css');
 
 
@@ -125,6 +126,9 @@ ART.Alert = new Class({
 
 	makeButtons: function(){
 		this.parent();
+		this.buttoncontainer = new Element('div', {
+				'class': 'buttoncontainer'
+			}).setStyles(ART.Sheet.lookup(this.toString() + ' buttoncontainer', 'css')).inject(this.footer);
 		this.alertButtons = this.options.buttons.map(function(button){
 			button.className = ((button.className || '') + ' art confirmations').trim();
 			var b = new ART.Button(button);
@@ -145,7 +149,7 @@ ART.Alert = new Class({
 			});
 			document.id(b).set(button.properties);
 
-			b.inject(this, this.footer);
+			b.inject(this, this.buttoncontainer);
 
 			document.id(b).setStyles(ART.Sheet.lookup(b.toString(), 'css'));
 			return b;
