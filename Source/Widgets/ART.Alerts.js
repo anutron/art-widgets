@@ -138,6 +138,11 @@ ART.Alert = new Class({
 			button.properties = button.properties || {};
 			if (!button.properties['class']) button.properties['class'] = this.options.closeClass;
 
+			var klass = button.properties['class'];
+			delete button.properties['class'];
+			klass.split(' ').each(function(className) {
+				b.addClass(className);
+			});
 			document.id(b).set(button.properties);
 
 			b.inject(this, this.footer);
@@ -198,8 +203,12 @@ ART.Prompt = new Class({
 
 	options: {
 		onShow: function(){
-			var input = this.content.getElement('input, textarea');
-			if (input) input.select();
+			(function(){
+				var input = this.content.getElements('input, textarea').filter(function(el) {
+					return el.get('type') != 'hidden' && el.isVisible();
+				})[0];
+				if (input) input.select();
+			}).delay(100, this);
 		},
 		buttons: [
 			{
