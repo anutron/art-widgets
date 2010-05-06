@@ -165,13 +165,13 @@ var Button = ART.Button = new Class({
 			if (this.glyphLayer) this.glyphLayer.translate(cs.glyphLeft, cs.glyphTop);
 		}
 		
-		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(sheet.shadowColor));
-		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(sheet.borderColor));
-		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, $splat(sheet.reflectionColor));
-		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(sheet.backgroundColor));
-		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(sheet.glyphColor));
-		else if (sheet.fontColor && this.textLayer) this.textLayer.fill.apply(this.textLayer, $splat(sheet.fontColor));
-		
+		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(cs.shadowColor));
+		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(cs.borderColor));
+		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, $splat(cs.reflectionColor));
+		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(cs.backgroundColor));
+		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(cs.glyphColor));
+		else if (sheet.fontColor && this.textLayer) this.textLayer.fill.apply(this.textLayer, $splat(cs.fontColor));
+
 		return this;
 		
 	},
