@@ -140,7 +140,7 @@ ART.Sheet.define('history.art input', {
 	'display': 'none',
 	'position': 'absolute',
 	'height': 9,
-	'left': 47,
+	'margin-left': 45,
 	'top': 1,
 	'background-color': 'transparent',
 	'border': 'none',
@@ -458,9 +458,8 @@ ART.History = new Class({
 				href: this.options.pathBuilder(hist.path),
 				'class': current ? 'current' : '',
 				events: {
-					click: function(e){
-						e.preventDefault();
-						//this.loadHistory(index);
+					mouseup: function(e){
+						if (e) e.preventDefault();
 						this.selected = index;
 						this.select(hist);
 					}.bind(this),
@@ -523,7 +522,6 @@ ART.History = new Class({
 	},
 	
 	select: function(hist, suppressEvent){
-		this.hide();
 		this.setTitle(hist.title);
 		this.selected = this.history.indexOf(hist);
 		this.setNavState();
