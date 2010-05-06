@@ -32,7 +32,7 @@ ART.Sheet.define('button.art', {
 	'glyph-right': 2
 });
 
-ART.Sheet.define('button.art:focus', {
+ART.Sheet.define('button.art:focused', {
 	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
 	'border-color': ['hsb(205, 80, 100)', 'hsb(205, 100, 95)']
 });
