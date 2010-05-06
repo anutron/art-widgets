@@ -196,6 +196,8 @@ var Widget = ART.Widget = new Class({
 		if (element && this.element.parentNode !== element){
 			this.element.inject(element, where);
 			this.register(widget);
+			if (this._disabledByParent) this.enable();
+
 		}
 
 		return this;
@@ -210,6 +212,10 @@ var Widget = ART.Widget = new Class({
 		if (this.element.parentNode){ // continue only if the element is in the dom
 			this.element.dispose();
 			this.unregister();
+			if (!this.getState('disabled')){
+				this._disabledByParent = true;
+				this.disable();
+			}
 			// even though deferDraw will not fire when the element is not in the dom, this will cancel any pre-existing draw request.
 			clearTimeout(this.drawTimer);
 		}
