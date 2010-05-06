@@ -32,7 +32,6 @@ ART.WindowManager = new Class({
 			}
 		};
 		instance.addEvents(instance._stackerEvents);
-
 	},
 
 	unregister: function(instance) {
@@ -75,6 +74,8 @@ ART.Popup = new Class({
 		'drag:end': $empty,
 		'shade': $empty
 		'unshade': $empty,
+		'hide': $empty,
+		'show': $empty,
 
 		//these are the defaults for Element.position anyway
 		************************************************
@@ -259,10 +260,8 @@ ART.Popup = new Class({
 		if (this.getState('hidden')){
 			this.setState('hidden', false);
 			this.windowManager.focus(this);
-			this.fireEvent('display');
-			if (!this.positioned) {
-				this.position();
-			}
+			this.fireEvent('display').fireEvent('show'); //display event for backwards compat
+			if (!this.positioned) this.position();
 			this.showIframeShim();
 			if (this.options.mask) this.maskTarget();
 		}
