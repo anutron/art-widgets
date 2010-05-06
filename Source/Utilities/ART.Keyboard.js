@@ -37,7 +37,7 @@ ART.Keyboard = new Class({
 		var keyboard;
 		while (parent && parent.parentWidget && !keyboard) {
 			parent = parent.parentWidget;
-			if (parent) keyboard = parent.parentWidget.keyboard;
+			if (parent && parent.parentWidget) keyboard = parent.parentWidget.keyboard;
 		}
 		if (keyboard) keyboard.manage(this.keyboard);
 	},
