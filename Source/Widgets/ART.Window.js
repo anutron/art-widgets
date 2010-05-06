@@ -56,8 +56,6 @@ ART.Sheet.define('window.art:focused', {
 	'caption-font-color': hsb(0, 0, 10),
 	'header-background-color': [hsb(0, 0, 80), hsb(0, 0, 60)],
 	'footer-background-color': [hsb(0, 0, 80), hsb(0, 0, 70)],
-	'header-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
-	'footer-reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
 	'border-color': hsb(0, 0, 0, 0.4),
 	'content-border-top-color': hsb(0, 0, 30),
 	'content-border-bottom-color': hsb(0, 0, 50),
@@ -172,7 +170,7 @@ ART.Window = new Class({
 
 	initialize: function(options){
 		this.parent(options);
-		this.addClass('art-window');
+		this.element.addClass('art-window');
 		$(this).store('art-window', this);
 		if (this.options.resizable) this.makeResizeable();
 	},
