@@ -150,7 +150,7 @@ var Stacker = new Class({
 
 	//focus an instance, (optionally) bringing it to front
 	focus: function(instance, noOrder){
-		if (!instance || (instance == this.focused && instance._stacked)) return;
+		if (!instance || (instance == this.focused && instance._stacked && instance.getState('focused'))) return;
 		if (this.focused && this.focused != instance) this.focused.blur();
 		if (instance.getState('disabled')) return;
 		if (!noOrder) this.bringToFront(instance);
