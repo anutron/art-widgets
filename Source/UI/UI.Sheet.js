@@ -84,7 +84,15 @@ var getStyles = function(selector, where) {
 		}
 		$mixin(style, rule.style);
 	});
-	
+	//for IE, handle the Color bug that requires the object be a native String
+	if (Browser.Engine.trident) {
+		for (prop in style) {
+			var val = style[prop];
+			if (val && val.isColor) {
+				style[prop] = val.toRGB();
+			}
+		}
+	}
 	where.selectorCacheSet(selector, style);
 	return style;
 };
