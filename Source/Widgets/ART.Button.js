@@ -143,9 +143,9 @@ var Button = ART.Button = new Class({
 			if (!this.textLayer) {
 				this.textLayer = new ART.Font;
 				fontChanged = true;
+				this.canvas.grab(this.textLayer);
 			}
 			if (fontChanged) this.setText(sheet.text || this.options.text, true);
-			this.canvas.grab(this.textLayer);
 		}
 		
 		var width, height;
