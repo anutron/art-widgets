@@ -99,18 +99,17 @@ var Button = ART.Button = new Class({
 		this.touch.addEvents({
 			
 			start: function(event){
-
-				self.fireEvent('press:start', event);
+				self.fireEvent('press:start', new Event(event));
 				mouseleave = false;
 				self.activate();
 			},
 			
 			end: function(event){
-				if (self.deactivate() && !mouseleave) self.fireEvent('press', event);
+				if (self.deactivate() && !mouseleave) self.fireEvent('press', new Event(event));
 			},
 			
 			cancel: function(event){
-				if (self.deactivate()) self.fireEvent('press', event);
+				if (self.deactivate()) self.fireEvent('press', new Event(event));
 			}
 		
 		});
@@ -121,7 +120,7 @@ var Button = ART.Button = new Class({
 		var sheet = this.parent(newSheet);
 		var cs = this.currentSheet;
 		if (sheet.display) {
-			if (sheet.display == "none") {
+			if (cs.display == "none") {
 				document.id(this).setStyle('display', 'none');
 				return;
 			} else {
