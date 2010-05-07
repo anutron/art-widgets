@@ -141,7 +141,7 @@ ART.Sheet.define('window.art button.art.maximize', {
 
 ART.Sheet.define('window.art:dragging', {
 	'content-display': 'none',
-	'background-color': hsb(0, 0, 0, 0.1)
+	'background-color': hsb(0, 0, 0, Browser.Engine.trident ? 1 : 0.1)
 });
 
 ART.Window = new Class({
