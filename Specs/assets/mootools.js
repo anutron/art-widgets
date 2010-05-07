@@ -7009,16 +7009,16 @@ if (!exports.Slick) exports.Slick = Slick;
 	
 }).apply((typeof exports != 'undefined') ? exports : this);
 
-
 /*
 ---
 
 name: Touch
 description: Class to aid the retrieval of the cursor movements
-license: MIT-Style License (http://mootools.net/license.txt)
-copyright: Valerio Proietti (http://mad4milk.net)
-requires: [Core/MooTools, Core/Array, Core/Function, Core/Number, Core/String, Core/Class, Core/Events, Core/Element]
-provides: Touch
+license: "MIT-Style License (http://mootools.net/license.txt)"
+copyright: "Valerio Proietti (http://mad4milk.net)"
+authors: "Valerio Proietti (http://mad4milk.net)"
+requires: [Core/Events, Core/Element.Event]
+provides: [Touch]
 
 ...
 */
@@ -7078,7 +7078,7 @@ var Touch = new Class({
 		this.startX = page.pageX;
 		this.startY = page.pageY;
 		
-		this.fireEvent('start');
+		this.fireEvent('start', event);
 	},
 	
 	move: function(event){
@@ -7088,10 +7088,8 @@ var Touch = new Class({
 		
 		this.deltaX = page.pageX - this.startX;
 		this.deltaY = page.pageY - this.startY;
-		
-		this.hasDragged = !(this.deltaX === 0 && this.deltaY === 0);
-		
-		if (this.hasDragged) this.fireEvent('move', [this.deltaX, this.deltaY]);
+		this.hasDragged = !(this.deltaX === 0 && this.deltaY === 0)
+		if (this.hasDragged) this.fireEvent('move', [this.deltaX, this.deltaY, event]);
 	},
 	
 	end: function(event){
@@ -7102,7 +7100,7 @@ var Touch = new Class({
 		this.context.removeListener(this.moveEvent, this.bound.move);
 		this.context.removeListener(this.endEvent, this.bound.end);
 
-		this.fireEvent((this.hasDragged) ? 'end' : 'cancel');
+		this.fireEvent(this.hasDragged ? 'end' : 'cancel', event);
 	},
 	
 	preventDefault: function(event){
@@ -7120,4 +7118,5 @@ var Touch = new Class({
 	
 });
 
-Touch.build = "5105bf475e5c40da542ffa022f57524c8c6d349c";
+Touch.build = "%build%";
+
