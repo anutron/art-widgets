@@ -151,7 +151,7 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	focus: function(){
-		if (!this.parent()) return false;
+		if (!this.parent() || (!this.element.offsetWidth && !this.element.offsetHeight)) return false;
 		this.element.focus();
 		return true;
 	},
