@@ -24,7 +24,7 @@ ART.WindowManager = new Class({
 	register: function(instance){
 		this.parent.apply(this, arguments);
 		this.keyboard.manage(instance.keyboard);
-		self = this;
+		var self = this;
 		instance._stackerEvents = events = {
 			hide: function(){
 				var layer = self.getLayerForInstance(instance);
