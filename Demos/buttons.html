@@ -20,7 +20,20 @@
 	
 	<!-- compiled assets -->
 	
-	<script type="text/javascript" src="../Specs/assets/mootools.js"></script>
+	<script src="../assets/mootools-core-1.2.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/touch/Source/Touch.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/slick/Source/Slick.Parser.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/mootools-color/Source/Color.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.SVG.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.VML.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Base.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Path.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Shapes.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Font.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Fonts/Moderna.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Fonts/Moderna.Bold.js" type="text/javascript" charset="utf-8"></script>
+	
 	
 	<!-- this package -->
 	
@@ -78,6 +91,12 @@
 		window.cross = new ART.Button({glyph: ART.Glyphs.smallCross, className: 'button cross art', id: 'close'});
 		
 		cross.inject($('container'));
+		
+		window.left = new ART.Button({
+			className: 'art navLeft',
+			tabIndex: 1,
+			glyph: ART.Glyphs.triangleLeft
+		});
 		
 	});
 		
