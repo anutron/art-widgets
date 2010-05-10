@@ -38,11 +38,11 @@ var Widget = ART.Widget = new Class({
 		this.element.addEvents({
 
 			focus: function(){
-				if (!self.getState('focus')) self.focus();
+				if (!self.getState('focused')) self.focus();
 			},
 
 			blur: function(){
-				if (self.getState('focus')) self.blur();
+				if (self.getState('focused')) self.blur();
 			}
 			
 		});

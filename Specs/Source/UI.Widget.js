@@ -42,9 +42,9 @@ test('should enable and disable, read the disabled status', function(){
 
 test('should focus and blur, read the focused status', function(){
 	g.widget.focus();
-	equals(g.widget.getState('focus'), true);
+	equals(g.widget.getState('focused'), true);
 	g.widget.blur();
-	equals(g.widget.getState('focus'), false);
+	equals(g.widget.getState('focused'), false);
 });
 
 test('should activate and deactivate, read the active status', function(){
@@ -66,13 +66,13 @@ test('should not be able to activate if disabled', function(){
 test('should not be able to focus if disabled', function(){
 	g.widget.disable();
 	g.widget.focus();
-	equals(g.widget.getState('focus'), false);
+	equals(g.widget.getState('focused'), false);
 	g.widget.enable();
 });
 
 test('should focus when active', function(){
 	g.widget.activate();
-	equals(g.widget.getState('focus'), true);
+	equals(g.widget.getState('focused'), true);
 	g.widget.deactivate();
 });
 
@@ -80,7 +80,7 @@ test('should blur and deactivate when disabled', function(){
 	g.widget.focus();
 	g.widget.activate();
 	g.widget.disable();
-	equals(g.widget.getState('focus'), false);
+	equals(g.widget.getState('focused'), false);
 	equals(g.widget.getState('active'), false);
 	g.widget.enable();
 });

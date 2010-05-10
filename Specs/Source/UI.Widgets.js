@@ -86,9 +86,9 @@ test('focusing the parent should not blur the children, if focused', function(){
 	
 	g.parentWidget.focus();
 	
-	equals(g.widget1.getState('focus'), true);
-	equals(g.parentWidget.getState('focus'), true);
-	equals(g.widget2.getState('focus'), false);
+	equals(g.widget1.getState('focused'), true);
+	equals(g.parentWidget.getState('focused'), true);
+	equals(g.widget2.getState('focused'), false);
 });
 
 test('blurring the parent should blur every children', function(){
@@ -96,16 +96,16 @@ test('blurring the parent should blur every children', function(){
 	
 	g.parentWidget.blur();
 	
-	equals(g.widget1.getState('focus'), false);
-	equals(g.widget2.getState('focus'), false);
+	equals(g.widget1.getState('focused'), false);
+	equals(g.widget2.getState('focused'), false);
 });
 
 test('focusing a widget should blur the other', function(){
 	g.widget1.focus();
 	g.widget2.focus();
 	
-	equals(g.widget1.getState('focus'), false);
-	equals(g.widget2.getState('focus'), true);
+	equals(g.widget1.getState('focused'), false);
+	equals(g.widget2.getState('focused'), true);
 	
 	g.widget2.blur();
 });
