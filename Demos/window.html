@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART Windows</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+		a {
+			cursor: pointer;
+			color: #855;
+			font-family: Verdana;
+		}
+		
+	</style>
+	
+	<!-- compiled assets -->
+
+	<!-- compiled assets -->
+	
+	<script type="text/javascript" src="../Specs/assets/mootools.js"></script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript" src="../Source/UI/UI.js"></script>
+	<script type="text/javascript" src="../Source/UI/UI.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/UI/UI.Widget.js"></script>
+	<script type="text/javascript" src="../Source/Base/ART.Widget.js"></script>
+	<script type="text/javascript" src="../Source/Base/ART.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Button.js"></script>
+	<script type="text/javascript" src="../Source/Illustrations/ART.Glyphs.js"></script>
+	<script src="../assets/more/Source/Core/Log.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Class/Class.Occlude.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Interface/Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Interface/Keyboard.Extras.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Utilities/IframeShim.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Element/Element.Measure.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Element/Element.Position.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Interface/Mask.js" type="text/javascript" charset="utf-8"></script>
+	
+
+	
+
+	<script src="../Source/Utilities/Stacker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../Source/Utilities/ART.Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../Source/Widgets/ART.Popup.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../Source/Widgets/ART.Window.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+	<!-- this package -->
+	
+	<script type="text/javascript">
+	UI.Sheet.define('window.art button.art.wincontrol', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+	
+	var makeWindow = function(){
+		var count = 0;
+		return function(caption, content){
+			return new ART.Window({
+				inject: {
+					target: 'container'
+				},
+				caption: caption || '',
+				content: content || ''
+			}).show();
+		};
+	}();
+	
+	window.addEvent('domready', function(){
+		window.win = makeWindow('Window');
+		$('maker').addEvent('click', makeWindow.pass('Window'));
+	});
+
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	<a id="maker">Make a window</a>
+
+</body>
+</html>

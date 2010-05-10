@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART History</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+	</style>
+	
+	<!-- compiled assets -->
+
+	<!-- compiled assets -->
+	
+	<script src="../assets/mootools-core-1.2.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/touch/Source/Touch.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/slick/Source/Slick.Parser.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/mootools-color/Source/Color.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.SVG.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.VML.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Base.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Path.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Shapes.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Font.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Fonts/Moderna.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Fonts/Moderna.Bold.js" type="text/javascript" charset="utf-8"></script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript" src="../Source/UI/UI.js"></script>
+	<script type="text/javascript" src="../Source/UI/UI.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/UI/UI.Widget.js"></script>
+	<script type="text/javascript" src="../Source/Base/ART.Widget.js"></script>
+	<script type="text/javascript" src="../Source/Base/ART.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Button.js"></script>
+	<script type="text/javascript" src="../Source/Illustrations/ART.Glyphs.js"></script>
+	<script src="../assets/more/Source/Core/Log.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Class/Class.Occlude.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Interface/Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Interface/Keyboard.Extras.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Element/Element.Forms.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Element/Element.Shortcuts.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../Source/Widgets/ART.History.js" type="text/javascript" charset="utf-8"></script>
+	
+
+	<script src="../Source/Utilities/ART.Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript">
+	// UI.Sheet.define('window.art button.art.wincontrol', {
+	// 	'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+	// 	'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+	// 	'font-family': 'Moderna',
+	// 	'font-size': 13,
+	// 	'font-color': 'black'
+	// });
+	
+	window.addEvent('load', function(){
+		var c = $('container');
+		window.hist = new ART.History({
+			editable: true,
+			history: [
+				{
+					title: '/a',
+					path: '/a'
+				},
+				{
+					title: '/b',
+					path: '/b'
+				},
+				{
+					title: '/c',
+					path: '/c'
+				}
+			]
+		});
+		hist.inject(c);
+	});
+
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	
+</body>
+</html>
