@@ -93,9 +93,9 @@ test('should return the css "selector" string', function(){
 	equals(g.widget.toString(), 'button#buttonID.super.duper:disabled');
 	g.widget.enable();
 	g.widget.activate();
-	equals(g.widget.toString(), 'button#buttonID.super.duper:focus:active');
+	equals(g.widget.toString(), 'button#buttonID.super.duper:focused:active');
 	g.widget.deactivate();
-	equals(g.widget.toString(), 'button#buttonID.super.duper:focus');
+	equals(g.widget.toString(), 'button#buttonID.super.duper:focused');
 	g.widget.blur();
 });
 
@@ -110,7 +110,7 @@ UI.Sheet.define("button#buttonID:disabled", {
 	color: "white"
 });
 
-UI.Sheet.define("button#buttonID:focus", {
+UI.Sheet.define("button#buttonID:focused", {
 	color: "pink"
 });
 
