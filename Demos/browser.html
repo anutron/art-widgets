@@ -84,7 +84,7 @@
 		return function(caption, content){
 			return new ART.Browser({
 				caption: caption || '',
-				content: content || '',
+				content: content || $('content').get('html'),
 				historyOptions: {
 					editable: true,
 					history: [
@@ -120,5 +120,14 @@
 	<div id="container"></div>
 	<a id="maker">Make a window</a>
 	
+	<div id="content" style="display: none">
+		<p>some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+			some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+			some content. some content. some content. some content. some content. some content. some content. some content. some content.</p>
+			
+		<p>some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+			some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+			some content. some content. some content. some content. some content. some content. some content. some content. some content.</p>
+	</div>
 </body>
 </html>
