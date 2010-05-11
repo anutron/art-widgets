@@ -61,7 +61,8 @@ var Button = ART.Button = new Class({
 	options: {
 		//text: null,
 		//glyph: null,
-		tabIndex: null
+		tabIndex: null,
+		blurOnElementBlur: true
 	},
 	
 	initialize: function(options){

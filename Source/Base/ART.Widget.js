@@ -14,6 +14,7 @@ var Widget = ART.Widget = new Class({
 	options: {
 		className: 'art',
 		tabIndex: -1,
+		blurOnElementBlur: false,
 		onHide: function(){
 			document.id(this).setStyle('display', 'none');
 		},
@@ -35,17 +36,15 @@ var Widget = ART.Widget = new Class({
 		
 		var self = this;
 		
-		this.element.addEvents({
-
-			focus: function(){
-				if (!self.getState('focused')) self.focus();
-			},
-
-			blur: function(){
-				if (self.getState('focused')) self.blur();
-			}
-			
+		this.element.addEvent('focus', function(){
+			if (!self.getState('focused')) self.focus();
 		});
+
+		if (this.options.blurOnElementBlur) {
+			this.element.addEvent('blur', function(){
+				if (self.getState('focused')) self.blur();
+			});
+		}
 
 	},
 	
@@ -90,9 +89,8 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	draw: function(newSheet){
-		for (var i = 0; i < this._childWidgets.length; i++) {
-			this._childWidgets[i].draw();
-		}
+		clearTimeout(this.drawTimer);
+		for (var i = 0; i < this._childWidgets.length; i++) this._childWidgets[i].draw();
 		return this.setSheet(newSheet);
 	},
 	
