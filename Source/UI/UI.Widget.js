@@ -180,7 +180,7 @@ var Widget = UI.Widget = new Class({
 		focusedWidgets[this.uid] = false;
 		
 		this._childWidgets.each(function(child){
-			if (child._states.focused){
+			if (child.getState('focused')){
 				child._blurredByParent = true;
 				child.blur();
 			}
@@ -275,15 +275,16 @@ var Widget = UI.Widget = new Class({
 		var oldSheet = this._oldSheet;
 		if (!oldSheet) return this._oldSheet = this.getSheet();
 		var newSheet = this.getSheet();
-		
 		var mixSheet = {};
 		
 		for (var p in newSheet){
-			var newValue = newSheet[p], oldValue = oldSheet[p];
+			var newValue = newSheet[p],
+			    oldValue = oldSheet[p];
 			if (String(newValue).toString() != String(oldValue).toString()){
 				mixSheet[p] = oldSheet[p] = newValue;
 			}
 		}
+		
 		for (var mp in oldSheet) {
 			if (newSheet[mp] == undefined) {
 				delete this._oldSheet[mp];
