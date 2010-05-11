@@ -53,10 +53,6 @@ ART.Popup = new Class({
 
 	options: { 
 		/*
-		inject: {
-			target: document.body,
-			where: 'bottom'
-		},
 		content: null,
 		timeout: 0,
 		width: null,
@@ -97,38 +93,31 @@ ART.Popup = new Class({
 		close: true,
 		draggable: false,
 		dragHandle: false,
-		showNow: true,
 		useIframeShim: true,
 		cascaded: false,
-		constrainToContainer: false
+		constrainToContainer: false,
+		showOnInject: true
 	},
 
 	initialize: function(options) {
 		this._focus = this.focus;
 		this.focus = this._focusWindow;
-		//by default, inject instances into the document.body
-		if (!this.options.inject) {
-			this.options.inject = {
-				target: document.body,
-				where: 'bottom'
-			};
-		}
 		options = options || {};
 		//delete any Class instance references from the options to avoid recurssion errors
 		this.windowManager = options.windowManager || this.options.windowManager || ART.Popup.DefaultManager;
 		delete this.options.windowManager;
 		delete options.windowManager;
 
-		//the window manager enables the windows; so we must start with disabled = true
-		this.disabled = true;
-
+		this.setState('hidden', true);
 		this.parent(options);
+		this._hiddenByEjection = this.options.showOnInject;
 
 		//store a reference to this instance on the element
 		this.element.store('Popup', this);
 
 		//configure this instance's element
 		this._build();
+		this.element.setStyle('display', 'none');
 
 		new ART.Keyboard(this, this.options.keyboardOptions);
 
@@ -147,16 +136,12 @@ ART.Popup = new Class({
 		this.attach();
 		
 		if (this.options.destroyOnClose) this.addEvent('hide', this.destroy.bind(this));
-		this.element.setStyle('display', 'none');
 		
 		if (this.options.useIframeShim) this.hideIframeShim();
-		this.setState('hidden', true);
-		
+
 		if (this.options.content) this.setContent(this.options.content);
 
-		if (this.options.showNow) this.show();
 		//add event to hide the instance whenever an element with the closeClass is clicked
-		
 		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
 			this.hide();
 		}.bind(this));
@@ -188,10 +173,8 @@ ART.Popup = new Class({
 	_build: function(){
 		//hide it and inject it into the document.
 		this.element.setStyles({
-			display: 'none',
 			position: 'absolute'
 		});
-		this.inject(this.options.inject.target, this.options.inject.target, this.options.inject.where);
 	},
 
 	//hides the instance
@@ -253,6 +236,18 @@ ART.Popup = new Class({
 			target.store('Popup:mask', mask);
 		}
 		mask.show();
+	},
+
+	inject: function(){
+		var ret = this.parent.apply(this, arguments);
+		if (this._hiddenByEjection) this.show.delay(1, this);
+		return ret;
+	},
+	
+	eject: function(){
+		this._hiddenByEjection = true;
+		this.hide();
+		return this.parent.apply(this, arguments);
 	},
 
 	//show this instance
