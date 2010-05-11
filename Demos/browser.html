@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>UI ART Windows</title>
+	<title>UI ART Browsers</title>
 	
 	<!--[if IE]>
 	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
@@ -15,7 +15,7 @@
 			margin: 5px;
 			float: left;
 		}
-		
+	
 		a {
 			cursor: pointer;
 			color: #855;
@@ -25,7 +25,7 @@
 	</style>
 	
 	<!-- compiled assets -->
-
+	
 	<script src="../assets/mootools-core-1.2.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../assets/touch/Source/Touch.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../assets/slick/Source/Slick.Parser.js" type="text/javascript" charset="utf-8"></script>
@@ -41,7 +41,6 @@
 	<script src="../assets/art/Fonts/Moderna.Bold.js" type="text/javascript" charset="utf-8"></script>
 	
 	<!-- this package -->
-	
 	<script type="text/javascript" src="../Source/UI/UI.js"></script>
 	<script type="text/javascript" src="../Source/UI/UI.Sheet.js"></script>
 	<script type="text/javascript" src="../Source/UI/UI.Widget.js"></script>
@@ -60,15 +59,16 @@
 	<script src="../assets/more/Source/Interface/Mask.js" type="text/javascript" charset="utf-8"></script>
 	
 
-	
+	<script src="../assets/more/Source/Element/Element.Forms.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/more/Source/Element/Element.Shortcuts.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../Source/Widgets/ART.History.js" type="text/javascript" charset="utf-8"></script>
 
+	
 	<script src="../Source/Utilities/Stacker.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../Source/Utilities/ART.Keyboard.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../Source/Widgets/ART.Popup.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../Source/Widgets/ART.Window.js" type="text/javascript" charset="utf-8"></script>
-	
-	
-	<!-- this package -->
+	<script src="../Source/Widgets/ART.Browser.js" type="text/javascript" charset="utf-8"></script>
 	
 	<script type="text/javascript">
 	UI.Sheet.define('window.art button.art.wincontrol', {
@@ -82,18 +82,35 @@
 	var makeWindow = function(){
 		var count = 0;
 		return function(caption, content){
-			return new ART.Window({
+			return new ART.Browser({
 				caption: caption || '',
-				content: content || ''
+				content: content || '',
+				historyOptions: {
+					editable: true,
+					history: [
+						{
+							title: '/a',
+							path: '/a'
+						},
+						{
+							title: '/b',
+							path: '/b'
+						},
+						{
+							title: '/c',
+							path: '/c'
+						}
+					]
+				}
 			}).inject($('container'));
 		};
 	}();
 	
 	window.addEvent('domready', function(){
-		window.win = makeWindow('Window');
-		$('maker').addEvent('click', makeWindow.pass('Window'));
+		window.win = makeWindow('Browser');
+		$('maker').addEvent('click', makeWindow.pass('Browser'));
 	});
-
+	
 	</script>
 
 </head>
@@ -102,6 +119,6 @@
 	
 	<div id="container"></div>
 	<a id="maker">Make a window</a>
-
+	
 </body>
 </html>
