@@ -400,6 +400,11 @@ ART.Window = new Class({
 					width: w, 
 					height: h
 				});
+				this.content.setStyles({
+					'float': 'none',
+					'width': 'auto',
+					'margin-right': 2
+				});
 			}.bind(this));
 		}
 	},
