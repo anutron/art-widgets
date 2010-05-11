@@ -252,7 +252,7 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	isDestroyed: function(){
-		if (!this.element.parentNode) return;
+		if (!this.element || !this.element.parentNode) return;
 	},
 	
 	grab: function(){
