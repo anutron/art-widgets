@@ -169,9 +169,10 @@ ART.Window = new Class({
 	},
 
 	initialize: function(options){
+		this.setState('hidden', true);
 		this.parent(options);
 		this.element.addClass('art-window');
-		$(this).store('art-window', this);
+		document.id(this).store('art-window', this);
 		if (this.options.resizable) this.makeResizeable();
 	},
 
@@ -449,10 +450,10 @@ ART.Window = new Class({
 		var cs = this.currentSheet;
 		var style = this.parent(newSheet);
 		if (cs.display == "none") {
-			$(this).setStyle('display', 'none');
+			document.id(this).setStyle('display', 'none');
 			return;
 		} else if (style.display) {
-			$(this).setStyle(cs.display);
+			document.id(this).setStyle(cs.display);
 		}
 		if (this.currentWidth == undefined || this.currentHeight == undefined) {
 			style.height = cs.height = this.options.height || cs.height;
