@@ -69,7 +69,7 @@ ART.Alert = new Class({
 		className: 'art alert',
 		resizable: false,
 		windowManagerLayer: 'alerts',
-		destroyOnClose: true,
+		destroyOnClose: false,
 		autosize: true,
 		buttons: [
 			{
@@ -201,19 +201,17 @@ ART.confirm = function(caption, content, callback, options) {
 	);
 };
 
+var isVisible = function(element){
+	var w = element.offsetWidth,
+		h = element.offsetHeight;
+	isVis = (w == 0 && h == 0) ? false : (w > 0 && h > 0) ? true : element.getStyle('display') != 'none';
+};
+
 ART.Prompt = new Class({
 	
 	Extends: ART.Confirm,
 
 	options: {
-		onShow: function(){
-			(function(){
-				var input = this.content.getElements('input, textarea').filter(function(el) {
-					return el.get('type') != 'hidden' && el.isVisible();
-				})[0];
-				if (input) input.select();
-			}).delay(100, this);
-		},
 		buttons: [
 			{
 				text: 'Cancel'
@@ -228,6 +226,14 @@ ART.Prompt = new Class({
 	},
 	initialize: function(){
 		this.parent.apply(this, arguments);
+		this.addEvent('show', function(){
+			(function(){
+				var input = this.content.getElements('input, textarea').filter(function(el) {
+					return el.get('type') != 'hidden' && isVisible(el);
+				})[0];
+				if (input) input.select();
+			}).delay(100, this);
+		});
 		this.makePromptInput();
 	},
 	makePromptInput: function(){
@@ -271,7 +277,7 @@ ART.Prompt = new Class({
 		this.parent.apply(this, arguments);
 		this.alertButtons[0].blur();
 		var input = this.content.getElement('input, textarea');
-		if (input) input.select.delay(5, input);
+		if (input) (function(){ input.select(); }).delay(5);
 		return this;
 	}
 });
