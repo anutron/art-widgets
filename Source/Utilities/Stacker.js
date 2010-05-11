@@ -128,7 +128,7 @@ var Stacker = new Class({
 		var instance;
 
 		for (var i = layer.instances.length - 1; i > 0; i = i-1) {
-			if ($(layer.instances[i]).getStyle('display') != 'none') {
+			if (document.id(layer.instances[i]).getStyle('display') != 'none') {
 				instance = layer.instances[i];
 				break;
 			}
