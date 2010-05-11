@@ -13,8 +13,16 @@ ART.Sheet.define('window.art.browser', {
 });
 
 ART.Sheet.define('window.art.browser history.art', {
+	'padding': [0, 8, 0, 10]
+});
+
+ART.Sheet.define('window.art.browser:hidden history.art', {
+	'padding': [0, 8, 0, 10],
+	'display':'none'
+}, 'css');
+
+ART.Sheet.define('window.art.browser history.art', {
 	'top':30,
-	'padding': '0 8px 0 10px',
 	'position': 'absolute'
 }, 'css');
 
@@ -45,17 +53,18 @@ ART.Browser = new Class({
 	options: {
 		className: 'art browser',
 		historyOptions: {
-			className: 'art browser',
 			editable: false
 		}
 	},
 
 	_build: function(){
 		this.parent.apply(this, arguments);
-		this.history = new ART.History(this.options.historyOptions).setState('hidden', true).inject(this, this.header);
-		this.history._firstHidden = true;
-		document.id(this.history).setStyle('opacity', 0);
 		var styles = ART.Sheet.lookup(this.toString());
+		this.history = new ART.History(
+			$merge(this.options.historyOptions, {
+				width: styles.width
+			})
+		).inject(this, this.header);
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
@@ -65,7 +74,7 @@ ART.Browser = new Class({
 			},
 			unshade: function(){
 				this._dragging = false;
-				this.history.resize();
+				this.history.resize(this.currentWidth);
 			},
 			focus: function(){
 				this.history.enable();
@@ -74,40 +83,12 @@ ART.Browser = new Class({
 				this.history.disable();
 			},
 			minimize: function(){
-				this.history.resize();
+				this.history.resize(this.currentWidth);
 			},
 			maximize: function(){
-				this.history.resize();
+				this.history.resize(this.currentWidth);
 			}
 		});
-	},
-
-	_resizeHistory: function(){
-		var delta = 0;
-		['margin-left', 'margin-right', 'padding-left', 'padding-right'].each(function(dim) {
-			delta += $(this.history).getStyle(dim).toInt();
-		}, this);
-		this.history.resize(this.currentWidth - delta - 5);
-	},
-
-	resize: function(){
-		this.parent.apply(this, arguments);
-		if (this.history) this._resizeHistory();
-	},
-
-	show: function() {
-		var ret = this.parent.apply(this, arguments);
-		if (this.history) this._resizeHistory();
-		return ret;
-	},
-
-	draw: function(){
-		this.parent.apply(this, arguments);
-		if (this.history._firstHidden) {
-			this.history._firstHidden = false;
-			this._resizeHistory();
-			document.id(this.history).fade('in');
-		}
 	}
 
 });
