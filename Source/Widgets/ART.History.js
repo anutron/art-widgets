@@ -7,7 +7,14 @@ provides: ART.History
 ...
 */
 ART.Sheet.define('history.art', {
-	'height': 20
+	'height': 20,
+	'width': 400,
+	'padding':[0, 0, 0, 0]
+});
+ART.Sheet.define('history.art', {
+	'position': 'relative',
+	'width': 'auto',
+	'display': 'block'
 }, 'css');
 ART.Sheet.define('history.art button.art', {
 	'shadow-color': hsb(0, 0, 0, 0)
@@ -69,11 +76,6 @@ ART.Sheet.define('history.art button.art.refresh', {
 	'float': 'left',
 	'left': -3,
 	'position': 'relative'
-}, 'css');
-ART.Sheet.define('history.art', {
-	'position': 'relative',
-	'width': 'auto',
-	'display': 'block'
 }, 'css');
 ART.Sheet.define('history.art ul', {
 	'left': 0,
@@ -190,7 +192,8 @@ ART.History = new Class({
 		editable: false,
 		history: [],
 		showPath: true,
-		renderWhileHidden: true
+		renderWhileHidden: true,
+		styles: {}
 	},
 	
 	initialize: function(options) {
@@ -206,23 +209,23 @@ ART.History = new Class({
 	history: [],
 	
 	resize: function(w) {
-		if (this.isDestroyed()) return;
-		if (!w) {
-			w = this.element.getSize().x - document.id(this.nav_back).getSize().x - document.id(this.nav_next).getSize().x - document.id(this.refresher).getSize().x;
-			//if the width is less than zero, then it usually means that the content is hidden; exit.
-			if (w < 0) return;
-			['padding', 'margin'].each(function(style){
-				this.element.getStyle(style).split(' ').each(function(val, i) {
-					if (i%2) w = w - val.toInt();
-				});
+		if (!w || this.isDestroyed()) return this;
+		var cs = this.currentSheet;
+		if (w != this.options.styles.width) {
+			this.setOptions({ styles: { width: w } });
+			['nav_back', 'nav_next', 'refresher'].each(function(button) {
+				w = w - this[button].getSize().width;
 			}, this);
+			w = w - cs.padding[0] - cs.padding[3] - 10;
+			this.location.setStyles({
+				width: w
+			}).draw();
 		}
-		this.location.draw({
-			width: w
-		});
+		return this;
 	},
 	
 	_build: function(){
+		document.id(this).setStyle('display', 'none');
 		var cancel = function(e) {
 			e.stopPropagation();
 		};
@@ -332,7 +335,10 @@ ART.History = new Class({
 
 		if (this.current_selector == this.toString()) return;
 		this.current_selector = this.toString();
-		this.element.setStyles(ART.Sheet.lookup(this.toString(), 'css'));
+		this.element.setStyles({
+			height: cs.height,
+			padding: cs.padding
+		});
 		document.id(this.nav_back).setStyles(ART.Sheet.lookup(this.nav_back.toString(), 'css'));
 
 		document.id(this.nav_next).setStyles(ART.Sheet.lookup(this.nav_next.toString(), 'css'));
@@ -348,7 +354,9 @@ ART.History = new Class({
 		this.divot.fill.apply(this.divot, $splat(divotStyles.color));
 
 		this.editor.setStyles(ART.Sheet.lookup(this.toString() + (this.history.length ? ' input': ' input:disabled'), 'css'));
-		this.resize.delay(1, this);
+		this.resize(cs.width);
+		this.element.setStyles(ART.Sheet.lookup(this.toString(), 'css'));
+		
 	},
 	
 	destroy: function(){
