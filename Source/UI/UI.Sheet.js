@@ -87,7 +87,7 @@ var getStyles = function(selector, where) {
 	//for IE, handle the Color bug that requires the object be a native String
 	if (Browser.Engine.trident) {
 		var fixColorForIE = function(prop) {
-			if (prop.isColor) return prop.toRGB();
+			if (prop && prop.isColor) return prop.toRGB();
 			if ($type(prop) == "array") return prop.map(fixColorForIE);
 			return prop;
 		};
