@@ -148,8 +148,6 @@ var Button = ART.Button = new Class({
 			if (fontChanged) this.setText(sheet.text || this.options.text, true);
 		}
 		
-		var width, height;
-		
 		if (boxChanged){
 			this.resize(cs.width, cs.height + 1);
 			
@@ -207,6 +205,13 @@ var Button = ART.Button = new Class({
 		cs.width = Math.round(this.textBox.width) + cs.padding[1] + cs.padding[3];
 		cs.height = Math.round(this.textBox.height) + cs.padding[0] + cs.padding[2];
 		if (!noDraw) this.deferDraw();
+	},
+	
+	getSize: function(){
+		return {
+			width: this.currentSheet.width,
+			height: this.currentSheet.height
+		};
 	}
 	
 });
