@@ -211,12 +211,13 @@ ART.History = new Class({
 	resize: function(w) {
 		if (!w || this.isDestroyed()) return this;
 		var cs = this.currentSheet;
-		if (w != this.options.styles.width) {
+		if (w != this.options.styles.width || !this._drawn) {
+			this._drawn = true;
 			this.setOptions({ styles: { width: w } });
 			['nav_back', 'nav_next', 'refresher'].each(function(button) {
 				w = w - this[button].getSize().width;
 			}, this);
-			w = w - cs.padding[0] - cs.padding[3] - 10;
+			w = w - cs.padding[1] - cs.padding[3] - 10;
 			this.location.setStyles({
 				width: w
 			}).draw();

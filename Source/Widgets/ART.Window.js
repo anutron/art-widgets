@@ -461,10 +461,9 @@ ART.Window = new Class({
 			document.id(this).setStyle(cs.display);
 		}
 		if (this.currentWidth == undefined || this.currentHeight == undefined) {
-			style.height = cs.height = this.options.height || cs.height;
-			style.height = cs.width = this.options.width || cs.width;
+			style.height = cs.height;
+			style.width = cs.width;
 		}
-		
 		
 		var sizeChanged = style.width != undefined || style.height != undefined;
 		if (sizeChanged) {

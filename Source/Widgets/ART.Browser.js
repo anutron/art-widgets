@@ -59,10 +59,12 @@ ART.Browser = new Class({
 
 	_build: function(){
 		this.parent.apply(this, arguments);
-		var styles = ART.Sheet.lookup(this.toString());
+		var styles = this.getSheet();
 		this.history = new ART.History(
 			$merge(this.options.historyOptions, {
-				width: styles.width
+				styles: {
+					width: styles.width
+				}
 			})
 		).inject(this, this.header);
 		this.header.setStyles({
