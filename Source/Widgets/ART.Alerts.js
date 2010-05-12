@@ -69,7 +69,7 @@ ART.Alert = new Class({
 		className: 'art alert',
 		resizable: false,
 		windowManagerLayer: 'alerts',
-		destroyOnClose: false,
+		destroyOnClose: true,
 		autosize: true,
 		buttons: [
 			{
