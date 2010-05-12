@@ -365,8 +365,9 @@ ART.Window = new Class({
 	},
 	
 	show: function(){
-		this.parent.apply(this, arguments);
+		var ret = this.parent.apply(this, arguments);
 		if (this.options.autosize) this.autosize();
+		return ret;
 	},
 	
 	//resizes the window to match the contents of the window
@@ -375,7 +376,7 @@ ART.Window = new Class({
 		var cs = this.currentSheet;
 		if (!this.boundAutoSize) {
 			this.boundAutoSize = function(){
-				this.autosize.delay(1, this);
+				this.autosize();
 			}.bind(this);
 		}
 		if (this.getState('hidden')) {
@@ -407,6 +408,7 @@ ART.Window = new Class({
 				});
 			}.bind(this));
 		}
+		this.position();
 	},
 	
 	//sets the caption for the window
