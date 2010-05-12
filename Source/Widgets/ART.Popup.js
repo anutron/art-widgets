@@ -275,7 +275,7 @@ ART.Popup = new Class({
 		this.positioned = true;
 		this.setOptions(options);
 		//if cascading is focused and the window manager doesn't want to do this positioning for us
-		if (true && this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
+		if (this.options.cascaded && !this.windowManager.positionNew(this, this.options)) {
 			//if top/left options defined in options, put the window there
 			if ($defined(this.options.top) && $defined(this.options.left)) {
 				this.element.setStyles({
