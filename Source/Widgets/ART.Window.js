@@ -152,7 +152,7 @@ ART.Window = new Class({
 	
 	options: { 
 		
-		caption: null,
+		caption: '',
 		autosize: false,
 		
 		min: {/* height: null, width: null */},
@@ -195,7 +195,7 @@ ART.Window = new Class({
 		this.borderLayer = new ART.Rectangle;
 
 		this.textLayer = new ART.Font;
-		this.makeHeaderText(this.options.caption, sheet.captionFontSize, true);
+		if (this.options.caption) this.makeHeaderText(this.options.caption, sheet.captionFontSize, true);
 		this.backgroundLayer = new ART.Rectangle;
 		this.footerReflectionLayer = new ART.Rectangle;
 		this.footerBackgroundLayer = new ART.Rectangle;
@@ -593,6 +593,7 @@ ART.Window = new Class({
 	
 	//renders the header text layer
 	renderHeaderText: function(style){
+		if (!this.textLayer || !this.textBox) return;
 		var cs = this.currentSheet;
 		if (cs.contentDisplay == 'none'){
 			this.textLayer.hide();
@@ -607,9 +608,20 @@ ART.Window = new Class({
 	//creates the header text layer
 	makeHeaderText: function(text, nrd){
 		var cs = this.currentSheet;
-		if (text) this.textLayer.draw(cs.captionFontFamily, cs.captionFontVariant, text, cs.captionFontSize);
-		this.textBox = this.textLayer.measure();
-		if (!nrd) this.deferDraw();
+		if (text != null) {
+			if (!text) {
+				this.textLayer.element.setStyle('display','none');
+				this.textBox = {
+					width: 0,
+					height: 0
+				};
+			} else {
+				this.textLayer.element.setStyle('display','block');
+				this.textLayer.draw(cs.captionFontFamily, cs.captionFontVariant, text, cs.captionFontSize);
+				this.textBox = this.textLayer.measure();
+			}
+			if (!nrd) this.deferDraw();
+		}
 	}
 
 });
