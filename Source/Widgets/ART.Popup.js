@@ -142,7 +142,8 @@ ART.Popup = new Class({
 		if (this.options.content) this.setContent(this.options.content);
 
 		//add event to hide the instance whenever an element with the closeClass is clicked
-		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
+		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(e){
+			e.stop();
 			this.hide();
 		}.bind(this));
 
