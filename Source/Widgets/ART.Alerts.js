@@ -309,10 +309,6 @@ ART.Window.AlertTools = new Class({
 		var winsize = win.getSize();
 		options = $merge({
 			relativeTo: document.id(win) || document.id(this),
-			inject: {
-				target: document.id(win) || document.id(this),
-				where: 'bottom'
-			},
 			mask: true,
 			maskOptions: {
 				inject: {
@@ -327,9 +323,9 @@ ART.Window.AlertTools = new Class({
 				width: (winsize.width * 0.9).toInt()
 			}
 		}, options);
-		options.parentWidget = win || this;
 		options.windowManager = win ? win.alertManager : null;
 		var alert = alerter(caption, content, callback, options);
+		alert.inject(win || this, document.id(win) || document.id(this), 'bottom').show();
 		var enableKB = function(){
 			win.keyboard.activate(win.alertManager.keyboard);
 			alert.keyboard.activate();
