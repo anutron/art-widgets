@@ -412,7 +412,9 @@ ART.Popup = new Class({
 		this.windowManager.unregister(this);
 		if (this.options.useIframeShim && this.shim) this.shim.destroy();
 		this.eject();
-		this.element.destroy();
+		(function(){
+			this.element.destroy();
+		}).delay(10, this);
 		this.fireEvent('destroy');
 		return this;
 	},
