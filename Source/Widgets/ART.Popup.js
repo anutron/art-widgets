@@ -388,7 +388,7 @@ ART.Popup = new Class({
 
 	//set the content of this window
 	//argument can be an element, an array of elements, or a string of html
-	setContent: function(){
+	setContent: function(content){
 		if (document.id(content) || $type(content) == "array") this.element.adopt(content);
 		else if ($type(content) == "string") this.element.set('html', content);
 		return this;
