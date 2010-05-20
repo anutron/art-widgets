@@ -133,8 +133,9 @@ var Button = ART.Button = new Class({
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
 		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
-		if (sheet.glyph || (this.options.glyph && !this.glyphLayer)){
-			if (sheet.glyph) this.options.glyph = sheet.glyph;
+		if (this.hasClass('ccs-refresh')) debugger;
+		if (sheet.glyph || ((this.options.glyph || cs.glyph) && !this.glyphLayer)){
+			this.options.glyph = sheet.glyph || this.options.glyph || cs.glyph;
 			if (!this.glyphLayer) this.glyphLayer = new ART.Shape;
 			this.makeGlyph(this.options.glyph, true);
 			this.canvas.grab(this.glyphLayer);
@@ -159,8 +160,8 @@ var Button = ART.Button = new Class({
 			this.borderLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius);
 			this.reflectionLayer.draw(cs.width - 2, cs.height - 2, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
 			this.backgroundLayer.draw(cs.width - 2, cs.height - 3, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 2);
-			if (this.textLayer) this.textLayer.translate(cs.padding[3], cs.padding[0]);
 			if (this.glyphLayer) this.glyphLayer.translate(cs.glyphLeft, cs.glyphTop);
+			else if (this.textLayer) this.textLayer.translate(cs.padding[3], cs.padding[0]);
 		}
 		
 		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(cs.shadowColor));
