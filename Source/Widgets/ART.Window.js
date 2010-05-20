@@ -608,20 +608,18 @@ ART.Window = new Class({
 	//creates the header text layer
 	makeHeaderText: function(text, nrd){
 		var cs = this.currentSheet;
-		if (text != null) {
-			if (!text) {
-				this.textLayer.element.setStyle('display','none');
-				this.textBox = {
-					width: 0,
-					height: 0
-				};
-			} else {
-				this.textLayer.element.setStyle('display','block');
-				this.textLayer.draw(cs.captionFontFamily, cs.captionFontVariant, text, cs.captionFontSize);
-				this.textBox = this.textLayer.measure();
-			}
-			if (!nrd) this.deferDraw();
+		if (!text) {
+			this.textLayer.hide();
+			this.textBox = {
+				width: 0,
+				height: 0
+			};
+		} else {
+			this.textLayer.show();
+			this.textLayer.draw(cs.captionFontFamily, cs.captionFontVariant, text, cs.captionFontSize);
+			this.textBox = this.textLayer.measure();
 		}
+		if (!nrd) this.deferDraw();
 	}
 
 });
