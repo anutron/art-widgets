@@ -467,6 +467,10 @@ ART.History = new Class({
 				href: this.options.pathBuilder(hist.path),
 				'class': current ? 'current' : '',
 				events: {
+					click: function(e) {
+						e.stop();
+						this.select(hist);
+					}.bind(this),
 					mouseup: function(e){
 						if (e) e.preventDefault();
 						this.selected = index;
