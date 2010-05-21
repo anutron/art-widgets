@@ -70,13 +70,23 @@ ART.Browser = new Class({
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
+		
+		var sizerTimer;
+		var sizer = function(){
+			//have to delay here because this.currentWidth isn't defined
+			//until after draw, which is also delayed
+			$clear(sizerTimer);
+			sizerTimer = (function(){
+				this.history.resize(this.currentWidth);
+			}).delay(1, this);
+		}.bind(this);
 		this.addEvents({
 			shade: function() {
 				this._dragging = true;
 			},
 			unshade: function(){
 				this._dragging = false;
-				this.history.resize(this.currentWidth);
+				sizer();
 			},
 			focus: function(){
 				this.history.enable();
@@ -84,12 +94,10 @@ ART.Browser = new Class({
 			blur: function(){
 				this.history.disable();
 			},
-			minimize: function(){
-				this.history.resize(this.currentWidth);
-			},
-			maximize: function(){
-				this.history.resize(this.currentWidth);
-			}
+			minimize: sizer,
+			maximize: sizer,
+			resize: sizer,
+			show: sizer
 		});
 	}
 
