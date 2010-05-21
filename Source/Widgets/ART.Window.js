@@ -462,18 +462,17 @@ ART.Window = new Class({
 		} else if (style.display) {
 			document.id(this).setStyle(cs.display);
 		}
-		if (this.currentWidth == undefined || this.currentHeight == undefined) {
-			style.height = cs.height;
-			style.width = cs.width;
+		if (style.height == undefined || style.width == undefined) {
+			style.height = this.currentHeight || cs.height;
+			style.width = this.currentWidth || cs.width;
 		}
-		
-		var sizeChanged = style.width != undefined || style.height != undefined;
+		var sizeChanged = style.width != this.currentWidth || style.height != this.currentHeight;
 		if (sizeChanged) {
 			// compute the height and width for the instance
 			var ranges = this.getSizeRange();
-			if (cs.height != null && cs.width != null) {
-				cs.height = cs.height.limit(ranges.minHeight, ranges.maxHeight);
-				cs.width = cs.width.limit(ranges.minWidth, ranges.maxWidth);
+			if (style.height != null && style.width != null) {
+				cs.height = style.height.limit(ranges.minHeight, ranges.maxHeight);
+				cs.width = style.width.limit(ranges.minWidth, ranges.maxWidth);
 
 				this.currentHeight = cs.height;
 				this.currentWidth = cs.width;
@@ -484,6 +483,12 @@ ART.Window = new Class({
 				this.contents.setStyles({
 					'height': cs.height,
 					'width': cs.width
+				});
+				this.setOptions({
+					styles: {
+						width: style.width,
+						height: style.height
+					}
 				});
 			}
 		}
