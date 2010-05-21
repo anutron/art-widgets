@@ -133,7 +133,6 @@ var Button = ART.Button = new Class({
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
 		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
-		if (this.hasClass('ccs-refresh')) debugger;
 		if (sheet.glyph || ((this.options.glyph || cs.glyph) && !this.glyphLayer)){
 			this.options.glyph = sheet.glyph || this.options.glyph || cs.glyph;
 			if (!this.glyphLayer) this.glyphLayer = new ART.Shape;
