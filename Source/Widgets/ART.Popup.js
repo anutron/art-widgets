@@ -399,6 +399,7 @@ ART.Popup = new Class({
 		if (this.isDestroyed()) return;
 
 		this.draw({'height': height, 'width': width});
+		this.fireEvent('resize', [width, height]);
 		if (this.shim) this.shim.position();
 		return this;
 	},
