@@ -110,7 +110,7 @@ ART.Browser = new Class({
 	},
 	
 	showHistory: function(){
-		if (!this._historyHidden) return;
+		if (this._historyHidden === false) return;
 		this.history.inject(this, this.header);
 		this.fireEvent('injectHistory');
 		this._historyHidden = false;
