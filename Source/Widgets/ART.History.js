@@ -208,10 +208,10 @@ ART.History = new Class({
 
 	history: [],
 	
-	resize: function(w) {
+	resize: function(w, force) {
 		if (!w || this.isDestroyed()) return this;
 		var cs = this.currentSheet;
-		if (w != this.options.styles.width || !this._drawn) {
+		if (w != this.options.styles.width || !this._drawn || force) {
 			this._drawn = true;
 			this.setOptions({ styles: { width: w } });
 			['nav_back', 'nav_next', 'refresher'].each(function(button) {

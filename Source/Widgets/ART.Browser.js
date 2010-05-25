@@ -66,18 +66,19 @@ ART.Browser = new Class({
 					width: styles.width
 				}
 			})
-		).inject(this, this.header);
+		);
+		this.showHistory();
 		this.header.setStyles({
 			'overflow': styles.headerOverflow
 		});
 		
 		var sizerTimer;
-		var sizer = function(){
+		var sizer = function(force){
 			//have to delay here because this.currentWidth isn't defined
 			//until after draw, which is also delayed
 			$clear(sizerTimer);
 			sizerTimer = (function(){
-				this.history.resize(this.currentWidth);
+				this.history.resize(this.currentWidth, force);
 			}).delay(1, this);
 		}.bind(this);
 		this.addEvents({
@@ -97,8 +98,22 @@ ART.Browser = new Class({
 			minimize: sizer,
 			maximize: sizer,
 			resize: sizer,
-			show: sizer
+			show: sizer,
+			injectHistory: sizer.pass(true)
 		});
+	},
+	
+	hideHistory: function(){
+		if (this._historyHidden) return;
+		this.history.eject();
+		this._historyHidden = true;
+	},
+	
+	showHistory: function(){
+		if (!this._historyHidden) return;
+		this.history.inject(this, this.header);
+		this.fireEvent('injectHistory');
+		this._historyHidden = false;
 	}
 
 });
