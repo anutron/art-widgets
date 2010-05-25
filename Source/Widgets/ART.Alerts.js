@@ -134,7 +134,7 @@ ART.Alert = new Class({
 			var b = new ART.Button(button);
 			b.addEvent('press', function(e){
 				if (document.id(b).hasClass(this.options.closeClass)) {
-					if (e) e.preventDefault();
+					if (e) e.stopPropagation();
 					this.hide();
 				}
 			}.bind(this));
@@ -272,13 +272,6 @@ ART.Prompt = new Class({
 		if (this.inputContainer) this.inputContainer.inject(this.content);
 		if (this.options.autosize) this.autosize();
 		return this;
-	},
-	show: function(){
-		this.parent.apply(this, arguments);
-		this.alertButtons[0].blur();
-		var input = this.content.getElement('input, textarea');
-		if (input) (function(){ input.select(); }).delay(5);
-		return this;
 	}
 });
 
@@ -360,6 +353,10 @@ ART.Window.AlertTools = new Class({
 				shade: shader,
 				unshade: unshader
 			});
+			win.focus();
+			alert.focus();
+			var button = alert.alertButtons[0];
+			if (button) button.focus();
 		}
 		return alert;
 	},
