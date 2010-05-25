@@ -486,8 +486,8 @@ ART.Window = new Class({
 				});
 				this.setOptions({
 					styles: {
-						width: style.width,
-						height: style.height
+						width: cs.width,
+						height: cs.height
 					}
 				});
 			}
