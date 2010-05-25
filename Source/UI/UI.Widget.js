@@ -53,7 +53,7 @@ var Widget = UI.Widget = new Class({
 			this.addClass(className);
 		}, this);
 
-		if (parent) this.inject(parent);
+		if (parent) this.register(parent);
 	},
 
 	/* ID */
@@ -258,7 +258,7 @@ var Widget = UI.Widget = new Class({
 	grab: function(){
 		for (var i = 0; i < arguments.length; i++){
 			var widget = arguments[i];
-			if ((widget instanceof Widget)) widget.inject(this);
+			if ((widget instanceof Widget)) widget.register(this);
 		}
 		return this;
 	},
