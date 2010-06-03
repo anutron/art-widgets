@@ -49,7 +49,8 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	_createElement: function(options){
-		this.element = (options && options.element) || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'}).store('widget', this);
+		this.element = (options && options.element) || new Element('div').setStyles({display: 'inline-block', position: 'relative', outline: 'none'});
+		this.element.store('widget', this);
 	},
 	
 	setState: function(state, value, nodraw){
