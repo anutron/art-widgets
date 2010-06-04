@@ -106,7 +106,6 @@ var Input = ART.Input = new Class({
 	draw: function(newSheet){
 		var sheet = this.parent(newSheet), cs = this.currentSheet;
 		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius);
-		
 		if (cs.glyph && !this.glyphLayer){
 			this.glyphLayer = new ART.Shape(cs.glyph);
 			this.canvas.grab(this.glyphLayer);
@@ -131,7 +130,8 @@ var Input = ART.Input = new Class({
 				width: cs.width - cs.padding[1] - cs.padding[3],
 				height: cs.height - cs.padding[0] - cs.padding[2],
 				top: cs.padding[0],
-				left: cs.padding[3]
+				left: cs.padding[3],
+				display: 'block'
 			});
 			if (this.glyphLayer) this.glyphLayer.translate(cs.glyphLeft, cs.glyphTop);
 		}
