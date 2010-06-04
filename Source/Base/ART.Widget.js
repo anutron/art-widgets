@@ -32,7 +32,7 @@ var Widget = ART.Widget = new Class({
 		
 		this.parent(options);
 		
-		if (this.options.useFocus !== false) this._setFocusevents(this.element);
+		if (this.options.useFocus !== false) this._setFocusEvents(this.element);
 
 	},
 	
