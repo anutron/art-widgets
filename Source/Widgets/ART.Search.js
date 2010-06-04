@@ -1,9 +1,9 @@
 /*
 ---
-name: ART.Input
-description: Base Input Class
+name: ART.Search
+description: Base Search Class
 requires: [ART.Sheet, ART.Input, ART.Glyphs]
-provides: ART.Button
+provides: ART.Search
 ...
 */
 

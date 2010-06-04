@@ -3,7 +3,7 @@
 name: ART.Input
 description: Base Input Class
 requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART/Pill]
-provides: ART.Button
+provides: ART.Input
 ...
 */
 
