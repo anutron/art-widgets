@@ -2,7 +2,7 @@
 ---
 name: ART.Input
 description: Base Input Class
-requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART/Pill]
+requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle]
 provides: ART.Input
 ...
 */
