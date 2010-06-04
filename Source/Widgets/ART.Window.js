@@ -390,7 +390,7 @@ ART.Window = new Class({
 			});
 			this.content.measure(function(){
 				var h = this.content.getScrollSize().y + cs.headerHeight + cs.footerHeight + 2;
-				var w = this.content.getScrollSize().x;
+				var w = this.content.getScrollSize().x + 20;
 				if (h > cs.maxHeight) h = cs.maxHeight;
 				if (w > cs.maxWidth) w = cs.maxWidth;
 				this.setOptions({
