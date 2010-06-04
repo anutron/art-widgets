@@ -57,7 +57,7 @@ var Input = ART.Input = new Class({
 		this.input = (this.options.inputElement || new Element('input')).setStyles({
 			border: 0, outline: "none", padding: 0, margin: 0, position: 'absolute', top: 0, left: 0, background: 'transparent',
 			tabIndex: this.options.tabIndex
-		});
+		}).store('widget', this);
 		
 		this.input.inject(this.element);
 		
