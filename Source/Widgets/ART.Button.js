@@ -123,7 +123,7 @@ var Button = ART.Button = new Class({
 		if (sheet.display) {
 			if (cs.display == "none") {
 				document.id(this).setStyle('display', 'none');
-				return;
+				return this;
 			} else {
 				document.id(this).setStyle('display', cs.display);
 			}
