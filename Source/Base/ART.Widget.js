@@ -32,20 +32,25 @@ var Widget = ART.Widget = new Class({
 		
 		this.parent(options);
 		
+		if (this.options.useFocus !== false) this._setFocusevents(this.element);
+
+	},
+	
+	_setFocusEvents: function(element){
+		this.inputElement = element;
 		this.setTabIndex(this.options.tabIndex);
 		
 		var self = this;
 		
-		this.element.addEvent('focus', function(){
+		element.addEvent('focus', function(){
 			if (!self.getState('focused')) self.focus();
 		});
 
 		if (this.options.blurOnElementBlur) {
-			this.element.addEvent('blur', function(){
+			element.addEvent('blur', function(){
 				if (self.getState('focused')) self.blur();
 			});
 		}
-
 	},
 	
 	_createElement: function(options){
@@ -68,7 +73,7 @@ var Widget = ART.Widget = new Class({
 	/* tab indices */
 	
 	setTabIndex: function(index){
-		this.element.tabIndex = this.tabIndex = index;
+		this.inputElement.tabIndex = this.tabIndex = index;
 	},
 	
 	getTabIndex: function(){
@@ -139,6 +144,7 @@ var Widget = ART.Widget = new Class({
 	enable: function(){
 		if (!this.parent()) return false;
 		this.setTabIndex(this.oldTabIndex);
+		this.inputElement.disabled = false;
 		return true;
 	},
 	
@@ -146,6 +152,7 @@ var Widget = ART.Widget = new Class({
 		if (!this.parent()) return false;
 		this.oldTabIndex = this.tabIndex;
 		this.setTabIndex(-1);
+		this.inputElement.disabled = true;
 		return true;
 	},
 	
