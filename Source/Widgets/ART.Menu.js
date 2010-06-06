@@ -1,0 +1,152 @@
+/*
+---
+name: ART.Menu
+description: Menu PseudoClass
+requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle]
+provides: ART.Menu
+...
+*/
+
+ART.Sheet.define('menu.art', {
+	'width': 150,
+	'border-color': 'hsb(0, 0, 0, 0.3)',
+	'background-color': 'hsb(0, 0, 100, 0.98)',
+	'selection-color': 'red',
+	
+	'border-radius': [5, 5, 5, 5],
+	
+	'font-family': 'Arial',
+	'font-variant': 'normal',
+	'font-size': 12,
+	'font-color': 'hsb(0, 0, 5)',
+	
+	'padding': [5, 0, 5, 0],
+	'item-padding': [2, 10, 2, 10]
+});
+
+(function(){
+	
+var Menu = ART.Menu = new Class({
+	
+	Extends: ART.Widget,
+	
+	name: 'menu',
+	
+	options: {
+		left: null,
+		top: null
+	},
+	
+	initialize: function(options, menu, handlers){
+		this.parent(options);
+		
+		this.borderLayer = new ART.Rectangle;
+		this.backgroundLayer = new ART.Rectangle;
+		this.canvas.grab(this.borderLayer, this.backgroundLayer);
+		
+		this.menu = menu.setStyles({
+			position: 'absolute',
+			top: 0,
+			left: 0
+		});
+		
+		this.element.grab(this.menu);
+		
+		this.element.setStyles({'position': 'absolute', top: 0, left: 0});
+		
+		var self = this;
+		
+		this.element.addEvent('blur', function(){
+			self.hide();
+		});
+		
+		this.handlers = $$(handlers);
+		
+		if (this.handlers.length) this.handlers.addEvents({
+				
+			'mousedown': function(e){
+				e.stopPropagation().preventDefault();
+				var left = self.options.left, top = self.options.top;
+				self.show((left != null) ? left : e.client.x, (top != null) ? top : e.client.y);
+			}
+
+		});
+		
+		this.links = this.menu.getElements('a').addEvents({
+
+			'mouseup': function(e){
+				self.hide();
+				e.stopPropagation().preventDefault();
+			},
+
+			'mousedown': function(e){
+				e.stopPropagation().preventDefault();
+			},
+			
+			mouseenter: function(){
+				self.links.removeClass('selected');
+				this.addClass('selected');
+			},
+			
+			mouseleave: function(){
+				this.removeClass('selected');
+			}
+
+		});
+		
+		this.hide();
+	},
+	
+	blur: function(){
+		if (this.parent()){
+			this.hide();
+			return true;
+		}
+		return false;
+	},
+
+	inject: function(){
+		this.parent.apply(this, arguments);
+		clearTimeout(this.drawTimer);
+		return this;
+	},
+	
+	draw: function(newSheet){
+		var sheet = this.parent(newSheet), cs = this.currentSheet;
+		var boxChanged = !!(sheet.width || sheet.padding || sheet.borderRadius);
+		
+		if (boxChanged){
+			this.menu.setStyle('width', cs.width - 2);
+			
+			var height = this.menu.offsetHeight;
+			
+			this.resize(cs.width, height);
+			
+			var brt = cs.borderRadius[0], brr = cs.borderRadius[1];
+			var brb = cs.borderRadius[2], brl = cs.borderRadius[3];
+
+			this.borderLayer.draw(cs.width, height, cs.borderRadius);
+			this.backgroundLayer.draw(cs.width - 2, height - 2, [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
+		}
+		
+		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(cs.borderColor));
+		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(cs.backgroundColor));
+	},
+	
+	show: function(left, top){
+		this.element.setStyles({left: left, top: top, display: 'block'});
+		this.enable();
+		this.element.focus();
+		return this;
+	},
+	
+	hide: function(){
+		this.element.setStyles({display: 'none'});
+		this.links.removeClass('selected');
+		this.disable();
+		return this;
+	}
+	
+});
+	
+})();
