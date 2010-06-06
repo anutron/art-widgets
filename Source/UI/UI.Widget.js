@@ -91,7 +91,7 @@ var Widget = UI.Widget = new Class({
 	
 	_states: {
 		disabled: false,
-		focus: false,
+		focused: false,
 		active: false
 	},
 	
