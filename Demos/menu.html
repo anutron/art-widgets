@@ -10,14 +10,8 @@
 	<![endif]-->
 	
 	<style type="text/css">
-	
-		#container {
-			height: 200px;
-			width: 400px;
-			background: #f5f5f5;
-		}
 		
-		#menu {
+		.menu {
 			font-family: Arial;
 			font-size: 13px;
 			list-style: none;
@@ -25,12 +19,12 @@
 			padding: 5px 1px;
 		}
 		
-		#menu li {
+		.menu li {
 			padding: 0;
 			margin: 0;
 		}
 		
-		#menu a {
+		.menu a {
 			outline: none;
 			margin: 0;
 			display: block;
@@ -39,13 +33,13 @@
 			color: #222;
 		}
 		
-		#menu a.selected {
+		.menu a.selected {
 			color: #fff;
 			background: url(bg.png);
 			text-shadow: 0px 1px 1px #0e4f9c;
 		}
 		
-		#menu li.menu-separator {
+		.menu li.menu-separator {
 			height: 4px;
 			border-bottom: 1px solid #ddd;
 			margin-bottom: 4px;
@@ -87,8 +81,10 @@
 	
 	document.addEvent('domready', function(){
 		
-		window.menu = new ART.Menu({tabIndex: 10}, $('menu'), $('menu-here'));
+		var search = new ART.Search({tabIndex: 10}, $('search-menu'));
+		search.inject(document.body);
 		
+		var menu = new ART.Menu({tabIndex: 10}, $('file-menu'), $('file-button'));
 		menu.inject(document.body);
 		
 	});
@@ -100,17 +96,23 @@
 <body>
 	
 	<div id="container">
-		<a id="menu-here" href="#">display</a>
+		<a id="file-button" href="#">file</a>
 	</div>
 	
-	<ul id="menu">
+	<ul id="file-menu" class="menu">
 		<li class="menu-item"><a href="#">Save</a></li>
 		<li class="menu-item"><a href="#">Load</a></li>
 		<li class="menu-separator"></li>
 		<li class="menu-item"><a href="#">Undo</a></li>
 		<li class="menu-item"><a href="#">Redo</a></li>
-		<li class="menu-separator"></li>
+	</ul>
+	
+	<ul id="search-menu" class="menu">
 		<li class="menu-item"><a href="#">Google</a></li>
+		<li class="menu-item"><a href="#">Google Images</a></li>
+		<li class="menu-separator"></li>
+		<li class="menu-item"><a href="#">Yahoo</a></li>
+		<li class="menu-item"><a href="#">Yahoo Images</a></li>
 	</ul>
 	
 </body>

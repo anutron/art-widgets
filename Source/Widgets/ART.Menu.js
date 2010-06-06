@@ -66,7 +66,7 @@ var Menu = ART.Menu = new Class({
 				
 			'mousedown': function(e){
 				e.stopPropagation().preventDefault();
-				var left = self.options.left, top = self.options.top;
+				var left = $lambda(self.options.left)(), top = $lambda(self.options.top)();
 				self.show((left != null) ? left : e.client.x, (top != null) ? top : e.client.y);
 			}
 
@@ -105,8 +105,8 @@ var Menu = ART.Menu = new Class({
 		return false;
 	},
 
-	inject: function(){
-		this.parent.apply(this, arguments);
+	inject: function(wi, el, wh){
+		this.parent(wi, el, wh);
 		clearTimeout(this.drawTimer);
 		return this;
 	},
@@ -134,14 +134,14 @@ var Menu = ART.Menu = new Class({
 	},
 	
 	show: function(left, top){
-		this.element.setStyles({left: left, top: top, display: 'block'});
+		this.element.setStyles({left: left, top: top, visibility: 'visible'});
 		this.enable();
 		this.element.focus();
 		return this;
 	},
 	
 	hide: function(){
-		this.element.setStyles({display: 'none'});
+		this.element.setStyles({visibility: 'hidden'});
 		this.links.removeClass('selected');
 		this.disable();
 		return this;
