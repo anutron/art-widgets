@@ -29,12 +29,15 @@ var Search = ART.Search = new Class({
 	name: 'search',
 	
 	options: {
-		placeholder: 'search…'
+		placeholder: 'search…',
+		menu: false
 	},
 	
 	initialize: function(options, menu){
 		this.parent(options);
 		
+		if (this.options.menu) menu = this.options.menu;
+
 		if (menu){
 			
 			var self = this, sheet = this.getSheet();
