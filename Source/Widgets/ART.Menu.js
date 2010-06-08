@@ -62,16 +62,26 @@ var Menu = ART.Menu = new Class({
 		
 		this.handlers = $$(handlers);
 		
+		var selectedIndex = -1, link;
+		
 		if (this.handlers.length) this.handlers.addEvents({
 				
 			'mousedown': function(e){
 				e.stopPropagation().preventDefault();
 				var left = $lambda(self.options.left)(), top = $lambda(self.options.top)();
 				self.show((left != null) ? left : e.client.x, (top != null) ? top : e.client.y);
+				selectedIndex = -1;
 			}
 
 		});
-		
+
+		var selectLink = function(link){
+			if (!link) return;
+			self.links.removeClass('selected');
+			link.addClass('selected');
+			selectedIndex = self.links.indexOf(link);
+		};
+
 		this.links = this.menu.getElements('a').addEvents({
 
 			'mouseup': function(e){
@@ -84,14 +94,29 @@ var Menu = ART.Menu = new Class({
 			},
 			
 			mouseenter: function(){
-				self.links.removeClass('selected');
-				this.addClass('selected');
+				selectLink(this);
 			},
 			
 			mouseleave: function(){
 				this.removeClass('selected');
 			}
 
+		});
+		
+		this.element.addEvent('keydown', function(e){
+			if (e.key == 'esc') self.hide();
+			else if (e.key == 'down'){
+				selectLink(self.links[selectedIndex + 1]);
+			} else if (e.key == 'up'){
+				selectLink(self.links[selectedIndex - 1]);
+			}
+		});
+		
+		this.element.addEvent('keyup', function(e){
+			if (e.key == 'space' || e.key == 'enter'){
+				var link = self.links[selectedIndex];
+				if (link) link.fireEvent('mouseup', e);
+			}	
 		});
 		
 		this.hide();
