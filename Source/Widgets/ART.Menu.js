@@ -2,7 +2,7 @@
 ---
 name: ART.Menu
 description: Menu PseudoClass
-requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle]
+requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART.Keyboard]
 provides: ART.Menu
 ...
 */
@@ -103,20 +103,30 @@ var Menu = ART.Menu = new Class({
 
 		});
 		
-		this.element.addEvent('keydown', function(e){
-			if (e.key == 'esc') self.hide();
-			else if (e.key == 'down'){
-				selectLink(self.links[selectedIndex + 1]);
-			} else if (e.key == 'up'){
-				selectLink(self.links[selectedIndex - 1]);
-			}
-		});
+		new ART.Keyboard(this, this.options.keyboardOptions);
 		
-		this.element.addEvent('keyup', function(e){
-			if (e.key == 'space' || e.key == 'enter'){
-				var link = self.links[selectedIndex];
-				if (link) link.fireEvent('mouseup', e);
-			}	
+		var keySend = function(e){
+			var link = self.links[selectedIndex];
+			if (link) link.fireEvent('mouseup', e);
+		};
+		
+		this.attachKeys({
+			'keyup:esc': function(e){
+				self.hide();
+			},
+			
+			'keydown:down': function(e){
+				selectLink(self.links[selectedIndex + 1]);
+			},
+			
+			'keydown:up': function(e){
+				selectLink(self.links[selectedIndex - 1]);
+			},
+			
+			'keyup:space': keySend,
+			
+			'keyup:enter': keySend
+			
 		});
 		
 		this.hide();
