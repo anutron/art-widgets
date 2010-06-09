@@ -107,20 +107,24 @@ var Menu = ART.Menu = new Class({
 		new ART.Keyboard(this, this.options.keyboardOptions);
 		
 		var keySend = function(e){
+			Keyboard.stop(e.preventDefault());
 			var link = self.links[selectedIndex];
 			if (link) link.fireEvent('mouseup', e);
 		};
 		
 		this.attachKeys({
 			'keyup:esc': function(e){
+				Keyboard.stop(e.preventDefault());
 				self.hide();
 			},
 			
 			'keydown:down': function(e){
+				Keyboard.stop(e.preventDefault());
 				selectLink(self.links[selectedIndex + 1]);
 			},
 			
 			'keydown:up': function(e){
+				Keyboard.stop(e.preventDefault());
 				selectLink(self.links[selectedIndex - 1]);
 			},
 			
