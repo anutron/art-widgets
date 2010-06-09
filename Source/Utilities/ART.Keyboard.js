@@ -39,7 +39,7 @@ ART.Keyboard = new Class({
 			parent = parent.parentWidget;
 			if (parent && parent.parentWidget) keyboard = parent.parentWidget.keyboard;
 		}
-		if (keyboard) keyboard.manage(this.keyboard);
+		if (keyboard) keyboard.manage(this._keyboard);
 	},
 
 	attach: function(){
