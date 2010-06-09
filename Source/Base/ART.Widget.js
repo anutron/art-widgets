@@ -203,7 +203,6 @@ var Widget = ART.Widget = new Class({
 			this.element.inject(element, where);
 			this.register(widget);
 			if (this._disabledByParent) this.enable();
-
 		}
 
 		return this;
