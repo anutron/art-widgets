@@ -40,7 +40,6 @@ var Input = ART.Input = new Class({
 		tabIndex: null,
 		inputElement: null,
 		blurOnElementBlur: true,
-		placeholder: null,
 		useChange: true,
 		changeTimeout: 500
 	},
