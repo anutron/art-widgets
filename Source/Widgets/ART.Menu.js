@@ -85,7 +85,7 @@ var Menu = ART.Menu = new Class({
 		this.links = this.menu.getElements('a').addEvents({
 
 			mouseup: function(e){
-				self.fireEvent('click', this);
+				self.fireEvent('press', this);
 				self.hide();
 				e.stopPropagation().preventDefault();
 			},
