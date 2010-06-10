@@ -223,17 +223,20 @@ var splitter = {
 
 	fold: function(side, to, hideSplitter) {
 		var o = this._orientations;
-		
-		side = {
-			'top': 'left',
-			'bottom': 'right'
-		}[side] || side;
+		var getOther = function(side) {
+			return {
+				'top':'bottom',
+				'left':'right',
+				'bottom':'top',
+				'right':'left'
+			}[side];
+		};
 		var sideWidth = o[side] + o.dimension.capitalize();
 		this._previous[side] = this[sideWidth];
 		var cs = this.currentSheet;
 		hideSplitter = to > 0 ? false : $pick(hideSplitter, this.options.hideSplitterOnFullFold);
 		var self = this;
-		var other = side == 'left' ? 'right' : 'left';
+		var other = getOther(side);
 		this.fx.set = function(now){
 			self._resizeSide(side, now);
 		};
@@ -249,12 +252,7 @@ var splitter = {
 		this.fx.start(this[sideWidth], to).chain(function(){
 			if (hideSplitter) {
 				[o.left, o.right].each(function(side) {
-					var other = {
-						'top':'bottom',
-						'left':'right',
-						'bottom':'top',
-						'right':'left'
-					}[side];
+					var other = getOther(side);
 					var sideWidth = o[side] + o.dimension.capitalize();
 					var otherWidth = o[other] + o.dimension.capitalize();
 					if (self[sideWidth] == 0) {
