@@ -180,10 +180,16 @@ var splitter = {
 				 this.splitter).setStyle(otherDimension, cs[otherDimension]);
 		
 			var side = this.options.fixed;
+			var other = {
+				'top':'bottom',
+				'left':'right',
+				'bottom':'top',
+				'right':'left'
+			}[side];
 
 			var dim = o[side] + o.dimension.capitalize();
 			if (this[dim] == undefined) this[dim] = cs['fixed' + o.dimension.capitalize()];
-			this._resizeSide(side, cs[o.dimension] - this[dim] - cs[splitterStr]);
+			this._resizeSide(other, cs[o.dimension] - this[dim] - cs[splitterStr]);
 		}
 		
 		return this;
@@ -295,7 +301,7 @@ ART.SplitView = new Class(
 );
 
 ART.Sheet.define('splitview.art.vertical', {
-	'fixed-height': 200,
+	'fixed-height': 100,
 	'splitter-height': 3,
 	//IE doesn't support east-west resize cursor; just use east
 	'splitter-cursor': Browser.Engine.trident ? 's-resize' : 'ns-resize',
