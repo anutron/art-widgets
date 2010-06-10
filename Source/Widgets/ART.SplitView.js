@@ -222,25 +222,29 @@ var splitter = {
 	
 
 	fold: function(side, to, hideSplitter) {
+		var o = this._orientations;
+		
 		side = {
 			'top': 'left',
 			'bottom': 'right'
 		}[side] || side;
+		var sideWidth = o[side] + o.dimension.capitalize();
+		this._previous[side] = this[sideWidth];
 		var cs = this.currentSheet;
-		hideSplitter = $pick(hideSplitter, this.options.hideSplitterOnFullFold);
+		hideSplitter = to > 0 ? false : $pick(hideSplitter, this.options.hideSplitterOnFullFold);
 		var self = this;
 		var other = side == 'left' ? 'right' : 'left';
 		this.fx.set = function(now){
-			self.resizeSide(side, now);
+			self._resizeSide(side, now);
 		};
 		var splitterStr = "splitter" + o.dimension.capitalize();
 		
-		var sideWidth = o[side] + o.dimension.capitalize();
 		
-		if (to > 0 && this[sideWidth] && this.splitterHidden) {
-			self.splitter.setStyle('width', cs[splitterStr]);
-			self[other].setStyle('width', self[other + 'Width'] - cs[splitterStr]);
+		if (to > 0) {
+			self.splitter.setStyle(o.dimension, cs[splitterStr]);
+			self[other].setStyle(o.dimension, self[other + o.dimension.capitalize()] - cs[splitterStr]);
 			this.splitterHidden = false;
+			hideSplitter = false;
 		}
 		this.fx.start(this[sideWidth], to).chain(function(){
 			if (hideSplitter) {
@@ -265,6 +269,31 @@ var splitter = {
 		}.bind(this));
 		return this;
 	},
+
+	toggle: function(side, hideSplitter) {
+		var getWidthStr = function(side) {
+			return {
+				'left': 'leftWidth',
+				'right': 'rightWidth',
+				'top':'topHeight',
+				'bottom':'bottomHeight'
+			}[side];
+		};
+		var toggle = getWidthStr(side);
+		var other = {
+			'left':'right',
+			'right':'left',
+			'top':'bottom',
+			'bottom':'top'
+		}[side];
+		var current = this[toggle];
+		var previous = this._previous[side];
+		if (previous == null) previous = this[getWidthStr(other)];
+		var to = current == 0 ? previous : 0;
+		this.fold(side, to, hideSplitter);
+	},
+	
+	_previous: {},
 
 	_setSideContent: function(side, content) {
 		document.id(this[this._orientations[side] || side]).empty().adopt(content);
