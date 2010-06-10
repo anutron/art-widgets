@@ -73,7 +73,7 @@ var Widget = ART.Widget = new Class({
 	/* tab indices */
 	
 	setTabIndex: function(index){
-		this.inputElement.tabIndex = this.tabIndex = index;
+		if (this.inputElement) this.inputElement.tabIndex = this.tabIndex = index;
 	},
 	
 	getTabIndex: function(){
@@ -144,7 +144,7 @@ var Widget = ART.Widget = new Class({
 	enable: function(){
 		if (!this.parent()) return false;
 		this.setTabIndex(this.oldTabIndex);
-		this.inputElement.disabled = false;
+		if (this.inputElement) this.inputElement.disabled = false;
 		return true;
 	},
 	
@@ -152,19 +152,19 @@ var Widget = ART.Widget = new Class({
 		if (!this.parent()) return false;
 		this.oldTabIndex = this.tabIndex;
 		this.setTabIndex(-1);
-		this.inputElement.disabled = true;
+		if (this.inputElement) this.inputElement.disabled = true;
 		return true;
 	},
 	
 	focus: function(){
 		if (!this.parent() || (!this.element.offsetWidth && !this.element.offsetHeight)) return false;
-		this.element.focus();
+		if (this.inputElement) this.inputElement.focus();
 		return true;
 	},
 	
 	blur: function(){
 		if (!this.parent()) return false;
-		this.element.blur();
+		if (this.inputElement) this.inputElement.blur();
 		return true;
 	},
 	
@@ -203,7 +203,6 @@ var Widget = ART.Widget = new Class({
 			this.element.inject(element, where);
 			this.register(widget);
 			if (this._disabledByParent) this.enable();
-
 		}
 
 		return this;

@@ -11,9 +11,38 @@
 	
 	<style type="text/css">
 		
-		.art {
-			margin: 5px;
-			float: left;
+		.menu {
+			font-family: Arial;
+			font-size: 13px;
+			list-style: none;
+			margin: 0;
+			padding: 5px 1px;
+		}
+		
+		.menu li {
+			padding: 0;
+			margin: 0;
+		}
+		
+		.menu a {
+			outline: none;
+			margin: 0;
+			display: block;
+			padding: 2px 16px;
+			text-decoration: none;
+			color: #222;
+		}
+		
+		.menu a.selected {
+			color: #fff;
+			background: url(bg.png);
+			text-shadow: 0px 1px 1px #0e4f9c;
+		}
+		
+		.menu li.menu-separator {
+			height: 4px;
+			border-bottom: 1px solid #ddd;
+			margin-bottom: 4px;
 		}
 		
 	</style>
@@ -21,6 +50,11 @@
 	<!-- compiled assets -->
 	
 	<script src="../assets/mootools-core-1.2.4.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Core/Log.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Interface/Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	
 	<script src="../assets/touch/Source/Touch.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../assets/slick/Source/Slick.Parser.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../assets/mootools-color/Source/Color.js" type="text/javascript" charset="utf-8"></script>
@@ -42,30 +76,23 @@
 	<script type="text/javascript" src="../Source/UI/UI.Widget.js"></script>
 	<script type="text/javascript" src="../Source/Base/ART.Widget.js"></script>
 	<script type="text/javascript" src="../Source/Base/ART.Sheet.js"></script>
-	<script type="text/javascript" src="../Source/Widgets/ART.Box.js"></script>
 	<script type="text/javascript" src="../Source/Widgets/ART.Button.js"></script>
 	<script type="text/javascript" src="../Source/Illustrations/ART.Glyphs.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Box.js"></script>
 	<script type="text/javascript" src="../Source/Widgets/ART.Input.js"></script>
 	<script type="text/javascript" src="../Source/Widgets/ART.Search.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Menu.js"></script>
+	<script type="text/javascript" src="../Source/Utilities/ART.Keyboard.js"></script>
 	
 	<script type="text/javascript">
 	
 	document.addEvent('domready', function(){
-		var input = new ART.Input({tabIndex: 1, placeholder: 'placeholder…'});
 		
-		input.inject($('container'));
+		var search = new ART.Search({tabIndex: 10}, $('search-menu'));
+		search.inject(document.body);
 		
-		input.addEvent('change', function(value){
-			console.log("input has changed to » " + value);
-		});
-		
-		var search = new ART.Search({tabIndex: 1});
-		
-		search.inject($('container'));
-		
-		search.addEvent('change', function(value){
-			console.log("search has changed to » " + value);
-		});
+		var menu = new ART.Menu({tabIndex: 10}, $('file-menu'), $('file-button'));
+		menu.inject(document.body);
 		
 	});
 		
@@ -75,7 +102,25 @@
 
 <body>
 	
-	<div id="container"></div>
+	<div id="container">
+		<a id="file-button" href="#">file</a>
+	</div>
+	
+	<ul id="file-menu" class="menu">
+		<li class="menu-item"><a href="#">Save</a></li>
+		<li class="menu-item"><a href="#">Load</a></li>
+		<li class="menu-separator"></li>
+		<li class="menu-item"><a href="#">Undo</a></li>
+		<li class="menu-item"><a href="#">Redo</a></li>
+	</ul>
+	
+	<ul id="search-menu" class="menu">
+		<li class="menu-item"><a href="#">Google</a></li>
+		<li class="menu-item"><a href="#">Google Images</a></li>
+		<li class="menu-separator"></li>
+		<li class="menu-item"><a href="#">Yahoo</a></li>
+		<li class="menu-item"><a href="#">Yahoo Images</a></li>
+	</ul>
 	
 </body>
 </html>

@@ -633,7 +633,9 @@ ART.Window = new Class({
 ART.WindowTools = new Class({
 
 	getWindow: function(){
-		return this.getWindowElement().get('widget');
+		var win = this.getWindowElement();
+		if (!win) return;
+		return win.get('widget');
 	},
 
 	getWindowElement: function(){

@@ -2,7 +2,7 @@
 ---
 name: ART.Input
 description: Base Input Class
-requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle]
+requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART.Box]
 provides: ART.Input
 ...
 */
@@ -31,7 +31,7 @@ ART.Sheet.define('input.art:focused', {
 
 var Input = ART.Input = new Class({
 	
-	Extends: ART.Widget,
+	Extends: ART.Box,
 	
 	name: 'input',
 	
@@ -40,19 +40,12 @@ var Input = ART.Input = new Class({
 		tabIndex: null,
 		inputElement: null,
 		blurOnElementBlur: true,
-		placeholder: null,
 		useChange: true,
 		changeTimeout: 500
 	},
 	
 	initialize: function(options){
 		this.parent($merge(options, {useFocus: false}));
-		
-		this.shadowLayer = new ART.Rectangle;
-		this.borderLayer = new ART.Rectangle;
-		this.reflectionLayer = new ART.Rectangle;
-		this.backgroundLayer = new ART.Rectangle;
-		this.canvas.grab(this.shadowLayer, this.borderLayer, this.reflectionLayer, this.backgroundLayer);
 		
 		this.input = (this.options.inputElement || new Element('input')).setStyles({
 			border: 0, outline: "none", padding: 0, margin: 0, position: 'absolute', top: 0, left: 0, background: 'transparent',
@@ -97,15 +90,22 @@ var Input = ART.Input = new Class({
 	},
 	
 	_holdPlace: function(){
-		if (this.input.value == ''){
+		if (this.input.value == '' || this.holdingPlace){
 			this.input.value = this.options.placeholder;
 			this.holdingPlace = true;
 		}
 	},
 	
+	updatePlaceholder: function(placeholder){
+		this.options.placeholder = placeholder;
+		this._holdPlace();
+		return this;
+	},
+	
 	draw: function(newSheet){
 		var sheet = this.parent(newSheet), cs = this.currentSheet;
-		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius);
+		var boxChanged = this.boxChanged;
+		
 		if (cs.glyph && !this.glyphLayer){
 			this.glyphLayer = new ART.Shape(cs.glyph);
 			this.canvas.grab(this.glyphLayer);
@@ -115,16 +115,6 @@ var Input = ART.Input = new Class({
 		}
 		
 		if (boxChanged){
-			this.resize(cs.width, cs.height + 1);
-			
-			var brt = cs.borderRadius[0], brr = cs.borderRadius[1];
-			var brb = cs.borderRadius[2], brl = cs.borderRadius[3];
-
-			var pill = ((cs.width < cs.height) ? cs.width : cs.height) / 2;
-			this.shadowLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius).translate(0, 1);
-			this.borderLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius);
-			this.reflectionLayer.draw(cs.width - 2, cs.height - 2, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
-			this.backgroundLayer.draw(cs.width - 2, cs.height - 3, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 2);
 			
 			this.input.setStyles({
 				width: cs.width - cs.padding[1] - cs.padding[3],
@@ -141,10 +131,6 @@ var Input = ART.Input = new Class({
 		else this.input.setStyle('color', new Color(cs.fontColor).toHEX());
 		if (sheet.fontSize) this.input.setStyle('font-size', sheet.fontSize + 'px');
 		
-		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(cs.shadowColor));
-		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(cs.borderColor));
-		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, $splat(cs.reflectionColor));
-		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(cs.backgroundColor));
 		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(cs.glyphColor));
 
 		return this;

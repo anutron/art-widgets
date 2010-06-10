@@ -197,7 +197,7 @@ ART.Popup = new Class({
 			target = document.id(this.options.maskOptions.inject.target) || document.id(document.body);
 		else target = document.id(document.body);
 		var mask = target.retrieve('Popup:mask');
-		if (!mask || !mask.parentNode) {
+		if (!mask || !$(mask).parentNode) {
 			if (mask) mask.destroy();
 			//compute the zindex of the mask to be just above the target
 			//unless it's the document body, in which case put it just below this instance
