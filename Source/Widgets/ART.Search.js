@@ -30,6 +30,7 @@ var Search = ART.Search = new Class({
 	
 	options: {
 		placeholder: 'search…',
+		updatePlaceholderWithMenuValue: true,
 		menu: false
 	},
 	
@@ -51,6 +52,12 @@ var Search = ART.Search = new Class({
 			}, top: function(){
 				return self.element.offsetTop + sheet.height + 3;
 			}}, menu, this.menuHandler);
+			
+			if (this.options.updatePlaceholderWithMenuValue){
+				this.menu.addEvent('press', function(element){
+					self.updatePlaceholder(element.get('text'));
+				});
+			}
 			
 		}
 	},
