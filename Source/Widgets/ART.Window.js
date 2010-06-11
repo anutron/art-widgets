@@ -271,12 +271,15 @@ ART.Window = new Class({
 		var baseLeft = 6;
 		['close', 'minimize', 'maximize', 'help'].each(function(button){
 			if (this.options[button]) {
-				this.buttons[button] = new ART.Button({
+				var windowButton = this.buttons[button] = new ART.Button({
 					className: button + ' wincontrol art',
 					tabIndex: -1
-				}).addEvent('press:start', function(event) {
-					event.stopPropagation();
 				}).inject(this, this.header);
+				
+				$(windowButton).addEvent('mousedown', function(event){
+					event.stopPropagation();
+				});
+				
 				document.id(this.buttons[button]).setStyles({
 					'position': 'absolute',
 					'top': cs.headerPaddingTop
@@ -634,7 +637,7 @@ ART.WindowTools = new Class({
 
 	getWindow: function(){
 		var win = this.getWindowElement();
-		if (!win) return;
+		if (!win) return null;
 		return win.get('widget');
 	},
 
