@@ -2,7 +2,7 @@
 ---
 name: ART.Check
 description: CheckBox Class
-requires: [ART.Sheet, ART.Widget, ART.Glyphs, ART.Box]
+requires: [ART.Sheet, ART.Widget, ART.Glyphs, ART.Box, Press]
 provides: ART.Check
 ...
 */
@@ -65,35 +65,19 @@ var Check = ART.Check = new Class({
 		
 		var self = this;
 		
-		this.element.addEvents({
-
-			keydown: function(event){
-				if (event.key.match(/space|enter/)) self.activate();
-			},
-			
-			keyup: function(event){
-				if (event.key.match(/space|enter/) && self.deactivate()) self.toggle();
-			}
-
+		var press = new Press(this.element);
+		
+		press.addEvent('down', function(){
+			self.activate();
 		});
 		
-		this.touch = new Touch(this.element);
+		press.addEvent('press', function(){
+			self.deactivate();
+			self.toggle();
+		});
 		
-		this.touch.addEvents({
-			
-			start: function(event){
-				self.activate();
-			},
-			
-			end: function(event){
-				self.deactivate();
-			},
-			
-			cancel: function(event){
-				self.toggle();
-				self.deactivate();
-			}
-		
+		press.addEvent('cancel', function(){
+			self.deactivate();
 		});
 		
 		this.input.inject(this.element);
