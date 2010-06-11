@@ -2,7 +2,7 @@
 ---
 name: ART.Button
 description: Base Button Class
-requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART/ART.Font, Touch/Touch, ART/Moderna]
+requires: [ART.Sheet, ART.Widget, Press, ART/ART.Rectangle, ART/ART.Font, Touch/Touch, ART/Moderna]
 provides: ART.Button
 ...
 */
@@ -75,44 +75,21 @@ var Button = ART.Button = new Class({
 		this.canvas.grab(this.shadowLayer, this.borderLayer, this.reflectionLayer, this.backgroundLayer);
 		
 		
-		var element = this.element, self = this;
+		var self = this;
 		
-		var mouseleave;
+		var press = new Press(this.element);
 		
-		element.addEvents({
-
-			keydown: function(event){
-				if (event.key.match(/space|enter/)) self.activate();
-			},
-			
-			keyup: function(event){
-				if (event.key.match(/space|enter/) && self.deactivate()) self.fireEvent('press', event);
-			},
-			
-			mouseleave: function(){
-				mouseleave = true;
-			}
-
+		press.addEvent('down', function(){
+			self.activate();
 		});
 		
-		this.touch = new Touch(this.element);
+		press.addEvent('press', function(){
+			self.deactivate();
+			self.fireEvent('press');
+		});
 		
-		this.touch.addEvents({
-			
-			start: function(event){
-				self.fireEvent('press:start', new Event(event));
-				mouseleave = false;
-				self.activate();
-			},
-			
-			end: function(event){
-				if (self.deactivate() && !mouseleave) self.fireEvent('press', new Event(event));
-			},
-			
-			cancel: function(event){
-				if (self.deactivate()) self.fireEvent('press', new Event(event));
-			}
-		
+		press.addEvent('cancel', function(){
+			self.deactivate();
 		});
 		
 	},
