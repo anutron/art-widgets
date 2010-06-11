@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART Inputs</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+
+		#container {
+			height: 100px;
+			width: 100px;
+			background: black;
+		}
+
+	</style>
+	
+	<!-- compiled assets -->
+	
+	<script src="../assets/mootools-core-1.2.4.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Core/Log.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Interface/Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/touch/Source/Touch.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/slick/Source/Slick.Parser.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/mootools-color/Source/Color.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.SVG.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.VML.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Base.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Path.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Shapes.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Source/ART.Font.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Fonts/Moderna.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../assets/art/Fonts/Moderna.Bold.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+	<!-- this package -->
+	
+	<script type="text/javascript" src="../Source/UI/UI.js"></script>
+	<script type="text/javascript" src="../Source/UI/UI.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/UI/UI.Widget.js"></script>
+	<script type="text/javascript" src="../Source/Base/ART.Widget.js"></script>
+	<script type="text/javascript" src="../Source/Base/ART.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Button.js"></script>
+	<script type="text/javascript" src="../Source/Illustrations/ART.Glyphs.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Box.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Check.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Radio.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Input.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Search.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Menu.js"></script>
+	<script type="text/javascript" src="../Source/Utilities/ART.Keyboard.js"></script>
+	<script type="text/javascript" src="../Source/Utilities/Press.js"></script>
+	
+	<script type="text/javascript">
+	
+	document.addEvent('domready', function(){
+		
+		var container = $('container');
+		
+		var press = new Press(container);
+		
+		press.addEvent('down', function(){
+			container.setStyle('background-color', 'red');
+		});
+		
+		press.addEvent('cancel', function(){
+			container.setStyle('background-color', 'black');
+		});
+		
+		press.addEvent('press', function(){
+			container.setStyle('background-color', 'green');
+		});
+		
+		
+	});
+		
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container">
+	</div>
+	
+</body>
+</html>
