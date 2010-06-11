@@ -1,13 +1,13 @@
 /*
 ---
-name: ART.Check
-description: CheckBox Class
+name: ART.Radio
+description: RadioBox Class
 requires: [ART.Sheet, ART.Widget, ART.Glyphs, ART.Box]
-provides: ART.Check
+provides: ART.Radio
 ...
 */
 
-ART.Sheet.define('check.art', {
+ART.Sheet.define('radio.art', {
 	'height': 13,
 	'width': 13,
 	'border-color': ['hsb(0, 0, 0, 0.6)', 'hsb(0, 0, 0, 0.7)'],
@@ -15,27 +15,27 @@ ART.Sheet.define('check.art', {
 	'background-color': ['hsb(0, 0, 90)', 'hsb(0, 0, 70)'],
 	'shadow-color': 'hsb(0, 0, 0, 0.18)',
 	
-	'border-radius': [2, 2, 2, 2],
+	'pill': true,
 	
-	'glyph': ART.Glyphs.checkMark,
+	'glyph': ART.Glyphs.radio,
 	'glyph-color': 'hsb(0, 0, 0, 0.7)',
-	'inactive-glyph-color': 'rgb(0, 0, 0, 0)',
-	'glyph-top': 3,
-	'glyph-left': 3
+	'inactive-glyph-color': 'hsb(0, 0, 0, 0.2)',
+	'glyph-top': 4,
+	'glyph-left': 4
 });
 
-ART.Sheet.define('check.art:focused', {
+ART.Sheet.define('radio.art:focused', {
 	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
 	'border-color': ['hsb(205, 80, 100)', 'hsb(205, 100, 95)']
 });
 
-ART.Sheet.define('check.art:active', {
+ART.Sheet.define('radio.art:active', {
 	'border-color': ['hsb(0, 0, 0, 0.7)', 'hsb(0, 0, 0, 0.8)'],
 	'reflection-color': ['hsb(0, 0, 50)', 'hsb(0, 0, 0, 0)'],
 	'background-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 70)']
 });
 
-ART.Sheet.define('check.art:disabled', {
+ART.Sheet.define('radio.art:disabled', {
 	'background-color': ['hsb(0, 0, 95)', 'hsb(0, 0, 75)'],
 	'border-color': ['hsb(0, 0, 0, 0.4)', 'hsb(0, 0, 0, 0.5)'],
 	'font-color': 'hsb(0, 0, 5, 0.5)',
@@ -44,14 +44,15 @@ ART.Sheet.define('check.art:disabled', {
 
 (function(){
 	
-var Check = ART.Check = new Class({
+var Radio = ART.Radio = new Class({
 	
 	Extends: ART.Box,
 	
-	name: 'check',
+	name: 'radio',
 	
 	options: {
-		inputElement: null
+		inputElement: null,
+		name: null
 	},
 	
 	initialize: function(options){
@@ -59,7 +60,7 @@ var Check = ART.Check = new Class({
 		this.glyphLayer = new ART.Shape;
 		this.canvas.grab(this.glyphLayer);
 		
-		this.input = (this.options.inputElement || new Element('input', {type: 'checkbox'})).setStyles({
+		this.input = (this.options.inputElement || new Element('input', {type: 'radio', name: this.options.name})).setStyles({
 			border: 0, outline: "none", padding: 0, margin: 0, position: 'absolute', visibility: 'hidden'
 		}).store('widget', this);
 		
@@ -100,8 +101,29 @@ var Check = ART.Check = new Class({
 	},
 	
 	toggle: function(){
-		if (this.input.checked) this.uncheck();
-		else this.check();
+		if (!this.input.checked){
+
+			this.check();
+			
+			var name = this.input.name;
+
+			if (name){
+
+				var group = document.getElements('input[type=radio]name=' + name + ']');
+
+				group.each(function(radio){
+					if (radio != self.input){
+						var widget = radio.retrieve('widget');
+						if (widget && widget instanceof ART.Radio){
+							widget.draw();
+						}
+					}
+				});
+
+			}
+			
+		}
+		
 		return this;
 	},
 	

@@ -35,8 +35,10 @@ var Box = ART.Box = new Class({
 		if (boxChanged){
 			this.resize(cs.width, cs.height + 1);
 			
-			var brt = cs.borderRadius[0], brr = cs.borderRadius[1];
-			var brb = cs.borderRadius[2], brl = cs.borderRadius[3];
+			if (!cs.pill){
+				var brt = cs.borderRadius[0], brr = cs.borderRadius[1];
+				var brb = cs.borderRadius[2], brl = cs.borderRadius[3];
+			}
 
 			var pill = ((cs.width < cs.height) ? cs.width : cs.height) / 2;
 			this.shadowLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius).translate(0, 1);
