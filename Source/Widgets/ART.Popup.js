@@ -373,7 +373,7 @@ ART.Popup = new Class({
 		if (this.getState('dragging') == dragging) return;
 		render = $pick(render, true);
 		this.setState('dragging', dragging, !render);
-		this.fireEvent(dragging ? 'shade' : 'unshade');
+		this.fireEvent.delay(1, this, dragging ? 'shade' : 'unshade');
 	},
 
 	disableDrag: function(){
