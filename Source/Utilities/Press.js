@@ -39,7 +39,6 @@ var Press = new Class({
 		
 		this.onDocMouseUp = function(e){
 			document.removeEvent('mouseup', self.onDocMouseUp);
-			self.fireEvent('cancel');
 			self.isMouseDown = false;
 		};
 		
