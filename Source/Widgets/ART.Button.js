@@ -77,7 +77,7 @@ var Button = ART.Button = new Class({
 		
 		var self = this;
 		
-		var press = new Press(this.element);
+		var press = this.press = new Press(this.element);
 		
 		press.addEvent('down', function(){
 			self.activate();
@@ -153,13 +153,13 @@ var Button = ART.Button = new Class({
 	
 	enable: function(){
 		if (!this.parent()) return false;
-		this.touch.attach();
+		this.press.attach();
 		return true;
 	},
 	
 	disable: function(){
 		if (!this.parent()) return false;
-		this.touch.detach();
+		this.press.detach();
 		return true;
 	},
 	

@@ -2,7 +2,7 @@
 ---
 name: Press
 description: Provides press, down and cancel events for a standard but pretty complex button clicking behavior.
-requires: [Core/Class, Core/Events, Core/Element.Events]
+requires: [Core/Class, Core/Events, Core/Element.Event]
 provides: Press
 ...
 */
