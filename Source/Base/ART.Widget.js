@@ -135,6 +135,12 @@ var Widget = ART.Widget = new Class({
 		return this;
 	},
 	
+	setStyles: function(){
+		this.parent.apply(this, arguments);
+		this.deferDraw();
+		return this;
+	},
+	
 	/* states */
 	
 	_states: {
