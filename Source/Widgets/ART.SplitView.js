@@ -2,7 +2,7 @@
 ---
 name: ART.SplitView
 description: A simple horizonal double-pane split view.
-requires: [ART.Widget, ART.Sheet, Core/Element.Event, Core/Element.Style, Touch/Touch, Core/Fx.Tween]
+requires: [ART.Widget, ART.Sheet, Core/Element.Event, Core/Element.Style, Touch/Touch, Core/Fx.Tween, More/Fx.Elements]
 provides: ART.SplitView
 ...
 */
@@ -80,11 +80,12 @@ var splitter = {
 		this.splitter = new Element('div', {
 			'class': 'art-splitview-splitter',
 			styles: {
-				'background-color': sheet.splitterBackgroundColor
+				'background-color': sheet.splitterBackgroundColor,
+				'height': sheet['splitter' + o.dimension.capitalize()]
 			}
-		}).inject(this.element).setStyles(styles)
-			.setStyle(o.dimension, 
-				        sheet['splitter' + o.dimension.capitalize()]);
+		}).inject(this.element).setStyles(styles).setStyle('overflow','hidden')
+			.setStyle(o.dimension, sheet['splitter' + o.dimension.capitalize()]);
+		if (this.options.splitterContent) this.setSplitterContent(this.options.splitterContent);
 		this[o.right] = new Element('div', {
 			'class': 'art-splitview-' + o.right,
 			styles: {
@@ -92,7 +93,7 @@ var splitter = {
 			}
 		}).inject(this.element).setStyles(styles);
 		
-		this.fx = new Fx();
+		this.fx = new Fx.Elements([this[o.left], this.splitter, this[o.right]]);
 		this.touch = new Touch(this.splitter);
 		var self = this;
 		var fix = self.options.fixed;
@@ -121,6 +122,12 @@ var splitter = {
 		}
 		
 		this.deferDraw();
+	},
+
+	setSplitterContent: function(content){
+		if (document.id(content) || $type(content) == "array") this.splitter.adopt(content);
+		else if ($type(content) == "string") this.splitter.set('html', content);
+		return this;
 	},
 
 	moveSplitter: function(dx, dy){
@@ -189,7 +196,7 @@ var splitter = {
 
 			var dim = o[side] + o.dimension.capitalize();
 			if (this[dim] == undefined) this[dim] = cs['fixed' + o.dimension.capitalize()];
-			this._resizeSide(other, cs[o.dimension] - this[dim] - cs[splitterStr]);
+			this._resizeSide(other, cs[o.dimension] - this[dim] - (this.splitterHidden ? 0 : cs[splitterStr]));
 		}
 		
 		return this;
@@ -202,69 +209,79 @@ var splitter = {
 	
 	_resizeSide: function(side, width){
 		var o = this._orientations;
+		var otherSide = this._getOtherSide(side);
+		var sizes = this._getWidthsForSizing(side, width);
+
+		this[o[side]].setStyle(o.dimension, sizes.width);
+		this[sizes.side] = sizes.width;
+
+		this[o[otherSide]].setStyle(o.dimension, sizes.otherSideWidth);
+		this[sizes.otherSide] = sizes.otherSideWidth;
+
+		this.fireEvent('resizeSide', [side, sizes.width]);
+	},
+	
+	_getWidthsForSizing: function(side, width) {
+		var o = this._orientations;
 		side = {
 			'top': 'left',
 			'bottom': 'right'
 		}[side] || side;
-		var otherSide = side == 'left' ? 'right' : 'left';
-		var cs = this.currentSheet;
-		var splitterStr = "splitter" + o.dimension.capitalize();
-		width = width.limit(0, cs[o.dimension] - cs[splitterStr]);
-		this[o[side]].setStyle(o.dimension, width);
-
+		var otherSide = this._getOtherSide(side);
 		var sideWidth = o[side] + o.dimension.capitalize();
 		var otherSideWidth = o[otherSide] + o.dimension.capitalize();
-		
-		this[sideWidth] = width;
-		this[otherSideWidth] = cs[o.dimension] - cs[splitterStr] - width;
-		this[o[otherSide]].setStyle(o.dimension, this[otherSideWidth]);
+		var cs = this.currentSheet;
+		var splitterSize = this.splitterHidden ? 0 : cs["splitter" + o.dimension.capitalize()];
+		width = width.limit(0, cs[o.dimension] - splitterSize);
+		return {
+			side: side,
+			otherSide: otherSide,
+			splitterWidth: splitterSize,
+			sideWidth: width,
+			otherSideWidth: cs[o.dimension] - splitterSize - width
+		};
 	},
 	
+	_getOtherSide: function(side) {
+		return {
+			'top':'bottom',
+			'left':'right',
+			'bottom':'top',
+			'right':'left'
+		}[side];
+	},
 
-	fold: function(side, to, hideSplitter) {
+	fold: function(side, to, hideSplitter, immediate) {
+		var self = this;
+		var cs = this.currentSheet;
 		var o = this._orientations;
-		var getOther = function(side) {
-			return {
-				'top':'bottom',
-				'left':'right',
-				'bottom':'top',
-				'right':'left'
-			}[side];
-		};
+		var other = this._getOtherSide(side);
+		var splitterStr = "splitter" + o.dimension.capitalize();
+
 		var sideWidth = o[side] + o.dimension.capitalize();
 		this._previous[side] = this[sideWidth];
-		var cs = this.currentSheet;
-		hideSplitter = to > 0 ? false : $pick(hideSplitter, this.options.hideSplitterOnFullFold);
-		var self = this;
-		var other = getOther(side);
-		this.fx.set = function(now){
-			self._resizeSide(side, now);
+		this.splitterHidden = to > 0 ? false : $pick(hideSplitter, this.options.hideSplitterOnFullFold);
+		
+		var fxTo = {
+			'0': {},
+			'1': {},
+			'2': {}
 		};
-		var splitterStr = "splitter" + o.dimension.capitalize();
-		
-		
-		if (to > 0) {
-			self.splitter.setStyle(o.dimension, cs[splitterStr]);
-			self[other].setStyle(o.dimension, self[other + o.dimension.capitalize()] - cs[splitterStr]);
-			this.splitterHidden = false;
-			hideSplitter = false;
-		}
-		this.fx.start(this[sideWidth], to).chain(function(){
-			if (hideSplitter) {
-				[o.left, o.right].each(function(side) {
-					var other = getOther(side);
-					var sideWidth = o[side] + o.dimension.capitalize();
-					var otherWidth = o[other] + o.dimension.capitalize();
-					if (self[sideWidth] == 0) {
-						self.splitter.setStyle(o.dimension, 0);
-						self[other].setStyle(o.dimension, self[otherWidth] + cs[splitterStr]);
-						self[otherWidth] = self[otherWidth] + cs[splitterStr];
-					}
-				});
-				this.splitterHidden = true;
-			}
+		var size = this._getWidthsForSizing(side, to);
+		fxTo[side == o.left ? '0' : '2'][o.dimension] = size.sideWidth;
+		fxTo['1'][o.dimension] = size.splitterWidth;
+		fxTo[side == o.left ? '2' : '0'][o.dimension] = size.otherSideWidth;
+		var finish = function(){
+			this.fireEvent('fold', [side, to, this.splitterhidden]);
 			this.callChain();
-		}.bind(this));
+		}.bind(this);
+		if (immediate) {
+			this.fx.set(fxTo);
+			finish();
+		} else {
+			this.fx.start(fxTo).chain(finish);
+		}
+		
 		return this;
 	},
 
