@@ -213,11 +213,10 @@ var splitter = {
 		var sizes = this._getWidthsForSizing(side, width);
 
 		this[o[side]].setStyle(o.dimension, sizes.width);
-		this[sizes.side] = sizes.width;
+		this[sizes.side + o.dimension.capitalize()] = sizes.width;
 
 		this[o[otherSide]].setStyle(o.dimension, sizes.otherSideWidth);
-		this[sizes.otherSide] = sizes.otherSideWidth;
-
+		this[sizes.otherSide + o.dimension.capitalize()] = sizes.otherSideWidth;
 		this.fireEvent('resizeSide', [side, sizes.width]);
 	},
 	
@@ -255,10 +254,12 @@ var splitter = {
 		var self = this;
 		var cs = this.currentSheet;
 		var o = this._orientations;
+		var dimCap = o.dimension.capitalize();
 		var other = this._getOtherSide(side);
-		var splitterStr = "splitter" + o.dimension.capitalize();
+		var splitterStr = "splitter" + dimCap;
 
-		var sideWidth = o[side] + o.dimension.capitalize();
+		var sideWidth = o[side] + dimCap;
+		var otherSideWidth = o[other] + dimCap;
 		this._previous[side] = this[sideWidth];
 		this.splitterHidden = to > 0 ? false : $pick(hideSplitter, this.options.hideSplitterOnFullFold);
 		
@@ -273,6 +274,8 @@ var splitter = {
 		fxTo[side == o.left ? '2' : '0'][o.dimension] = size.otherSideWidth;
 		var finish = function(){
 			this.fireEvent('fold', [side, to, this.splitterhidden]);
+			this[sideWidth] = size.sideWidth;
+			this[otherSideWidth] = size.otherSideWidth;
 			this.callChain();
 		}.bind(this);
 		if (immediate) {
@@ -295,17 +298,14 @@ var splitter = {
 			}[side];
 		};
 		var toggle = getWidthStr(side);
-		var other = {
-			'left':'right',
-			'right':'left',
-			'top':'bottom',
-			'bottom':'top'
-		}[side];
+		var other = this._getOtherSide(side);;
 		var current = this[toggle];
 		var previous = this._previous[side];
-		if (previous == null) previous = this[getWidthStr(other)];
+		if (window.paused) debugger;
+		if (previous == null) previous = this[other];
 		var to = current == 0 ? previous : 0;
 		this.fold(side, to, hideSplitter);
+		return this;
 	},
 	
 	_previous: {},
