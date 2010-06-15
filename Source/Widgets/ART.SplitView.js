@@ -212,12 +212,12 @@ var splitter = {
 		var otherSide = this._getOtherSide(side);
 		var sizes = this._getWidthsForSizing(side, width);
 
-		this[o[side]].setStyle(o.dimension, sizes.width);
-		this[sizes.side + o.dimension.capitalize()] = sizes.width;
-
+		this[o[side]].setStyle(o.dimension, sizes.sideWidth);
+		this[sizes.side + o.dimension.capitalize()] = sizes.sideWidth;
+		
 		this[o[otherSide]].setStyle(o.dimension, sizes.otherSideWidth);
 		this[sizes.otherSide + o.dimension.capitalize()] = sizes.otherSideWidth;
-		this.fireEvent('resizeSide', [side, sizes.width]);
+		this.fireEvent('resizeSide', [side, sizes.sideWidth]);
 	},
 	
 	_getWidthsForSizing: function(side, width) {
