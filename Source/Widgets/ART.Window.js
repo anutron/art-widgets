@@ -318,7 +318,7 @@ ART.Window = new Class({
 			}
 			this.resize(w, h);
 		}
-		this.fireEvent(operation, [w, h]);
+		this.fireEvent(operation, [w, h]).fireEvent('unshade');
 	},
 
 	//create resize handle and make the window instance resizable.
