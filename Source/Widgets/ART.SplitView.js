@@ -182,21 +182,15 @@ var splitter = {
 		}
 
 		if (sizeChanged) {
-			var otherDimension = o.dimension == "width" ? "height" : "width";
+			var otherDimension = o.dimension == 'width' ? 'height' : 'width';
 			$$(this[o.left], this[o.right],
 				 this.splitter).setStyle(otherDimension, cs[otherDimension]);
 		
 			var side = this.options.fixed;
-			var other = {
-				'top':'bottom',
-				'left':'right',
-				'bottom':'top',
-				'right':'left'
-			}[side];
-
-			var dim = o[side] + o.dimension.capitalize();
-			if (this[dim] == undefined) this[dim] = cs['fixed' + o.dimension.capitalize()];
-			this._resizeSide(other, cs[o.dimension] - this[dim] - (this.splitterHidden ? 0 : cs[splitterStr]));
+			var other = this._getOtherSide(side);
+			var cap = o.dimension.capitalize();
+			var dim = o[side] + cap;
+			this._resizeSide(side, this[dim] != null ? this[dim] : cs['fixed' + cap]);
 		}
 		
 		return this;
@@ -222,10 +216,6 @@ var splitter = {
 	
 	_getWidthsForSizing: function(side, width) {
 		var o = this._orientations;
-		side = {
-			'top': 'left',
-			'bottom': 'right'
-		}[side] || side;
 		var otherSide = this._getOtherSide(side);
 		var sideWidth = o[side] + o.dimension.capitalize();
 		var otherSideWidth = o[otherSide] + o.dimension.capitalize();
