@@ -363,7 +363,7 @@ ART.Window = new Class({
 	setContent: function(content){
 		if (document.id(content) || $type(content) == "array") this.content.adopt(content);
 		else if ($type(content) == "string") this.content.set('html', content);
-		if (this.options.autosize) this.autosize();
+		if (this.options.autosize && !this.getState('hidden')) this.autosize();
 		return this;
 	},
 	
@@ -400,14 +400,14 @@ ART.Window = new Class({
 					height: h,
 					width: w
 				});
-				this.draw({
-					width: w, 
-					height: h
-				});
 				this.content.setStyles({
 					'float': 'none',
 					'width': 'auto',
 					'margin-right': 2
+				});
+				this.draw({
+					width: w, 
+					height: h
 				});
 			}.bind(this));
 		}
