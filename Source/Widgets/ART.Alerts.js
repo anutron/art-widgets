@@ -270,8 +270,10 @@ ART.Prompt = new Class({
 	setContent: function(){
 		if (this.inputContainer) this.inputContainer.dispose();
 		this.parent.apply(this, arguments);
-		if (this.inputContainer) this.inputContainer.inject(this.content);
-		if (this.options.autosize) this.autosize();
+		if (this.inputContainer) {
+			this.inputContainer.inject(this.content);
+			if (this.options.autosize) this.autosize();
+		}
 		return this;
 	}
 });
