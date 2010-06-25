@@ -90,7 +90,7 @@ var Input = ART.Input = new Class({
 	},
 	
 	_holdPlace: function(){
-		if (this.input.value == '' || this.holdingPlace){
+		if (this.options.placeholder && (this.input.value == '' || this.holdingPlace)){
 			this.input.value = this.options.placeholder;
 			this.holdingPlace = true;
 		}
