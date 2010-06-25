@@ -109,14 +109,15 @@ ART.Alert = new Class({
 					h = 0;
 			['margin', 'padding'].each(function(space) {
 				['Top', 'Left', 'Bottom', 'Right'].each(function(side, i) {
-					if (i%2) w += tmp.getStyle(space+side).toInt();
-					else h += tmp.getStyle(space+side).toInt();
+					if (tmp.getStyle(space+side)) {
+						if (i%2) w += tmp.getStyle(space+side).toInt();
+						else h += tmp.getStyle(space+side).toInt();
+					}
 				});
 			});
 			
 			tmp.style.cssText = '';
 			if (Browser.Engine.trident) holder.dispose();
-			
 			style.width = this.contentSize.x - w; //border is hard coded to 1 on each side
 			style.height = this.contentSize.y - h; //border is hard coded to 1 on each side
 		}
