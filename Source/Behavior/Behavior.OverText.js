@@ -8,28 +8,26 @@ script: Behavior.OverText.js
 ...
 */
 
-Behavior.registerGlobal('OverText', {
+Behavior.OverText = new Behavior.Filter({
 
-	run: function(container, manager, meta){
-		if (!container.hasClass('overtext') && !container.get('html').contains('overtext')) return;
-		var inputs = container.getElements('input.overtext, textarea.overtext');
-		if (!inputs.length) return;
-		// make an OverText for elements returned by the test.
-		var ots = inputs.map(function(input){
-			return new OverText(input);
-		});
+	name: 'overtext',
+
+	selector: 'input[data-filter=overtext], textarea[data-filter=overtext]',
+
+	stringMatch: 'overtext',
+	
+	attach: function(element, meta){
+		var ot = new OverText(element);
 		var updater = function(){
 			(function(){
-				ots.each(function(ot) {
-					ot.reposition();
-				});
+				ot.reposition();
 			}).delay(10);
 		};
-		manager.addEvent('show', updater);
-		manager.mark(function(){
-			manager.removeEvent('show', updater);
-			ots.each(function(ot) { ot.destroy(); });
+		element.addEvent('show', updater);
+		this.mark(element, function(){
+			element.removeEvent('show', updater);
+			ot.destroy();
 		});
 	}
 
-});
+}).global();
