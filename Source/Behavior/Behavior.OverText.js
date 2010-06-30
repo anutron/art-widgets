@@ -12,8 +12,6 @@ Behavior.OverText = new Behavior.Filter({
 
 	name: 'overtext',
 
-	selector: 'input[data-filter=overtext], textarea[data-filter=overtext]',
-
 	stringMatch: 'overtext',
 	
 	attach: function(element, container, meta){
