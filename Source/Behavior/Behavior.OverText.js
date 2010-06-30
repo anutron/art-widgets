@@ -16,16 +16,19 @@ Behavior.OverText = new Behavior.Filter({
 
 	stringMatch: 'overtext',
 	
-	attach: function(element, meta){
+	attach: function(element, container, meta){
+		//create the overtext instance
 		var ot = new OverText(element);
+		//this method updates the text position with a slight delay
 		var updater = function(){
 			(function(){
 				ot.reposition();
 			}).delay(10);
 		};
-		element.addEvent('show', updater);
+		//update the position whenever the behavior container is shown
+		container.addEvent('show', updater);
 		this.mark(element, function(){
-			element.removeEvent('show', updater);
+			container.removeEvent('show', updater);
 			ot.destroy();
 		});
 	}
