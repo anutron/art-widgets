@@ -7,25 +7,23 @@ script: Behavior.OverText.js
 ...
 */
 
-Behavior.OverText = new Behavior.Filter({
+Behavior.OverText = new Behavior.Filter('OverText', function(element, container){
+	//create the overtext instance
+	var ot = new OverText(element);
 
-	name: 'OverText',
+	//this method updates the text position with a slight delay
+	var updater = function(){
+		(function(){
+			ot.reposition();
+		}).delay(10);
+	};
 
-	attach: function(element, container){
-		//create the overtext instance
-		var ot = new OverText(element);
-		//this method updates the text position with a slight delay
-		var updater = function(){
-			(function(){
-				ot.reposition();
-			}).delay(10);
-		};
-		//update the position whenever the behavior container is shown
-		container.addEvent('show', updater);
-		this.mark(element, function(){
-			container.removeEvent('show', updater);
-			ot.destroy();
-		});
-	}
+	//update the position whenever the behavior container is shown
+	container.addEvent('show', updater);
+
+	this.mark(element, function(){
+		container.removeEvent('show', updater);
+		ot.destroy();
+	});
 
 }).global();
