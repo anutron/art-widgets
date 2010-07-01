@@ -43,6 +43,11 @@ var Widget = UI.Widget = new Class({
 				parent = options.parentWidget;
 				delete options.parentWidget;
 			}
+			if (options.styles) {
+				var styles = options.styles;
+				delete options.styles;
+				this.setStyles(styles);
+			}
 		}
 		
 		this.setOptions(options);
@@ -80,8 +85,12 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	setStyles: function(styles){
+		var camelCase = {};
+		for (name in styles) {
+			camelCase[name.camelCase()] = styles[name];
+		}
 		this.setOptions({
-			styles: styles
+			styles: camelCase
 		});
 	},
 	

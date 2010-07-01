@@ -197,7 +197,7 @@ ART.Popup = new Class({
 			target = document.id(this.options.maskOptions.inject.target) || document.id(document.body);
 		else target = document.id(document.body);
 		var mask = target.retrieve('Popup:mask');
-		if (!mask || !mask.parentNode) {
+		if (!mask || !$(mask).parentNode) {
 			if (mask) mask.destroy();
 			//compute the zindex of the mask to be just above the target
 			//unless it's the document body, in which case put it just below this instance
@@ -373,7 +373,7 @@ ART.Popup = new Class({
 		if (this.getState('dragging') == dragging) return;
 		render = $pick(render, true);
 		this.setState('dragging', dragging, !render);
-		this.fireEvent(dragging ? 'shade' : 'unshade');
+		this.fireEvent.delay(1, this, dragging ? 'shade' : 'unshade');
 	},
 
 	disableDrag: function(){

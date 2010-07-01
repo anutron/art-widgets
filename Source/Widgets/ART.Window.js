@@ -271,12 +271,15 @@ ART.Window = new Class({
 		var baseLeft = 6;
 		['close', 'minimize', 'maximize', 'help'].each(function(button){
 			if (this.options[button]) {
-				this.buttons[button] = new ART.Button({
+				var windowButton = this.buttons[button] = new ART.Button({
 					className: button + ' wincontrol art',
 					tabIndex: -1
-				}).addEvent('press:start', function(event) {
-					event.stopPropagation();
 				}).inject(this, this.header);
+				
+				$(windowButton).addEvent('mousedown', function(event){
+					event.stopPropagation();
+				});
+				
 				document.id(this.buttons[button]).setStyles({
 					'position': 'absolute',
 					'top': cs.headerPaddingTop
@@ -315,7 +318,7 @@ ART.Window = new Class({
 			}
 			this.resize(w, h);
 		}
-		this.fireEvent(operation, [w, h]);
+		this.fireEvent(operation, [w, h]).fireEvent('unshade');
 	},
 
 	//create resize handle and make the window instance resizable.
@@ -360,7 +363,7 @@ ART.Window = new Class({
 	setContent: function(content){
 		if (document.id(content) || $type(content) == "array") this.content.adopt(content);
 		else if ($type(content) == "string") this.content.set('html', content);
-		if (this.options.autosize) this.autosize();
+		if (this.options.autosize && !this.getState('hidden')) this.autosize();
 		return this;
 	},
 	
@@ -397,14 +400,14 @@ ART.Window = new Class({
 					height: h,
 					width: w
 				});
-				this.draw({
-					width: w, 
-					height: h
-				});
 				this.content.setStyles({
 					'float': 'none',
 					'width': 'auto',
 					'margin-right': 2
+				});
+				this.draw({
+					width: w, 
+					height: h
 				});
 			}.bind(this));
 		}
@@ -634,7 +637,7 @@ ART.WindowTools = new Class({
 
 	getWindow: function(){
 		var win = this.getWindowElement();
-		if (!win) return;
+		if (!win) return null;
 		return win.get('widget');
 	},
 

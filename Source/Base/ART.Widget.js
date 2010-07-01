@@ -135,6 +135,12 @@ var Widget = ART.Widget = new Class({
 		return this;
 	},
 	
+	setStyles: function(){
+		this.parent.apply(this, arguments);
+		this.deferDraw();
+		return this;
+	},
+	
 	/* states */
 	
 	_states: {
@@ -203,7 +209,6 @@ var Widget = ART.Widget = new Class({
 			this.element.inject(element, where);
 			this.register(widget);
 			if (this._disabledByParent) this.enable();
-
 		}
 
 		return this;

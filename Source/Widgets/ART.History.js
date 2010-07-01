@@ -217,7 +217,8 @@ ART.History = new Class({
 			['nav_back', 'nav_next', 'refresher'].each(function(button) {
 				w = w - this[button].getSize().width;
 			}, this);
-			w = w - cs.padding[1] - cs.padding[3] - 10;
+			if (cs.padding) w = w - cs.padding[1] - cs.padding[3];
+			w = w - 10;
 			this.location.setStyles({
 				width: w
 			}).draw();

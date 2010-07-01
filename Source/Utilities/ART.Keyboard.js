@@ -34,12 +34,12 @@ ART.Keyboard = new Class({
 
 	attachToParent: function(){
 		var parent = this.widget.parentWidget;
-		var keyboard;
+		var keyboard = parent ? parent.keyboard : null;
 		while (parent && parent.parentWidget && !keyboard) {
 			parent = parent.parentWidget;
 			if (parent && parent.parentWidget) keyboard = parent.parentWidget.keyboard;
 		}
-		if (keyboard) keyboard.manage(this.keyboard);
+		if (keyboard) keyboard.manage(this._keyboard);
 	},
 
 	attach: function(){

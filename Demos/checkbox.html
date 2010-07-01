@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>UI ART Buttons</title>
+	<title>UI ART Inputs</title>
 	
 	<!--[if IE]>
 	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
@@ -11,16 +11,16 @@
 	
 	<style type="text/css">
 		
-		.button {
-			margin: 5px;
-			float: left;
-		}
-		
 	</style>
 	
 	<!-- compiled assets -->
 	
 	<script src="../assets/mootools-core-1.2.4.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Core/Log.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../assets/more/Source/Interface/Keyboard.js" type="text/javascript" charset="utf-8"></script>
+	
 	<script src="../assets/touch/Source/Touch.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../assets/slick/Source/Slick.Parser.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../assets/mootools-color/Source/Color.js" type="text/javascript" charset="utf-8"></script>
@@ -44,60 +44,20 @@
 	<script type="text/javascript" src="../Source/Base/ART.Sheet.js"></script>
 	<script type="text/javascript" src="../Source/Widgets/ART.Button.js"></script>
 	<script type="text/javascript" src="../Source/Illustrations/ART.Glyphs.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Box.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Check.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Input.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Search.js"></script>
+	<script type="text/javascript" src="../Source/Widgets/ART.Menu.js"></script>
 	<script type="text/javascript" src="../Source/Utilities/Press.js"></script>
 	
 	<script type="text/javascript">
 	
-	UI.Sheet.define('button.art', {
-		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
-		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
-		'font-family': 'Moderna',
-		'font-size': 13,
-		'font-color': 'black'
-	});
-
-	UI.Sheet.define('button.cross', {
-		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
-		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
-		'padding': [1,1,1,1],
-		'pill': true,
-		'height': 14,
-		'width': 14,
-		'cornerRadius': 7,
-		'cursor': 'pointer',
-		'glyph-color': hsb(0, 0, 0, 0.6),
-		'glyph-height': 4,
-		'glyph-width': 4,
-		'glyph-top': 1,
-		'glyph-left': 1
-	});
-	
 	document.addEvent('domready', function(){
-		window.gs = new ART.Button({text: 'Google Search', className: 'button art', id: 'GoogleSearch', tabIndex: 1});
 		
-		gs.inject($('container'));
+		var cb = new ART.Check({tabIndex: 1, blurOnElementBlur: true});
 		
-		gs.addEvent('press', function(){
-			console.log('searching google...');
-		});
-		
-		window.fl = new ART.Button({text: 'I\'m Feeling Lucky', className: 'button art', id: 'FeelingLucky', tabIndex: 2});
-		
-		fl.inject($('container'));
-		
-		fl.addEvent('press', function(){
-			console.log('feeling lucky...');
-		});
-		
-		window.cross = new ART.Button({glyph: ART.Glyphs.smallCross, className: 'button cross art', id: 'close'});
-		
-		cross.inject($('container'));
-		
-		window.left = new ART.Button({
-			className: 'art navLeft',
-			tabIndex: 1,
-			glyph: ART.Glyphs.triangleLeft
-		});
+		cb.inject($('container'));
 		
 	});
 		
@@ -107,7 +67,9 @@
 
 <body>
 	
-	<div id="container"></div>
+	<div id="container">
+		<input type="checkbox" id="chk1" />
+	</div>
 	
 </body>
 </html>
