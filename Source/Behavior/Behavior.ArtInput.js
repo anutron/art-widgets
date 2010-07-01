@@ -14,7 +14,6 @@ Behavior.ArtInput = new Behavior.Filter({
 	attach: function(element, container){
 		var parent = element.getParent(':widget');
 		var temp = new Element('span').injectAfter(element);
-		var beforeStyles = element.style.cssText;
 		var type = element.get('data', 'art-input-type');
 		var widget = new ART[type ? type.capitalize() : 'Input']({
 			inputElement: element,

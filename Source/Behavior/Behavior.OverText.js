@@ -1,4 +1,3 @@
-// Copyright (c) 2010, Cloudera, inc. All rights reserved.
 /*
 ---
 description: Sets up all inputs with the css class .overtext to have an OverText instance for inline labeling.
