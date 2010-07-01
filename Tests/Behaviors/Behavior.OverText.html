@@ -1,15 +1,14 @@
-<p>
-	The input below should have some text on top of it that goes away when you click it and enter a value.
-</p>
-<input type="text" data-filters="overtext" title="this is the overtext text..."/>
-
+<div>
+	<p>
+		The input below should have some text on top of it that goes away when you click it and enter a value.
+	</p>
+	<input type="text" data-filters="OverText" title="this is the overtext text..."/>
+</div>
 <a id="detach">detach</a> | <a id="attach">attach</a>
 <script src="/depender/build?require=Widgets/Behavior.OverText"></script>
 <script>
 (function(){
-	var b = new Behavior(document.body, {
-		behaviors: 'overtext'
-	}).applyBehaviors();
+	var b = new Behavior(document.body).applyBehaviors();
 	(function(){
 		b.show();
 	}).delay(10);

@@ -10,11 +10,9 @@ script: Behavior.OverText.js
 
 Behavior.OverText = new Behavior.Filter({
 
-	name: 'overtext',
+	name: 'OverText',
 
-	stringMatch: 'overtext',
-	
-	attach: function(element, container, meta){
+	attach: function(element, container){
 		//create the overtext instance
 		var ot = new OverText(element);
 		//this method updates the text position with a slight delay
