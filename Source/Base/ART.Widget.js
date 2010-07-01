@@ -246,3 +246,5 @@ Element.Properties.widget = {
 
 	
 })();
+
+Selectors.Pseudo.widget = function() { return !! this.get("widget"); }; 
