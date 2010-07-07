@@ -7,7 +7,7 @@ script: Behavior.OverText.js
 ...
 */
 
-Behavior.OverText = new Behavior.Filter('OverText', function(element, container){
+Behavior.addGlobalFilter('OverText', function(element, container){
 	//create the overtext instance
 	var ot = new OverText(element);
 
@@ -26,4 +26,4 @@ Behavior.OverText = new Behavior.Filter('OverText', function(element, container)
 		ot.destroy();
 	});
 
-}).global();
+});

@@ -7,7 +7,7 @@ script: Behavior.ArtInput.js
 ...
 */
 
-Behavior.ArtInput = new Behavior.Filter('ArtInput', function(element, container){
+Behavior.addGlobalFilter('ArtInput', function(element, container){
 
 	//inject a placeholder for the DOM work
 	var temp = new Element('span').injectAfter(element);
@@ -44,4 +44,4 @@ Behavior.ArtInput = new Behavior.Filter('ArtInput', function(element, container)
 	//remove our temporary placeholder
 	temp.dispose();
 
-}).global();
+});
