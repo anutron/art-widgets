@@ -9,9 +9,10 @@ script: Behavior.ArtInput.js
 
 Behavior.ArtInput = new Behavior.Filter('ArtInput', function(element, container){
 
-	var parent = element.getParent(':widget');
 	var temp = new Element('span').injectAfter(element);
 	var type = element.get('data', 'art-input-type');
+	//get the parent widget of the element, if any
+	var parent = element.get('parentWidget');
 
 	var widget = new ART[type ? type.capitalize() : 'Input']({
 		inputElement: element,
@@ -21,7 +22,6 @@ Behavior.ArtInput = new Behavior.Filter('ArtInput', function(element, container)
 		}
 	});
 
-	if (parent) widget.inject(parent.get('widget'), temp, 'after');
 	else widget.inject(temp, temp, 'after');
 
 	this.mark(element, function(){
