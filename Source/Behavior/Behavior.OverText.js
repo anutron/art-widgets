@@ -1,6 +1,6 @@
 /*
 ---
-description: Sets up all inputs with the css class .overtext to have an OverText instance for inline labeling.
+description: Sets up all inputs with the css class .overtext to have an OverText instance for inline labeling. This is a global filter
 provides: [Behavior.OverText]
 requires: [/Behavior, More/OverText]
 script: Behavior.OverText.js
@@ -21,7 +21,7 @@ Behavior.OverText = new Behavior.Filter('OverText', function(element, container)
 	//update the position whenever the behavior container is shown
 	container.addEvent('show', updater);
 
-	this.mark(element, function(){
+	this.markForCleanup(element, function(){
 		container.removeEvent('show', updater);
 		ot.destroy();
 	});
