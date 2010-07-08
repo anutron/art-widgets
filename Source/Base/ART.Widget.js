@@ -257,7 +257,7 @@ Element.Properties.parentWidget = {
 		if (widget) parentWidget = widget.parentWidget;
 		if (!parentWidget) {
 			var parent = this.getParent(':widget');
-			parentWidget = parent.get('widget');
+			if (parent) parentWidget = parent.get('widget');
 		}
 		return parentWidget;
 	}
