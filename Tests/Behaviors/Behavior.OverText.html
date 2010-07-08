@@ -8,16 +8,16 @@
 <script src="/depender/build?require=Widgets/Behavior.OverText"></script>
 <script>
 (function(){
-	var b = new Behavior(document.body).applyBehaviors();
+	var b = new Behavior().apply(document.body);
 	(function(){
 		b.show();
 	}).delay(10);
 
 	$('detach').addEvent('click', function(){
-		b.sweep(document.body);
+		b.cleanup(document.body);
 	});
 	$('attach').addEvent('click', function(){
-		b.applyBehaviors({}, true);
+		b.apply(document.body);
 	});
 })();
 </script>

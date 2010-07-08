@@ -8,7 +8,7 @@
 <script src="/depender/build?require=Widgets/Behavior.OverText,Behavior.ArtInput"></script>
 <script>
 (function(){
-	var b = new Behavior(document.body);
+	var b = new Behavior().apply(document.body);
 	(function(){
 		b.show();
 	}).delay(10);
