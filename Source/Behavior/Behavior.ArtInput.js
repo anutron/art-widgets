@@ -37,10 +37,11 @@ Behavior.addGlobalFilter('ArtInput', function(element, container){
 		widget.eject();
 	});
 
-	//if there's a pre-existing OverText instance, update its position
-	if (element.retrieve('OverText')) element.retrieve('OverText').reposition();
 	//draw the widget
 	widget.draw();
+	//if there's a pre-existing OverText instance, update its position
+	var ot = element.retrieve('OverText');
+	if (ot) ot.reposition.delay(10, ot);
 	//remove our temporary placeholder
 	temp.dispose();
 
