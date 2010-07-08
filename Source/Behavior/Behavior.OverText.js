@@ -11,7 +11,10 @@ Behavior.addGlobalFilter('OverText', function(element, container){
 	//create the overtext instance
 	var ot = new OverText(element);
 	element.get('class').split(' ').each(function(cls) {
-		ot.text.addClass('OverText-'+cls);
+		if (cls) ot.text.addClass('OverText-'+cls);
+	});
+	element.getDataFilters().each(function(filter){
+		if (filter != "OverText") ot.text.addClass('OverText-'+filter);
 	});
 
 	//this method updates the text position with a slight delay
