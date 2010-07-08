@@ -7,7 +7,7 @@ script: Behavior.ArtInput.js
 ...
 */
 
-Behavior.addGlobalFilter('ArtInput', function(element, container){
+Behavior.addGlobalFilter('ArtInput', function(element){
 
 	//inject a placeholder for the DOM work
 	var temp = new Element('span').injectAfter(element);
