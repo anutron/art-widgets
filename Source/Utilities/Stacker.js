@@ -211,12 +211,14 @@ var Stacker = new Class({
 		var right = pos.x + size.x;
 		var containerSize = document.id(document.body).getSize();
 		if (bottom > containerSize.y || right > containerSize.x) {
-			instanceEl.position({
-				relativeTo: instance.options.inject.target,
-				offset: this.options.offset,
-				edge: 'upperLeft',
-				position: 'upperLeft'
-			});
+		        if(instance.options.inject) {
+                                instanceEl.position({
+                                        relativeTo: instance.options.inject.target,
+                                        offset: this.options.offset,
+                                        edge: 'upperLeft',
+                                        position: 'upperLeft'
+                                });
+                        }
 		}
 		
 		return true;
