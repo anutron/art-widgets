@@ -198,7 +198,7 @@ var Stacker = new Class({
 		if (instances.length < 1 || !pos || !current) return false;
 		var instanceEl = document.id(instance);
 		//position near the focused instance, with an offset as defined in the options
-                if(current instanceof ART.Popup) current = current.parentWidget;
+                if(current instanceof ART.Popup && current.parentWidget) current = current.parentWidget;
 		instanceEl.position({
 			relativeTo: document.id(current),
 			offset: this.options.offset,
