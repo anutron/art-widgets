@@ -242,6 +242,7 @@ ART.Popup = new Class({
 	inject: function(){
 		var ret = this.parent.apply(this, arguments);
 		if (this._hiddenByEjection) this.show.delay(1, this);
+		if (!this.getState('hidden') && !this.positioned) this.position();
 		return ret;
 	},
 	
@@ -257,7 +258,11 @@ ART.Popup = new Class({
 			this.setState('hidden', false);
 			this.windowManager.focus(this);
 			this.fireEvent('display').fireEvent('show'); //display event for backwards compat
-			if (!this.positioned) this.position();
+			if (!this.positioned) {
+				if (this.parentWidget || $(document.body).contains($(this))) {
+					this.position();
+				}
+			}
 			this.showIframeShim();
 			if (this.options.mask) this.maskTarget();
 		}
