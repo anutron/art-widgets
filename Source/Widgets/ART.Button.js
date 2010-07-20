@@ -50,6 +50,14 @@ ART.Sheet.define('button.art:disabled', {
 	'glyph-color': 'hsb(0, 0, 5, 0.5)'
 });
 
+ART.Sheet.define('button.art.selected', {
+	'font-color': hsb(50, 100, 10),
+	'glyph-color': hsb(0, 0, 0, 0.8),
+	'background-color': [hsb(210, 30, 100), hsb(210, 40, 80)],
+	'reflection-color': [hsb(0, 0, 100, 1), hsb(0, 0, 0, 0)],
+	'border-color': hsb(0, 0, 0, 0.8)
+});
+
 (function(){
 	
 var Button = ART.Button = new Class({

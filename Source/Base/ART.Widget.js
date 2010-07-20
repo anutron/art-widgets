@@ -249,5 +249,23 @@ Element.Properties.widget = {
 
 };
 
+Element.Properties.parentWidget = {
+
+	get: function(){
+		var parentWidget;
+		var widget = this.get('widget');
+		if (widget) parentWidget = widget.parentWidget;
+		if (!parentWidget) {
+			var parent = this.getParent(':widget');
+			if (parent) parentWidget = parent.get('widget');
+		}
+		return parentWidget;
+	}
+
+};
+
+
 	
 })();
+
+Selectors.Pseudo.widget = function() { return !! this.get("widget"); }; 

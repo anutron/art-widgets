@@ -1,0 +1,11 @@
+<p>
+	The inputs below should be drawn by ART, not your browser, and have a blue outline when they are focused. There should be text on top of them. The second one should have rounded edges and a search icon (magnifying glass).
+</p>
+
+<input type="text" data-filters="ArtInput, OverText" title="overtext text..."/>
+<input type="text" data-filters="ArtInput, OverText" data-art-input-type="search" title="overtext text..."/>
+
+<script src="/depender/build?require=Widgets/Behavior.OverText,Behavior.ArtInput"></script>
+<script>
+new Behavior().apply(document.body);
+</script>
