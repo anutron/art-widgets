@@ -191,7 +191,7 @@ var Stacker = new Class({
 			//(assuming the first one hasn't moved)
 			pos = ['top', 'left', 'edge', 'position', 'relativeTo'].every(function(opt){
 				curOpt = current ? current.options[opt] : null;
-				return curOpt == options[optionspt];
+				return curOpt == options[opt];
 			}, this);
 		}
 		this.focus(instance);
