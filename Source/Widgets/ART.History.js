@@ -257,8 +257,8 @@ ART.History = new Class({
 
 		this.divotContainer = new ART().resize(10, 10).inject(this.location);
 		this.divot = new ART.Shape("M0,0L8,0L4,8L0,0")
-		                    .inject(this.divotContainer)
-		                    .translate(0, -1);
+				    .inject(this.divotContainer)
+				    .translate(0, -1);
 		document.id(this.divotContainer).setStyles(ART.Sheet.lookup(this.toString() + ' divot', 'css'));
 		this.divotContainer.grab(this.divot);
 		window.dc = this.divotContainer;

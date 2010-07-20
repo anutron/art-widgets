@@ -68,8 +68,8 @@ var splitter = {
 			'display': sheet.display
 		});
 		var styles = this.options.orientation == "horizontal" ? 
-		             {'float': 'left', 'overflow-x': 'auto'} : 
-		             {'overflow-y': 'auto'};
+			     {'float': 'left', 'overflow-x': 'auto'} : 
+			     {'overflow-y': 'auto'};
 		var o = this._orientations;
 		this[o.left] = new Element('div', {
 			'class': 'art-splitview-' + o.left,
