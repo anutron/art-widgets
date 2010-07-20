@@ -191,14 +191,14 @@ var Stacker = new Class({
 			//(assuming the first one hasn't moved)
 			pos = ['top', 'left', 'edge', 'position', 'relativeTo'].every(function(opt){
 				curOpt = current ? current.options[opt] : null;
-				return curOpt == options[opt];
+				return curOpt == options[optionspt];
 			}, this);
 		}
 		this.focus(instance);
 		if (instances.length < 1 || !pos || !current) return false;
 		var instanceEl = document.id(instance);
 		//position near the focused instance, with an offset as defined in the options
-                if(current instanceof ART.Popup) current = current.parentWidget;
+		if(current instanceof ART.Popup && current.parentWidget) current = current.parentWidget;
 		instanceEl.position({
 			relativeTo: document.id(current),
 			offset: this.options.offset,
@@ -212,7 +212,7 @@ var Stacker = new Class({
 		var containerSize = document.id(document.body).getSize();
 		if (bottom > containerSize.y || right > containerSize.x) {
 			instanceEl.position({
-				relativeTo: instance.options.inject.target,
+				relativeTo: instanceEl.getParent(),
 				offset: this.options.offset,
 				edge: 'upperLeft',
 				position: 'upperLeft'

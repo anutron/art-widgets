@@ -259,7 +259,7 @@ ART.Popup = new Class({
 			this.windowManager.focus(this);
 			this.fireEvent('display').fireEvent('show'); //display event for backwards compat
 			if (!this.positioned) {
-				if (this.parentWidget || $(document.body).contains($(this))) {
+				if (this.parentWidget || $(document.body).hasChild($(this))) {
 					this.position();
 				}
 			}
