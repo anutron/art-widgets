@@ -120,8 +120,8 @@ ART.Alert = new Class({
 			if (Browser.Engine.trident) holder.dispose();
 			style.width = this.contentSize.x - w; //border is hard coded to 1 on each side
 			style.height = this.contentSize.y - h; //border is hard coded to 1 on each side
-                        if(style.width < 0) style.width = 0;
-                        if(style.height < 0) style.height = 0;
+			if(style.width < 0) style.width = 0;
+			if(style.height < 0) style.height = 0;
 		}
 		this.content.setStyles(style);
 		this.footer.setStyles(ART.Sheet.lookup(this.toString() + ' footer', 'css'));
