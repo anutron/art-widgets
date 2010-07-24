@@ -87,8 +87,10 @@ Behavior.addGlobalFilters({
                         }
                 });
                 var classes = splitview.get('class').split(' ');
+                var filters = splitview.getDataFilters();
                 splitview.destroy();
                 classes.each(split.addClass, split);
+                filters.each(split.element.addDataFilter, split.element);
                 split.resizer = function(x, y){
                                 var offsets = {
                                         x: splitview.get('data', 'split-offset-x', true),
