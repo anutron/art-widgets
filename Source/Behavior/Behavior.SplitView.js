@@ -103,15 +103,15 @@ Behavior.addGlobalFilters({
                                 if (w != undefined && h != undefined) split.resize(w, h);
                                 else split.resizer.delay(1);
                 }.bind(this);
-                events.addEvents({
+                methods.addEvents({
                         resize: split.resizer,
                         show: split.resizer
                 });
-                var size = events.getCurrentJFrameSize();
+                var size = methods.getCurrentSize();
                 split.resizer(size.x, size.y);
-		this.markForCleanup(function(){
+		this.markForCleanup(splitview, function(){
 			splitviews.each(function(splitview) {
-				events.removeEvent('resize', splitview.resizer);
+				methods.removeEvent('resize', splitview.resizer);
 				splitview.eject();
 			}, this);
 		}.bind(this));
