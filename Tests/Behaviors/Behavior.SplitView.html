@@ -1,43 +1,60 @@
-<!--Licensed to Cloudera, Inc. under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  Cloudera, Inc. licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+<style>
+	.border {
+		border: 1px solid #000;
+	}
+	.padded {
+		padding: 10px;
+	}
+</style>
+<div data-filters="SplitView" class="resizable border" style="height:150px; width: 600px;">
+	<div class="left_col padded">
+		this is the left column
+	</div>
+	<div class="right_col padded">
+		<p>and this is the right,<br/>
+		you can resize us by dragging the middle bar around.</p>
+		
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+		<p>This is here to show a scrollbar when there's overflow.</p>
+	</div>
+</div>
 
-    http://www.apache.org/licenses/LICENSE-2.0
+<hr/>
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-			<div data-filters="SplitView" class="resizable">
-				<div class="left_col jframe_padded">
-					this is the left column
-				</div>
-				<div class="right_col jframe_padded">
-					<p>and this is the right,<br/>
-					you can resize us by dragging the middle bar around.</p>
-					
-					<p>Note that the size makes room for the header.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-					<p>This is here to show a scrollbar when there's overflow.</p>
-				</div>
-			</div>
+<p>
+	This splitview is vertically oriented and it's handle has content inside it.
+</p>
+<div data-filters="SplitView" class="resizable border" style="height:230px; width: 600px;">
+	<div class="top_col padded">
+		this is the top column<br/>
+		<a data-splitview-resize="{'top':0}">hide the top</a><br/>
+		<a data-splitview-toggle="{'side': 'bottom', 'hideSplitter': true}">toggle the bottom (hide splitter)</a>
+	</div>
+	<div class="splitter_col" style="background: #88f; padding: 4px">
+		<h4>this is the splitter handle</h4>
+	</div>
+	<div class="bottom_col padded" style="height:100px">
+		and this is the bottom,<br/>
+		you can resize us by dragging the middle bar around.<br/>
+		<a data-splitview-toggle="{'side': 'top', 'hideSplitter': true}">toggle the top</a>
+	</div>
+</div>
+
 <script src="/depender/build?require=Widgets/Behavior.SplitView,Core/DomReady"></script>
 <script>
-new Behavior().apply(document.body);
+var b = new Behavior().apply(document.body);
+(function(){
+	b.show();
+}).delay(10);
+
 </script>

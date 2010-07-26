@@ -2,29 +2,35 @@
 ---
 description: Creates a SplitView instances for all elements that have the css class .splitview (and children with .left_col and .right_col).
 provides: [Behavior.SplitView]
-requires: [/Behavior, Widgets/ART.SplitView]
+requires: [/Behavior, Widgets/ART.SplitView, More/Element.Delegation]
 script: Behavior.SplitView.js
 
 ...
 */
 
+(function(){
+
 Behavior.addGlobalFilters({
 
-	SplitView: function(splitview, methods) {
-		//for all div.splitview containers, get their left and right column and instantiate an ART.SplitView
+	SplitView: function(element, methods) {
+		//get the left and right column and instantiate an ART.SplitView
 		//if the container has the class "resizable" then make it so
 		//ditto for the foldable option
 		//if the left or right columns have explicit style="width: Xpx" assignments
 		//resize the side to match that statement; if both have it, the right one wins
-		var left = splitview.getElement('.left_col');
-		var right = splitview.getElement('.right_col');
-		var top = splitview.getElement('.top_col');
-		var bottom = splitview.getElement('.bottom_col');
+		var left = element.getElement('.left_col');
+		var right = element.getElement('.right_col');
+		var top = element.getElement('.top_col');
+		var bottom = element.getElement('.bottom_col');
+		var originalSize = element.getSize();
+		if (!originalSize.x && element.getStyle('width') != "auto") originalSize.x = element.getStyle('width').toInt();
+		if (!originalSize.y && element.getStyle('height') != "auto") originalSize.y = element.getStyle('height').toInt();
+
 		if (!(left && right) && !(top && bottom)) {
 			methods.error('found split view element, but could not find top/botom or left/right; exiting');
 			return;
 		}
-		splitview.getParent().setStyle('overflow', 'hidden');
+		element.getParent().setStyle('overflow', 'hidden');
 		var conf;
 		if (left) {
 			conf = {
@@ -53,7 +59,7 @@ Behavior.addGlobalFilters({
 		});
 		
 		var styles = {}, splitterHidden;
-		var splitter = splitview.getElement('.splitter_col');
+		var splitter = element.getElement('.splitter_col');
 		if (splitter) {
 			if (splitter.getStyle('display', 'none')) {
 				splitterHidden = true;
@@ -64,56 +70,104 @@ Behavior.addGlobalFilters({
 		}
 		
 		var whichSplit = left ? ART.SplitView : ART.SplitView.Vertical;
-		var parent = splitview.get('parentWidget');
-		var split = new whichSplit({
-			resizable: splitview.hasClass("resizable"),
-			foldable: splitview.hasClass("foldable"),
-			splitterContent: splitview.getElement('.splitter_col'),
+		var parent = element.get('parentWidget');
+		var splitview = new whichSplit({
+			resizable: element.hasClass("resizable"),
+			foldable: element.hasClass("foldable"),
+			splitterContent: element.getElement('.splitter_col'),
 			styles: styles
-		}).inject(parent || splitview, splitview, 'after').draw();
+		}).inject(parent || element, element, 'after').draw();
+		addLinkers(document.id(splitview));
 		var sized;
 		conf.sides.each(function(side) {
-			split['set' + side.capitalize() + 'Content'](conf.elements[side]);
-			split[side].addClass('save_scroll');
+			splitview['set' + side.capitalize() + 'Content'](conf.elements[side]);
+			splitview[side].addClass('save_scroll');
 			if (sized) return;
 			if (conf.elements[side].getStyle('display') == 'none') {
-				split.fold(side, 0, splitterHidden, true);
+				splitview.fold(side, 0, splitterHidden, true);
 				conf.elements[side].setStyle('display', 'block');
 				sized = true;
 			} else if (inlineSize[side]) {
-				split['resize'+side.capitalize()](inlineSize[side]);
+				splitview['resize'+side.capitalize()](inlineSize[side]);
 				sized = true;
 			}
 		});
-		var classes = splitview.get('class').split(' ');
-		var filters = splitview.getDataFilters();
-		splitview.destroy();
-		classes.each(split.addClass, split);
-		filters.each(split.element.addDataFilter, split.element);
-		split.resizer = function(x, y){
-				var offsets = {
-					x: splitview.get('data', 'split-offset-x', true),
-					y: splitview.get('data', 'split-offset-y', true)
+		var classes = element.get('class').split(' ');
+		var filters = element.getDataFilters();
+		element.dispose().store('SplitView', splitview);
+		classes.each(splitview.addClass, splitview);
+		filters.each(splitview.element.addDataFilter, splitview.element);
+		splitview.resizer = function(x, y){
+			var offsets = {
+				x: element.get('data', 'split-offset-x', true),
+				y: element.get('data', 'split-offset-y', true)
+			};
+			if (offsets.x) x = x - offsets.x;
+			if (offsets.y) y = y - offsets.y;
+			if (x != undefined && y != undefined) {
+				originalSize = {
+					x: x,
+					y: y
 				};
-				var w = x;
-				var h = y;
-				if (offsets.x) w = w - offsets.x;
-				if (offsets.y) h = h - offsets.y;
-				if (w != undefined && h != undefined) split.resize(w, h);
-				else split.resizer.delay(1);
+				splitview.resize(x, y);
+			} else {
+				splitview.resizer.delay(1);
+			}
 		}.bind(this);
 		methods.addEvents({
-			resize: split.resizer,
-			show: split.resizer
+			resize: splitview.resizer,
+			show: function(){
+				var size = methods.getContainerSize();
+				if (!size) size = originalSize;
+				splitview.resizer(size.x, size.y);
+			}
 		});
-		var size = methods.getCurrentSize();
-		split.resizer(size.x, size.y);
-		this.markForCleanup(splitview, function(){
-			splitviews.each(function(splitview) {
-				methods.removeEvent('resize', splitview.resizer);
-				splitview.eject();
-			}, this);
+		var size = methods.getContainerSize() || element.getSize();
+		if (size.x || size.y) splitview.resizer(size.x, size.y);
+		this.markForCleanup(element, function(){
+			methods.removeEvent('resize', splitview.resizer);
+			splitview.eject();
 		}.bind(this));
 	}
 
 });
+
+var getWidget = function(link) {
+	var splitview = link.getParent('[data-filters*=SplitView]');
+	if (!splitview) return;
+	return splitview.get('widget');
+};
+
+var addLinkers = function(element){
+	element.addEvents({
+		'click:relay([data-splitview-resize])': function(e, link){
+			if (document.id(e.target).get('tag') == 'a') e.preventDefault();
+			var widget = getWidget(link);
+			if (!widget) return;
+			var resize = link.get('data', 'splitview-resize', true);
+			if (!resize) return;
+			var side;
+			var sides = ['left', 'right', 'top', 'bottom'];
+			for (key in resize) {
+				if (sides.contains(key)) side = key;
+			}
+			widget.fold(side, resize[side], resize.hideSplitter).chain(function(){
+				widget.fireEvent('postFold', [resize, e, link]);
+			});
+		},
+
+		'click:relay([data-splitview-toggle])': function(e, link){
+			if (document.id(e.target).get('tag') == 'a') e.preventDefault();
+			var widget = getWidget(link);
+			if (!widget) return;
+			var resize = link.get('data', 'splitview-toggle', true);
+			if (!resize) return;
+			widget.toggle(resize.side, resize.hideSplitter).chain(function(){
+				widget.fireEvent('postFold', [resize, e, link]);
+			});
+		}
+	});
+};
+
+})();
+
