@@ -1,9 +1,9 @@
 /*
 ---
 description: Adds an instance of Form.Validator.Inline to any form with the class .form-validator.
-provides: [CCS.JFrame.FormValidator]
-requires: [/CCS.JFrame, More/Form.Validator.Inline]
-script: CCS.JFrame.FormValidator.js
+provides: [Behavior.FormValidator]
+requires: [/Behavior, More/Form.Validator.Inline]
+script: Behavior.FormValidator.js
 
 ...
 */
@@ -11,11 +11,11 @@ script: CCS.JFrame.FormValidator.js
 Behavior.addGlobalFilters({
 
 	//validates any form with the .form-validator class
-	form_validator: function(element, events) {
+	FormValidator: function(element, events) {
 		//instantiate the form validator
 		var validator = element.retrieve('validator');
 		if (!validator) {
-			validator = new Form.Validator.Inline(form, {
+			validator = new Form.Validator.Inline(element, {
 				useTitles: true
 			});
 		}
