@@ -21,7 +21,7 @@ ART.Button.Icon = new Class({
 		this.parent(options);
 		if (this.options.icon) {
 			this.iconDiv = new Element('div', this.options.icon);
-			this.iconDiv.inject($(this));
+			this.iconDiv.inject(document.id(this));
 		}
 	}
 
@@ -123,16 +123,16 @@ Behavior.addGlobalFilters({
 			b.eject();
 		});
 		if (button.retrieve('_ArtButton:styles')) {
-			$(b).setStyle('margin-left', button.retrieve('_ArtButton:styles').buttonElementMargin);
+			document.id(b).setStyle('margin-left', button.retrieve('_ArtButton:styles').buttonElementMargin);
 		}
 		
 
-		$(b).setStyles({
+		document.id(b).setStyles({
 			background: 'none',
 			padding: 0,
 			position: (pos == 'static') ? 'relative' : pos
 		});
-		if (isInButtonBar) $(b).setStyle('float', 'left');
+		if (isInButtonBar) document.id(b).setStyle('float', 'left');
 		var parent = button.get('parentWidget');
 		if (!isAnchor) {
 			b.inject(parent || button, button, 'after');
