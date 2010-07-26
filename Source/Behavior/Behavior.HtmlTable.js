@@ -25,3 +25,21 @@ Behavior.addGlobalFilters({
 
 });
 
+HtmlTable.defineParsers({
+	//A parser to allow numeric sorting by any value.
+	dataSortNumeric: {
+		match: /data-sort-numeric/,
+		convert: function() {
+			return this.get('data', 'sort-value');
+		},
+		number: true
+	},
+	//A parser to allow lexicographical sorting by any string.
+	dataSortString: {
+		match: /data-sort-string/,
+		convert: function() {
+			return this.get('data', 'sort-string');
+		},
+		number: false 
+	}
+});
