@@ -17,7 +17,7 @@ Behavior.addGlobalFilters({
 		var ht = new HtmlTable(table, {
 			sortable: table.hasClass('sortable'),
 			selectable: isSelectable,
-			allowMultiSelect: table.hasClass('allowMultiSelect'),
+			allowMultiSelect: table.hasClass('multiselect'),
 			useKeyboard: false
 		});
 		if (isSelectable && !selectable) selectable = ht;
