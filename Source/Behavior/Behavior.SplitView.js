@@ -11,8 +11,6 @@ script: Behavior.SplitView.js
 Behavior.addGlobalFilters({
 
 	SplitView: function(splitview, methods) {
-		
-		methods.getContentElement().setStyle('overflow', 'hidden');
 		//for all div.splitview containers, get their left and right column and instantiate an ART.SplitView
 		//if the container has the class "resizable" then make it so
 		//ditto for the foldable option
@@ -23,9 +21,10 @@ Behavior.addGlobalFilters({
 		var top = splitview.getElement('.top_col');
 		var bottom = splitview.getElement('.bottom_col');
 		if (!(left && right) && !(top && bottom)) {
-			dbug.warn('found split view element, but could not find top/botom or left/right; exiting');
+			methods.error('found split view element, but could not find top/botom or left/right; exiting');
 			return;
 		}
+		splitview.getParent().setStyle('overflow', 'hidden');
 		var conf;
 		if (left) {
 			conf = {
@@ -118,47 +117,3 @@ Behavior.addGlobalFilters({
 	}
 
 });
-
-/*(function(){
-
-var getWidget = function(link) {
-	var splitview = link.getParent('.splitview');
-	if (!splitview) return;
-	return splitview.get('widget');
-};
-CCS.JFrame.addGlobalLinkers({
-
-	'[data-splitview-resize]': function(e, link){
-		var widget = getWidget(link);
-		if (!widget) return;
-		e.stop();
-		var resize = link.get('data', 'splitview-resize', true);
-		if (!resize) return;
-		var side;
-		var sides = ['left', 'right', 'top', 'bottom'];
-		for (key in resize) {
-			if (sides.contains(key)) side = key;
-		}
-		widget.fold(side, resize[side], resize.hideSplitter).chain(partialPostFold.bind(this, [resize, e, link]));
-	},
-
-	'[data-splitview-toggle]': function(e, link){
-		var widget = getWidget(link);
-		if (!widget) return;
-		e.stop();
-		var resize = link.get('data', 'splitview-toggle', true);
-		if (!resize) return;
-		widget.toggle(resize.side, resize.hideSplitter).chain(partialPostFold.bind(this, [resize, e, link]));
-	}
-
-});
-
-var partialPostFold = function(data, event, link){
-	if (!$(document.body).hasChild(link)) return;
-	if (data.partialRefresh) {
-		if ($type(data.partialRefresh) == "string") link = new Element('a', { href: data.partialRefresh });
-		this.invokeLinker('.ccs-fake_refresh', link, event);
-	}
-};
-
-})();*/

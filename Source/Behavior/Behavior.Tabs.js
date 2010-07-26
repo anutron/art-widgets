@@ -10,12 +10,12 @@ script: Behavior.Tabs.js
 
 Behavior.addGlobalFilters({
 
-	Tabs: function(element, events) {
+	Tabs: function(element, methods) {
 		var tabGroup = element;
 		var tabs = tabGroup.getElements('.tabs>li');
 		var sections = tabGroup.getElements('.tab_sections>li');
 		if (tabs.length != sections.length) {
-			dbug.warn('warning; sections and sections are not of equal number. tabs: %o, sections: %o', tabs, sections);
+			methods.error('warning; sections and sections are not of equal number. tabs: %o, sections: %o', tabs, sections);
 			return;
 		}
 		var ts = new TabSwapper({
