@@ -7,7 +7,7 @@ script: Behavior.OverText.js
 ...
 */
 
-Behavior.addGlobalFilter('OverText', function(element, events){
+Behavior.addGlobalFilter('OverText', function(element, methods){
 	//create the overtext instance
 	var ot = new OverText(element);
 	element.get('class').split(' ').each(function(cls) {
@@ -25,10 +25,10 @@ Behavior.addGlobalFilter('OverText', function(element, events){
 	};
 
 	//update the position whenever the behavior element is shown
-	events.addEvent('show', updater);
+	methods.addEvent('show', updater);
 
 	this.markForCleanup(element, function(){
-		events.removeEvent('show', updater);
+		methods.removeEvent('show', updater);
 		ot.destroy();
 	});
 

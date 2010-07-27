@@ -9,7 +9,7 @@ script: Behavior.HtmlTable.js
 
 Behavior.addGlobalFilters({
 
-	HtmlTable: function(element, events){
+	HtmlTable: function(element, methods){
 		//make all data tables sortable
 		var table = element;
 		var selectable;

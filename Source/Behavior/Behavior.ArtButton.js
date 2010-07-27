@@ -64,7 +64,7 @@ Behavior.addGlobalFilters({
 		that text as the visible value, so we must replace it with a regular DOM element). The button input is hidden. When the art button
 		is clicked, the click event is fired on the button so it still behaves the same way.
 	*/
-	ArtButton: function(button, events) {
+	ArtButton: function(button, methods) {
 		var pos = button.getStyle('position');
 		if (pos != 'absolute' && button.getStyle('display') == 'inline') button.setStyle('display', 'inline-block');
 		var text, element;

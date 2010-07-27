@@ -11,7 +11,7 @@ script: Behavior.FormValidator.js
 Behavior.addGlobalFilters({
 
 	//validates any form with the .form-validator class
-	FormValidator: function(element, events) {
+	FormValidator: function(element, methods) {
 		//instantiate the form validator
 		var validator = element.retrieve('validator');
 		if (!validator) {
