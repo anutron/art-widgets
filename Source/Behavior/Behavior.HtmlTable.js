@@ -13,8 +13,15 @@ Behavior.addGlobalFilters({
 		//make all data tables sortable
 		var selectable;
 		var isSelectable = (element.hasClass('sortable') && !element.hasClass('noSelect')) || element.hasClass('selectable');
+		var firstSort;
+		element.getElements('thead th').each(function(th, i){
+			if (firstSort == null && !th.hasClass('noSort')) firstSort = i;
+			if (th.hasClass('defaultSort')) firstSort = i;
+		});
 		new HtmlTable(element, {
+			sortIndex: firstSort,
 			sortable: element.hasClass('sortable'),
+			classNoSort: 'noSort',
 			selectable: isSelectable,
 			allowMultiSelect: element.hasClass('multiselect'),
 			useKeyboard: !element.hasClass('noKeyboard')
@@ -28,7 +35,7 @@ HtmlTable.defineParsers({
 	dataSortNumeric: {
 		match: /data-sort-numeric/,
 		convert: function() {
-			return this.get('data', 'sort-value');
+			return this.getElement('[data-sort-numeric]').get('data', 'sort-numeric').toInt();
 		},
 		number: true
 	},
@@ -36,7 +43,7 @@ HtmlTable.defineParsers({
 	dataSortString: {
 		match: /data-sort-string/,
 		convert: function() {
-			return this.get('data', 'sort-string');
+			return this.getElement('[data-sort-string]').get('data', 'sort-string');
 		},
 		number: false 
 	}
