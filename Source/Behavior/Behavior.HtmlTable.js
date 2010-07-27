@@ -11,16 +11,14 @@ Behavior.addGlobalFilters({
 
 	HtmlTable: function(element, methods){
 		//make all data tables sortable
-		var table = element;
 		var selectable;
-		var isSelectable = (table.hasClass('sortable') && !table.hasClass('noSelect')) || table.hasClass('selectable');
-		var ht = new HtmlTable(table, {
-			sortable: table.hasClass('sortable'),
+		var isSelectable = (element.hasClass('sortable') && !element.hasClass('noSelect')) || element.hasClass('selectable');
+		new HtmlTable(element, {
+			sortable: element.hasClass('sortable'),
 			selectable: isSelectable,
-			allowMultiSelect: table.hasClass('multiselect'),
+			allowMultiSelect: element.hasClass('multiselect'),
 			useKeyboard: false
 		});
-		if (isSelectable && !selectable) selectable = ht;
 	}
 
 });
