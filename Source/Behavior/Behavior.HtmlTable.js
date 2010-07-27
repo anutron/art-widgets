@@ -17,7 +17,7 @@ Behavior.addGlobalFilters({
 			sortable: element.hasClass('sortable'),
 			selectable: isSelectable,
 			allowMultiSelect: element.hasClass('multiselect'),
-			useKeyboard: false
+			useKeyboard: !element.hasClass('noKeyboard')
 		});
 	}
 
