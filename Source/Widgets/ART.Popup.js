@@ -456,8 +456,10 @@ ART.Popup = new Class({
 		var bottom = pos.y + size.y;
 		var right = pos.x + size.x;
 		var containerSize = document.id(window.getDocument()).getSize();
-		if (bottom > containerSize.y) this.element.setStyle('top', containerSize.y - size.y + (offset.y || 0));
-		if (right > containerSize.x) this.element.setStyle('left', containerSize.x - size.x + (offset.x || 0));
+		var y = containerSize.y - size.y + (offset.y || 0);
+		var x = containerSize.x - size.x + (offset.x || 0);
+		if (bottom > containerSize.y) this.element.setStyle('top', y > 0 ? y : 0);
+		if (right > containerSize.x) this.element.setStyle('left', x > 0 ? x : 0);
 		return true;
 	}
 

@@ -474,8 +474,11 @@ ART.Window = new Class({
 			// compute the height and width for the instance
 			var ranges = this.getSizeRange();
 			if (style.height != null && style.width != null) {
-				cs.height = style.height.limit(ranges.minHeight, ranges.maxHeight);
-				cs.width = style.width.limit(ranges.minWidth, ranges.maxWidth);
+				if (window.paused) debugger;
+				cs.height = style.height.limit(ranges.minHeight, ranges.maxHeight < ranges.minHeight ? ranges.minHeight : ranges.maxHeight);
+				cs.width = style.width.limit(ranges.minWidth, ranges.maxWidth < ranges.minWidth ? ranges.minWidth : ranges.maxWidth);
+				if (cs.height < cs.headerHeight + cs.footerHeight) cs.height = cs.headerHeight + cs.footerHeight;
+				if (cs.width < cs.headerWidth + cs.footerWidth) cs.width = cs.headerWidth + cs.footerWidth;
 
 				this.currentHeight = cs.height;
 				this.currentWidth = cs.width;
