@@ -87,7 +87,7 @@ Behavior.addGlobalFilters({
 				splitview.fold(side, 0, splitterHidden, true);
 				conf.elements[side].setStyle('display', 'block');
 				sized = true;
-			} else if (inlineSize[side]) {
+			} else if (inlineSize[side] != null) {
 				splitview['resize'+side.capitalize()](inlineSize[side]);
 				sized = true;
 			}
