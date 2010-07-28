@@ -339,10 +339,20 @@ ART.Popup = new Class({
 		this.touchDrag = new Touch(handle);
 		handle.setStyle('cursor', 'move');
 		var size, containerSize;
+		var docEvents = {
+			mouseleave: function(){
+				this._mousedOut = true;
+			}.bind(this),
+			mouseenter: function(){
+				this._mousedOut = false;
+			}.bind(this)
+		};
 		this.touchDrag.addEvent('start', function(){
 			this.fireEvent('drag:start');
+			document.id(document.body).addEvents(docEvents);
 			this.startTop = this.element.offsetTop;
 			this.startLeft = this.element.offsetLeft;
+			this.startSize = this.element.getSize();
 			if (this.options.constrainToContainer) {
 				size = this.element.getSize();
 				var container = document.id(this.options.constrainToContainer) || this.element.getParent();
@@ -350,11 +360,11 @@ ART.Popup = new Class({
 			}
 		}.bind(this));
 		this.touchDrag.addEvent('move', function(dx, dy){
+			if (this._mousedOut) return;
 			this._displayForDrag(true);
 			var top = this.startTop + dy;
 			var left = this.startLeft + dx;
-			if (top < 0) top = 0;
-			if (left < 0) left = 0;
+			var size = this.startSize;
 			if (this.options.constrainToContainer) {
 				if (top + size.y > containerSize.y) top = containerSize.y - size.y;
 				if (left + size.x > containerSize.x) left = containerSize.x - size.x;
@@ -368,6 +378,7 @@ ART.Popup = new Class({
 		var end = function(){
 			this._displayForDrag(false);
 			this.fireEvent('drag:end');
+			document.id(document.body).removeEvents(docEvents);
 		}.bind(this);
 		this.touchDrag.addEvent('end', end);
 		this.touchDrag.addEvent('cancel', end);
