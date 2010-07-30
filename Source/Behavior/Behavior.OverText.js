@@ -19,9 +19,7 @@ Behavior.addGlobalFilter('OverText', function(element, methods){
 
 	//this method updates the text position with a slight delay
 	var updater = function(){
-		(function(){
-			ot.reposition();
-		}).delay(10);
+		ot.reposition.delay(10, ot);
 	};
 
 	//update the position whenever the behavior element is shown

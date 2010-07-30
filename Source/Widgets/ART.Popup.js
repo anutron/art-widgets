@@ -96,6 +96,9 @@ ART.Popup = new Class({
 		useIframeShim: true,
 		cascaded: false,
 		constrainToContainer: false,
+		constrainToDimensions: {
+			top: 0
+		},
 		showOnInject: true
 	},
 
@@ -338,7 +341,7 @@ ART.Popup = new Class({
 		handle = handle || this.options.dragHandle || this.element;
 		this.touchDrag = new Touch(handle);
 		handle.setStyle('cursor', 'move');
-		var size, containerSize;
+		var size, containerSize, constrainedDimensions;
 		var docEvents = {
 			mouseleave: function(){
 				this._mousedOut = true;
@@ -368,6 +371,12 @@ ART.Popup = new Class({
 			if (this.options.constrainToContainer) {
 				if (top + size.y > containerSize.y) top = containerSize.y - size.y;
 				if (left + size.x > containerSize.x) left = containerSize.x - size.x;
+			} else if (this.options.constrainToDimensions) {
+				var dim = this.options.constrainToDimensions;
+				if (dim.top != null && top < dim.top) top = dim.top;
+				else if (dim.bottom != null && top + size.y > dim.bottom) top = dim.bottom - size.y;
+				if (dim.left != null && left < dim.left) left = dim.left;
+				else if (dim.right != null && left + size.x > right) left = dim.right - size.x;
 			}
 			this.element.setStyles({
 				'top': top,
@@ -379,6 +388,7 @@ ART.Popup = new Class({
 			this._displayForDrag(false);
 			this.fireEvent('drag:end');
 			document.id(document.body).removeEvents(docEvents);
+			this._mousedOut = false;
 		}.bind(this);
 		this.touchDrag.addEvent('end', end);
 		this.touchDrag.addEvent('cancel', end);
