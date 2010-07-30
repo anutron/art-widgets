@@ -371,7 +371,8 @@ ART.Popup = new Class({
 			if (this.options.constrainToContainer) {
 				if (top + size.y > containerSize.y) top = containerSize.y - size.y;
 				if (left + size.x > containerSize.x) left = containerSize.x - size.x;
-			} else if (this.options.constrainToDimensions) {
+			}
+			if (this.options.constrainToDimensions) {
 				var dim = this.options.constrainToDimensions;
 				if (dim.top != null && top < dim.top) top = dim.top;
 				else if (dim.bottom != null && top + size.y > dim.bottom) top = dim.bottom - size.y;
