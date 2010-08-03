@@ -16,12 +16,13 @@ Behavior.addGlobalFilters({
 			if (firstSort == null && !th.hasClass('noSort')) firstSort = i;
 			if (th.hasClass('defaultSort')) firstSort = i;
 		});
+		var multiselectable = element.hasClass('multiselect');
 		new HtmlTable(element, {
 			sortIndex: firstSort,
 			sortable: element.hasClass('sortable'),
 			classNoSort: 'noSort',
-			selectable: element.hasClass('selectable'),
-			allowMultiSelect: element.hasClass('multiselect'),
+			selectable: element.hasClass('selectable') || multiselectable,
+			allowMultiSelect: multiselectable,
 			useKeyboard: !element.hasClass('noKeyboard')
 		});
 	}
