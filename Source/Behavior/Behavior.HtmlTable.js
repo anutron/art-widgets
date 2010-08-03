@@ -11,8 +11,6 @@ Behavior.addGlobalFilters({
 
 	HtmlTable: function(element, methods){
 		//make all data tables sortable
-		var selectable;
-		var isSelectable = (element.hasClass('sortable') && !element.hasClass('noSelect')) || element.hasClass('selectable');
 		var firstSort;
 		element.getElements('thead th').each(function(th, i){
 			if (firstSort == null && !th.hasClass('noSort')) firstSort = i;
@@ -22,7 +20,7 @@ Behavior.addGlobalFilters({
 			sortIndex: firstSort,
 			sortable: element.hasClass('sortable'),
 			classNoSort: 'noSort',
-			selectable: isSelectable,
+			selectable: element.hasClass('selectable'),
 			allowMultiSelect: element.hasClass('multiselect'),
 			useKeyboard: !element.hasClass('noKeyboard')
 		});
