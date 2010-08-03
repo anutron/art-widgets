@@ -232,6 +232,7 @@ ART.Popup = new Class({
 			};
 			mask._popupDestroyer = function(){
 				mask.destroy();
+                                target.eliminate('Popup:mask');
 			};
 			this.addEvents({
 				hide: mask._popupHider,
