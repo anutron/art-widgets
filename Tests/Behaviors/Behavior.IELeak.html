@@ -1,0 +1,25 @@
+<body>
+<p>
+	The inputs below should be drawn by ART, not your browser, and have a blue outline when they are focused. There should be text on top of them. The second one should have rounded edges and a search icon (magnifying glass).
+</p>
+<div style="display:none" class="elems">
+<input type="button" data-filters="ArtButton" style="background: url(/asset/widgets/mootools.png) left 50%; padding: 6px 6px 6px 20px; margin: 10px 0px;" data-icon-styles="{'width': 14, 'height': 14}" name="MooTools!">
+<input type="button" data-filters="ArtButton" style="background: url(/asset/widgets/github.png) left 50%; padding: 6px 6px 6px 20px; margin: 10px 0px;" data-icon-styles="{'width': 14, 'height': 14}" name="GitHub!">
+<input type="button" data-filters="ArtButton" style="background: url(/asset/widgets/mootools.png) left 50%; padding: 6px 6px 6px 20px; margin: 10px 0px;" data-icon-styles="{'width': 14, 'height': 14}" name="MooTools!">
+<input type="button" data-filters="ArtButton" style="background: url(/asset/widgets/github.png) left 50%; padding: 6px 6px 6px 20px; margin: 10px 0px;" data-icon-styles="{'width': 14, 'height': 14}" name="GitHub!">
+</div>
+<div class="stage"></div>
+<script src="/depender/build?require=Widgets/Behavior.ArtButton,Core/DomReady"></script>
+<script>
+var b =  new Behavior();
+var stage = document.getElement('.stage');
+var elems = document.getElement('.elems');
+b.apply(stage);
+var repeatBehavior = function() {
+  b.cleanup(stage);
+  stage.empty().adopt(elems.clone());
+  b.apply(stage);
+}
+repeatBehavior.periodical(2000);
+</script>
+</body>
