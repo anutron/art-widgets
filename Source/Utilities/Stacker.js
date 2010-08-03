@@ -105,8 +105,10 @@ var Stacker = new Class({
 	},
 
 	//z-index orders a layer so that a specific instance is on top
-	bringToFront: function(instance){
-		if (!instance || (instance == this.focused && instance._stacked)) return;
+	//instance - the instance to bring to the top
+	//force - (boolean) if true, will bring the instance to the top even if it's already focused
+	bringToFront: function(instance, force){
+		if (!instance || ((instance == this.focused && instance._stacked) && !force)) return;
 		this.layers.each(function(layer) {
 			var i = 0;
 			if (!layer.instances.contains(instance)) return;
@@ -149,11 +151,15 @@ var Stacker = new Class({
 	},
 
 	//focus an instance, (optionally) bringing it to front
-	focus: function(instance, noOrder){
-		if (!instance || (instance == this.focused && instance._stacked && instance.getState('focused'))) return;
+	//instance - the instance to focus
+	//noOrder - (boolean) if true will skip the z-index order phase
+	//force - (boolean) if true, will bring the instance to the top even if it's already focused
+	focus: function(instance, noOrder, force){
+		if (window.paused) debugger;
+		if (!instance || (instance == this.focused && instance._stacked && instance.getState('focused') && !force)) return;
 		if (this.focused && this.focused != instance) this.focused.blur();
 		if (instance.getState('disabled')) return;
-		if (!noOrder) this.bringToFront(instance);
+		if (!noOrder || force) this.bringToFront(instance, force);
 		instance._focus();
 		this.focused = instance;
 	},

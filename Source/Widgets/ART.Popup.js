@@ -274,8 +274,8 @@ ART.Popup = new Class({
 	},
 
 	//bring this instance to the front
-	bringToFront: function(){
-		this.windowManager.bringToFront(this);
+	bringToFront: function(force){
+		this.windowManager.bringToFront(this, force);
 		return this;
 	},
 
@@ -432,8 +432,8 @@ ART.Popup = new Class({
 		return this;
 	},
 
-	_focusWindow: function(){
-		this.windowManager.focus(this);
+	_focusWindow: function(force){
+		this.windowManager.focus(this, false, force);
 		return this;
 	},
 
