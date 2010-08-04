@@ -254,8 +254,8 @@ var Widget = UI.Widget = new Class({
 
 	contains: function(widget) {
 		if (this._childWidgets.contains(widget)) return true;
-		for(var len = this._childWidgets.length - 1; len > 0; len = len - 1) {
-			if (this._childWidgets[len].contains(widget)) return true;
+		for(var i = this._childWidgets.length - 1; i >= 0; i--) {
+			if (this._childWidgets[i].contains(widget)) return true;
 		}
 		return false;
 	},
