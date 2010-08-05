@@ -174,6 +174,10 @@ ART.Window = new Class({
 		this.element.addClass('art-window');
 		document.id(this).store('art-window', this);
 		if (this.options.resizable) this.makeResizeable();
+		this.addEvents({
+			'drag:end': this._resetMinMaxState.bind(this),
+			'resize:end': this._resetMinMaxState.bind(this)
+		});
 	},
 
 	_build: function(){
@@ -299,26 +303,73 @@ ART.Window = new Class({
 		this.minMax('minimize');
 	},
 
+	_minMaxState: {
+		// minimize: false,
+		// maximize: false,
+		// actualState: null
+	},
+
+	_resetMinMaxState: function(){
+		delete this._minMaxState.minimize;
+		delete this._minMaxState.maximize;
+		delete this._minMaxState.actualState;
+	},
+
 	//minimize/maximize a window; call minimize/maximize methods instead
 	minMax: function(operation){
-		if ($type(this.options[operation]) == "function") {
-			this.options[operation].call(this);
+		this.enable();
+		if (!this._restoreState) this._restoreState = this.getSize();
+		op = this.getMinMaxAction(operation);
+		var w, h;
+		if (op == "restore") {
+			w = this._restoreState.width;
+			h = this._restoreState.height;
+			this._restoreState = null;
+			this._resetMinMaxState();
 		} else {
-			this.enable();
 			var style = this.getSizeRange();
-			var prefix = operation == 'maximize' ? 'max' : 'min';
-			var w = style[prefix + 'Width'], h = style[prefix + 'Height'];
-			var beforeStr = 'before'+ operation.capitalize();
-			if (this[beforeStr]) {
-				w = this[beforeStr].width;
-				h = this[beforeStr].height;
-				this[beforeStr] = null;
-			} else {
-				this[beforeStr] = this.getSize();
-			}
-			this.resize(w, h);
+			this._minMaxState[op] = true;
+			if (op != operation) this._minMaxState[operation] = false;
+			this._minMaxState.actualState = op;
+			var prefix = op == 'maximize' ? 'max' : 'min';
+			w = style[prefix + 'Width'];
+			h = style[prefix + 'Height'];
 		}
-		this.fireEvent(operation, [w, h]).fireEvent('unshade');
+		this.resize(w, h);
+		this.fireEvent(op, [w, h]).fireEvent('unshade');
+	},
+
+	getMinMaxAction: function(operation){
+		var maximized = this._minMaxState.maximize;
+		var minimized = this._minMaxState.minimize;
+		//if not min or maxed, then perform operation (min or max)
+		if (operation != "restore" && !minimized && !maximized) {
+			return operation;
+		//if both max and min have been clicked
+		//and the actual state is minimized and the user clicks min, restore to maximize
+		} else if (minimized && maximized && 
+					(operation == 'minimize' && this._minMaxState.actualState == 'minimize')
+			) {
+			return 'maximize';
+		//if both max and min have been clicked
+		//and the actual state is max and the user clicks max, restore
+		} else if (minimized && maximized &&
+					(operation == 'maximize' && this._minMaxState.actualState == 'maximize')
+			) {
+			return 'restore';
+		} else if (operation == "maximize" && minimized) {
+			//if min, and click max, max
+			return 'maximize';
+		} else if (
+				//if max, and click max, restore
+				(operation == 'maximize' && maximized) || 
+				//if min, and click min, and wasn't maxed, restore
+				(operation == "minimize" && minimized)
+			) {
+			return "restore";
+		} else {
+			return operation;
+		}
 	},
 
 	//create resize handle and make the window instance resizable.
