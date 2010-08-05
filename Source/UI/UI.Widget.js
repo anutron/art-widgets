@@ -71,7 +71,7 @@ var Widget = UI.Widget = new Class({
 	/* classNames */
 	
 	addClass: function(className){
-		this._classNames.push(className);
+		if (className) this._classNames.push(className);
 		return this;
 	},
 	

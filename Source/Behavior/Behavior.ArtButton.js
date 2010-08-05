@@ -8,6 +8,14 @@ script: Behavior.ArtButton.js
 ...
 */
 
+ART.Sheet.define('button.art:disabled', {
+	'icon-opacity': 0.5
+});
+
+ART.Sheet.define('button.art', {
+	'icon-opacity': 1
+});
+
 ART.Button.Icon = new Class({
 
 	Extends: ART.Button,
@@ -23,6 +31,12 @@ ART.Button.Icon = new Class({
 			this.iconDiv = new Element('div', this.options.icon);
 			this.iconDiv.inject(document.id(this));
 		}
+	},
+
+	draw: function(){
+		this.parent.apply(this, arguments);
+		if (this.iconDiv) this.iconDiv.setStyle('opacity', this.currentSheet.iconOpacity);
+		return this;
 	}
 
 });
@@ -143,6 +157,7 @@ Behavior.addGlobalFilters({
 		} else {
 			if (parent) b.register(parent);
 		}
+		if (element.hasClass('disabled') || element.get('disabled') == 'true') b.disable();
 		b.draw();
 	}
 
