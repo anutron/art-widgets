@@ -157,7 +157,7 @@ Behavior.addGlobalFilters({
 		} else {
 			if (parent) b.register(parent);
 		}
-		if (element.hasClass('disabled') || element.get('disabled') == 'true') b.disable();
+		if (button.hasClass('disabled') || button.get('disabled') == 'true') b.disable();
 		b.draw();
 	}
 
