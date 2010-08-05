@@ -54,7 +54,10 @@ Behavior.addGlobalFilters({
 		var inlineSize = {};
 		conf.sides.each(function(side) {
 			var size = conf.elements[side].style[conf.dimension];
-			if (size) inlineSize[side] = size.toInt();
+			if (size) {
+				inlineSize[side] = size.toInt();
+				conf.fixed = side;
+			}
 			conf.elements[side].setStyle(conf.dimension, 'auto');
 		});
 		
@@ -75,7 +78,8 @@ Behavior.addGlobalFilters({
 			resizable: element.hasClass("resizable"),
 			foldable: element.hasClass("foldable"),
 			splitterContent: element.getElement('.splitter_col'),
-			styles: styles
+			styles: styles,
+			fixed: conf.fixed || 'left'
 		}).inject(parent || element, element, 'after').draw();
 		addLinkers(document.id(splitview));
 		var sized;
