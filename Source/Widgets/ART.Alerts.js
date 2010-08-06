@@ -225,7 +225,8 @@ ART.Prompt = new Class({
 					this.parentWidget.fireEvent('confirm', this.parentWidget.getPromptValue());
 				}
 			}
-		]
+		],
+                detectInput: true
 	},
 	initialize: function(){
 		this.parent.apply(this, arguments);
@@ -237,7 +238,7 @@ ART.Prompt = new Class({
 				if (input) input.select();
 			}).delay(100, this);
 		});
-		this.makePromptInput();
+		if(this.options.detectInput) this.makePromptInput();
 	},
 	makePromptInput: function(){
 		if (!this.content.getElement('form') && !this.content.getElements('input, textarea, select').length) {
