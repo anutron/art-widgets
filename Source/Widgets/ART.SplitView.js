@@ -57,6 +57,13 @@ var splitter = {
 		this._build();
 	},
 
+	getSides: function(){
+		var o = this._orientations;
+		var sides = {};
+		sides[o.left] = this[o.left];
+		sides[o.right] = this[o.right];
+		return sides;
+	},
 	_build: function(){
 		document.id(this.canvas).dispose();
 		var sheet = this.setSheet();
