@@ -268,5 +268,9 @@ Element.Properties.parentWidget = {
 	
 })();
 
-//Checking if this.get is present for IE traversals of element trees.  If an element hasn't been touched by Mootools, this.get doesn't exist.
-Selectors.Pseudo.widget = function() {  return this.get ? !! this.get("widget")  : false; };
+//Checking if this.get is present for IE traversals of element trees.
+//If an element hasn't been touched by Mootools, this.get doesn't exist.
+//Ergo, the element doesn't have a widget assigned to it.
+Selectors.Pseudo.widget = function() {
+	return this.get ? !! this.get("widget")  : false;
+};

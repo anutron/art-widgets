@@ -57,11 +57,11 @@ var holder = new Element('div', {
 var tmp = new Element('div').inject(holder);
 
 ART.Alert = new Class({
-	
+
 	Extends: ART.Window,
-	
+
 	name: 'window',
-	
+
 	options: {
 		close: false,
 		minimize: false,
@@ -85,9 +85,9 @@ ART.Alert = new Class({
 			var button = this.alertButtons[0];
 			if (button) button.focus();
 		}.bind(this));
-		
+
 		new ART.Keyboard(this, this.options.keyboardOptions);
-		
+
 		this.attachKeys({
 			'keyup:esc': function(e) {
 				this.hide();
@@ -98,7 +98,7 @@ ART.Alert = new Class({
 	draw: function(newSheet){
 		var cs = this.currentSheet;
 		var sheet = this.parent(newSheet);
-		
+
 		if (!this.content) return;
 
 		var style = ART.Sheet.lookup(this.toString() + ' content', 'css');
@@ -115,7 +115,7 @@ ART.Alert = new Class({
 					}
 				});
 			});
-			
+
 			tmp.style.cssText = '';
 			if (Browser.Engine.trident) holder.dispose();
 			style.width = this.contentSize.x - w; //border is hard coded to 1 on each side
@@ -175,9 +175,9 @@ ART.alert = function(caption, content, callback, options) {
 
 
 ART.Confirm = new Class({
-	
+
 	Extends: ART.Alert,
-	
+
 	options: {
 		className: 'art alert confirm',
 		resizable: false,
@@ -194,6 +194,7 @@ ART.Confirm = new Class({
 		]
 	}
 });
+
 ART.confirm = function(caption, content, callback, options) {
 	return new ART.Confirm(
 		$extend(options || {}, {
@@ -211,7 +212,7 @@ var isVisible = function(element){
 };
 
 ART.Prompt = new Class({
-	
+
 	Extends: ART.Confirm,
 
 	options: {
@@ -226,7 +227,7 @@ ART.Prompt = new Class({
 				}
 			}
 		],
-                detectInput: true
+		detectInput: true
 	},
 	initialize: function(){
 		this.parent.apply(this, arguments);

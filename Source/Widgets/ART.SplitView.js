@@ -64,6 +64,7 @@ var splitter = {
 		sides[o.right] = this[o.right];
 		return sides;
 	},
+
 	_build: function(){
 		document.id(this.canvas).dispose();
 		var sheet = this.setSheet();

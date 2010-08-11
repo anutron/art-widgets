@@ -11,15 +11,15 @@
 <div class="stage"></div>
 <script src="/depender/build?require=Widgets/Behavior.ArtButton,Core/DomReady"></script>
 <script>
-var b =  new Behavior();
+var b = new Behavior();
 var stage = document.getElement('.stage');
 var elems = document.getElement('.elems');
 b.apply(stage);
 var repeatBehavior = function() {
-  b.cleanup(stage);
-  stage.empty().adopt(elems.clone());
-  b.apply(stage);
-}
+	b.cleanup(stage);
+	stage.empty().adopt(elems.clone());
+	b.apply(stage);
+};
 repeatBehavior.periodical(2000);
 </script>
 </body>
