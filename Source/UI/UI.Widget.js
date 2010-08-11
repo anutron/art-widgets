@@ -261,7 +261,7 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	isDestroyed: function(){
-		if (!this.element || !this.element.parentNode) return;
+		return !this.element || !this.element.parentNode;
 	},
 	
 	grab: function(){
