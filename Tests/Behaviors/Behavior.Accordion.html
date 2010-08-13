@@ -1,0 +1,17 @@
+<p> Below is an accordion, only one of the target areas should be visible at a time, dependent on which toggle was clicked last. </p>
+<div data-filters="Accordion">
+  <ul>
+    <li class="toggle">Toggle 1</li>
+    <li class="toggle">Toggle 2</li>
+    <li class="toggle">Toggle 3</li>
+  </ul>
+  <div class="target">This area is controlled by Toggle 1.</div>
+  <div class="target">This area is controlled by Toggle 2.</div>
+  <div class="target">This area is controlled by Toggle 3.</div>
+</div>
+
+
+<script src="/depender/build?require=Widgets/Behavior.Accordion,Core/DomReady"></script>
+<script>
+new Behavior().apply(document.body);
+</script>
