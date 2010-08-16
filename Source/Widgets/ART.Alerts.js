@@ -253,18 +253,23 @@ ART.Prompt = new Class({
 			this.input = new Element('input', {
 				value: this.options.defaultValue || '',
 				type: 'text',
-				styles: styles,
-				events: {
-					keydown: function(e) {
-						if (e.key == 'enter') {
-							this.fireEvent('confirm', this.getPromptValue());
-							this.hide();
-							Keyboard.stop(e);
-						}
-					}.bind(this)
-				}
+				styles: styles
 			}).inject(this.inputContainer);
 		}
+	},
+	findInputs: function(){
+		this.content.getElements('input, textarea').each(function(element){
+			if (element.retrieve('_promptSetup')) return;
+			element.addEvents({
+				keydown: function(e) {
+					if (e.key == 'enter') {
+						this.fireEvent('confirm', this.getPromptValue());
+						this.hide();
+						Keyboard.stop(e);
+					}
+				}.bind(this)
+			}).store('_promptSetup', true);
+		}, this);
 	},
 	getPromptValue: function(){
 		if (this.input) return this.input.get('value');
