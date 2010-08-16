@@ -1,0 +1,72 @@
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+	</style>
+	
+	<p>There should be two buttons below, one that reads "Google Search" and one that reads "I'm Feeling Lucky". Clicking each will add a counter that increments each time you click, resizing the button to accommodate the new text.</p>
+	
+	<div id="container"></div>
+	<script src="/depender/build?require=Widgets/ART.Button,Widgets/ART.Glyphs"></script>
+	<script type="text/javascript">
+	
+	UI.Sheet.define('button.art', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+
+	UI.Sheet.define('button.cross', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'padding': [1,1,1,1],
+		'pill': true,
+		'height': 14,
+		'width': 14,
+		'cornerRadius': 7,
+		'cursor': 'pointer',
+		'glyph-color': hsb(0, 0, 0, 0.6),
+		'glyph-height': 4,
+		'glyph-width': 4,
+		'glyph-top': 1,
+		'glyph-left': 1
+	});
+	
+	(function(){
+		window.gs = new ART.Button({text: 'Google Search', className: 'button art', id: 'GoogleSearch', tabIndex: 1});
+		
+		gs.inject($('container'));
+		
+		var x = 0;
+		gs.addEvent('press', function(){
+			x++;
+			gs.setText('Google Search... (' +  x + ')');
+		});
+		
+		window.fl = new ART.Button({text: 'I\'m Feeling Lucky', className: 'button art', id: 'FeelingLucky', tabIndex: 2});
+		
+		fl.inject($('container'));
+		var i = 0;
+		fl.addEvent('press', function(){
+			i++;
+			fl.setText('I\'m Feeling Lucky (' +  i + ')');
+		});
+		
+		window.cross = new ART.Button({glyph: ART.Glyphs.smallCross, className: 'button cross art', id: 'close'});
+		
+		cross.inject($('container'));
+		
+		window.left = new ART.Button({
+			className: 'art navLeft',
+			tabIndex: 1,
+			glyph: ART.Glyphs.triangleLeft
+		});
+		
+	})();
+		
+	</script>
