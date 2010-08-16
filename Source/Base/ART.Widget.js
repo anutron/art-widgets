@@ -2,7 +2,7 @@
 ---
 name: ART.Widget
 description: ART Widget Class
-requires: [UI.Widget, Core/Class, Core/Element.Style, Core/Element.Event, ART/ART.Base]
+requires: [UI.Widget, Core/Class, Core/Element.Style, Core/Element.Event, ART/ART.Base, Core/Selectors]
 provides: ART.Widget
 ...
 */

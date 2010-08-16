@@ -114,7 +114,6 @@ var Button = ART.Button = new Class({
 			}
 		}
 		if (sheet.cursor) document.id(this).setStyle('cursor', cs.cursor);
-		// if (Hash.getLength(sheet)) console.log('»', this._classNames.join(' '), ':', 'Drawing', Hash.getLength(sheet), 'properties', Hash.getKeys(sheet));
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
 		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
@@ -189,7 +188,13 @@ var Button = ART.Button = new Class({
 		this.textBox = this.textLayer.measure();
 		cs.width = Math.round(this.textBox.width) + cs.padding[1] + cs.padding[3];
 		cs.height = Math.round(this.textBox.height) + cs.padding[0] + cs.padding[2];
-		if (!noDraw) this.deferDraw();
+		if (!noDraw) {
+			this.setStyles({
+				width: cs.width,
+				height: cs.height
+			});
+			this.deferDraw();
+		}
 	},
 	
 	getSize: function(){
