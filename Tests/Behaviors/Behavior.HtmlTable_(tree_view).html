@@ -1,0 +1,293 @@
+<style>
+table {
+	border: solid #777;
+	border-width: 0px 0px 1px 1px;
+	margin: 10px 0px;
+}
+thead {
+	background: #777;
+	border-bottom: 1px solid #333;
+	color: #fff;
+}
+thead th {
+	background: #999;
+}
+tbody tr.table-tr-odd td {
+	background: #f3f3f3;
+}
+td, th {
+	padding: 4px;
+	border-right: 1px solid #777;
+	border-top: 1px solid #777;
+	overflow: hidden;
+	white-space: nowrap;
+}
+a.expand {
+	display: block;
+	float: left;
+	width: 10px;
+	height: 10px;
+	background: url(/asset/more/divots.png);
+	position: relative;
+	top: 4px;
+	left: -4px;
+}
+tr.table-expanded a.expand {
+	background: url(/asset/more/divots.png) 0px -14px;
+}
+table tr:hover > td, table tr.table-tr-hovered td {
+	background-color: #d4e7f8;
+	color: #000;
+	cursor: pointer;
+}
+table tr.selected td, table tr.table-tr-selected td, table tr.selected td a, table tr.table-tr-selected td a {
+	background-color: #3875d7;
+	color: #fff;
+}
+
+.hidden {
+	display: none;
+}
+</style>
+<p>The table below will appear to be a tree view table immediately, even before scripts are loaded. It will become interactive once the scripts have loaded. You should be able to click a section's expand arrow to expand it. Keys should work - up and down to navigate, shift + up and down to multiselect, left and right to collapse and expand sections.</p>
+<table id="tree2" data-filters="HtmlTable" class="selectable treeView multiselect">
+	<thead>
+		<th>Name</th>
+		<th>Date Modified</th>
+		<th>Size</th>
+	</thead>
+		<tbody>
+			<tr class="table-folder table-depth-0" id="docs2">
+				<td>
+					<a class="expand"></a>
+					Documents
+				</td>
+				<td>Jul 10, 2010 1:39pm</td>
+				<td>--</td>
+			</tr>
+				<tr class="hidden table-depth-1">
+					<td>Resume.pdf</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+				<tr class="hidden table-depth-1">
+					<td>notes.txt</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+				<tr class="hidden table-folder table-depth-1">
+					<td>
+						<a class="expand"></a>
+						Receipts
+					</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+						<tr class="hidden table-depth-2">
+							<td>starbucks.txt</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-2">
+							<td>safeway.txt</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-2">
+							<td>movies.txt</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-folder table-depth-2">
+							<td>
+								<a class="expand"></a>
+								Taxes
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-3">
+							<td>
+								2008 Taxes.pdf
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-3">
+							<td>
+								2009 Taxes.pdf
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-3">
+							<td>
+								2010 Taxes.pdf
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-folder table-depth-2">
+							<td>
+								<a class="expand"></a>
+								Pictures</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-3">
+							<td>
+								Baby.jpg
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="hidden table-depth-2">
+							<td>
+								Bar.txt
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+				<tr class="table-depth-0">
+					<td>
+						Foo.txt
+					</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+			</tbody>
+</table>
+
+<p>The table below will turn into a treeview on startup. It will appear to be a normal table until then. The add row link above the table will add a new item inside the Documents folder.</p>
+<a id="addRow">Add Row to Documents</a>
+<table id="tree" data-filters="HtmlTable" class="selectable treeView buildTree">
+	<thead>
+		<th>Name</th>
+		<th>Date Modified</th>
+		<th>Size</th>
+	</thead>
+		<tbody>
+			<tr class="table-depth-0" id="docs">
+				<td>
+					Documents
+				</td>
+				<td>Jul 10, 2010 1:39pm</td>
+				<td>--</td>
+			</tr>
+				<tr class="table-depth-1">
+					<td>Resume.pdf</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+				<tr class="table-depth-1">
+					<td>notes.txt</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+				<tr class="table-depth-1">
+					<td>
+						Receipts
+					</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+						<tr class="table-depth-2">
+							<td>starbucks.txt</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-2">
+							<td>safeway.txt</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-2">
+							<td>movies.txt</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-2">
+							<td>
+								Taxes
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-3">
+							<td>
+								2008 Taxes.pdf
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-3">
+							<td>
+								2009 Taxes.pdf
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-3">
+							<td>
+								2010 Taxes.pdf
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-2">
+							<td>Pictures</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-3">
+							<td>
+								Baby.jpg
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+						<tr class="table-depth-2">
+							<td>
+								Bar.txt
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+					<tr class="table-depth-1">
+						<td>
+							Candy
+						</td>
+						<td>Jul 10, 2010 1:39pm</td>
+						<td>--</td>
+					</tr>
+						<tr class="table-depth-2">
+							<td>
+								Snickers.txt
+							</td>
+							<td>Jul 10, 2010 1:39pm</td>
+							<td>--</td>
+						</tr>
+				<tr class="table-depth-0">
+					<td>
+						Foo.txt
+					</td>
+					<td>Jul 10, 2010 1:39pm</td>
+					<td>--</td>
+				</tr>
+			</tbody>
+</table>
+
+<script src="/depender/build?require=Widgets/Behavior.HtmlTable,Core/Selectors"></script>
+<script>
+var b = new Behavior().apply(document.body);
+$(document.body).addEvent('click:relay(table)', function(e, tbl){
+	tbl.retrieve('HtmlTable').keyboard.activate();
+});
+$$('table')[0].retrieve('HtmlTable').keyboard.activate();
+$('addRow').addEvent('click', function(e){
+	e.stop();
+	var parent = $('docs');
+	var table = parent.getParent('table').retrieve('HtmlTable');
+	table.injectChild(['A Document.txt', 'Jul 10, 2010 1:39pm', '--'], {}, parent);
+});
+</script>
