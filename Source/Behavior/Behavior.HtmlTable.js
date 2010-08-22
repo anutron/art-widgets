@@ -2,7 +2,7 @@
 ---
 description: Creates instances of HtmlTable for any table with the css class .ccs-data_table with additional options for sortability and selectability.
 provides: [Behavior.HtmlTable]
-requires: [/Behavior, More/HtmlTable.Sort, More/HtmlTable.Zebra, More/HtmlTable.Select]
+requires: [/Behavior, More/HtmlTable.Sort, More/HtmlTable.Zebra, More/HtmlTable.Select, More/HtmlTable.Tree]
 script: Behavior.HtmlTable.js
 ...
 */
@@ -19,11 +19,13 @@ Behavior.addGlobalFilters({
 		var multiselectable = element.hasClass('multiselect');
 		new HtmlTable(element, {
 			sortIndex: firstSort,
-			sortable: element.hasClass('sortable'),
+			sortable: element.hasClass('sortable') && !element.hasClass('treeview'),
 			classNoSort: 'noSort',
 			selectable: element.hasClass('selectable') || multiselectable,
 			allowMultiSelect: multiselectable,
-			useKeyboard: !element.hasClass('noKeyboard')
+			useKeyboard: !element.hasClass('noKeyboard'),
+			enableTree: element.hasClass('treeView'),
+			noBuild: !element.hasClass('buildTree')
 		});
 	}
 
