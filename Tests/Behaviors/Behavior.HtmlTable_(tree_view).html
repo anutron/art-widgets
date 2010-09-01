@@ -280,9 +280,6 @@ table tr.selected td, table tr.table-tr-selected td, table tr.selected td a, tab
 <script src="/depender/build?require=Widgets/Behavior.HtmlTable,Core/Selectors"></script>
 <script>
 var b = new Behavior().apply(document.body);
-$(document.body).addEvent('click:relay(table)', function(e, tbl){
-	tbl.retrieve('HtmlTable').keyboard.activate();
-});
 $$('table')[0].retrieve('HtmlTable').keyboard.activate();
 $('addRow').addEvent('click', function(e){
 	e.stop();
