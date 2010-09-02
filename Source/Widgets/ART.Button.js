@@ -2,7 +2,7 @@
 ---
 name: ART.Button
 description: Base Button Class
-requires: [ART.Sheet, ART.Widget, Press, ART/ART.Rectangle, ART/ART.Font, Touch/Touch, ART/Moderna]
+requires: [ART.Box, Press, ART/ART.Font, Touch/Touch, ART/Moderna]
 provides: ART.Button
 ...
 */
@@ -62,7 +62,7 @@ ART.Sheet.define('button.art.selected', {
 	
 var Button = ART.Button = new Class({
 	
-	Extends: ART.Widget,
+	Extends: ART.Box,
 	
 	name: 'button',
 	
@@ -75,13 +75,6 @@ var Button = ART.Button = new Class({
 	
 	initialize: function(options){
 		this.parent(options);
-		
-		this.shadowLayer = new ART.Rectangle;
-		this.borderLayer = new ART.Rectangle;
-		this.reflectionLayer = new ART.Rectangle;
-		this.backgroundLayer = new ART.Rectangle;
-		this.canvas.grab(this.shadowLayer, this.borderLayer, this.reflectionLayer, this.backgroundLayer);
-		
 		
 		var self = this;
 		
@@ -134,23 +127,12 @@ var Button = ART.Button = new Class({
 		
 		if (boxChanged){
 			this.resize(cs.width, cs.height + 1);
-			
-			var brt = cs.borderRadius[0], brr = cs.borderRadius[1];
-			var brb = cs.borderRadius[2], brl = cs.borderRadius[3];
+			this._drawBox(cs);
 
-			var pill = ((cs.width < cs.height) ? cs.width : cs.height) / 2;
-			this.shadowLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius).translate(0, 1);
-			this.borderLayer.draw(cs.width, cs.height, cs.pill ? pill : cs.borderRadius);
-			this.reflectionLayer.draw(cs.width - 2, cs.height - 2, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 1);
-			this.backgroundLayer.draw(cs.width - 2, cs.height - 3, cs.pill ? pill - 1 : [brt - 1, brr - 1, brb - 1, brl - 1]).translate(1, 2);
 			if (this.glyphLayer) this.glyphLayer.translate(cs.glyphLeft, cs.glyphTop);
 			else if (this.textLayer) this.textLayer.translate(cs.padding[3], cs.padding[0]);
 		}
 		
-		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(cs.shadowColor));
-		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(cs.borderColor));
-		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, $splat(cs.reflectionColor));
-		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(cs.backgroundColor));
 		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(cs.glyphColor));
 		else if (sheet.fontColor && this.textLayer) this.textLayer.fill.apply(this.textLayer, $splat(cs.fontColor));
 
