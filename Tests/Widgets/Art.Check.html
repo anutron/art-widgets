@@ -1,0 +1,17 @@
+<div id="container">
+	<input type="checkbox" id="chk1" />
+</div>
+
+<script src="/depender/build?require=Widgets/ART.Check"></script>
+
+	<script type="text/javascript">
+	
+		var cb = new ART.Check({
+			inputElement: $('chk1'),
+			tabIndex: 1,
+			blurOnElementBlur: true
+		});
+		
+		cb.inject($('container'));
+		
+	</script>

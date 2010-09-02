@@ -1,0 +1,25 @@
+<style type="text/css">
+
+	.ARTRadioButton {
+		margin: 2px;
+	}
+
+</style>
+
+<div id="container">
+	<input type="radio" name="group1", value="one" id="one"/>
+	<input type="radio" name="group1", value="two" id="two"/>
+	<input type="radio" name="group1", value="three" id="three"/>
+	<input type="radio" name="group1", value="four" id="four"/>
+</div>
+
+<script src="/depender/build?require=Widgets/ART.Radio"></script>
+<script>
+	['one', 'two', 'three', 'four'].each(function(num) {
+		new ART.Radio({
+			tabIndex: 1,
+			blurOnElementBlur: true,
+			inputElement: $(num)
+		}).addClass('ARTRadioButton').inject($('container'));
+	});
+</script>
