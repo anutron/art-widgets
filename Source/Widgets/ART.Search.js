@@ -47,15 +47,17 @@ var Search = ART.Search = new Class({
 				height: 22, width: 22, position: 'absolute', top: 1, left: 1, background: 'red'
 			}).inject(this.element).set('opacity', 0, true);
 
-			this.menu = new ART.Menu({tabIndex: this.options.tabIndex, left: function(){
-				return self.element.offsetLeft;
-			}, top: function(){
-				return self.element.offsetTop + sheet.height + 3;
-			}}, menu, this.menuHandler);
+			this.menu = new ART.Menu({
+				tabIndex: this.options.tabIndex,
+				left: function(){
+					return self.element.offsetLeft;
+				}, top: function(){
+					return self.element.offsetTop + sheet.height + 3;
+				}}, menu, this.menuHandler);
 			
 			if (this.options.updatePlaceholderWithMenuValue){
 				this.menu.addEvent('press', function(element){
-					self.updatePlaceholder(element.get('text'));
+					self.updatePlaceholder(element.get('value') || element.get('text'));
 				});
 			}
 			
