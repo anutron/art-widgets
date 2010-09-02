@@ -59,7 +59,12 @@
 
 <script src="/depender/build?require=Widgets/ART.Search"></script>
 <script>
-	var search = new ART.Search({tabIndex: 10}, $('search-menu'));
+	var search = new ART.Search({
+		tabIndex: 10, 
+		styles: {
+			glyph: ART.Glyphs.searchArrow
+		}
+	}, $('search-menu'));
 	search.inject($('container'));
 
 	var menu = new ART.Menu({tabIndex: 10}, $('file-menu'), $('file-button'));
