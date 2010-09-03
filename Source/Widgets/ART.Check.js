@@ -120,7 +120,7 @@ var Check = ART.Check = new Class({
 		
 		this.glyphLayer.fill.apply(this.glyphLayer, $splat((this.input.checked) ? cs.glyphColor : cs.inactiveGlyphColor));
 		
-		return this;
+		return sheet;
 	}
 	
 });

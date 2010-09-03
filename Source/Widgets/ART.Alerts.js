@@ -125,6 +125,8 @@ ART.Alert = new Class({
 		}
 		this.content.setStyles(style);
 		this.footer.setStyles(ART.Sheet.lookup(this.toString() + ' footer', 'css'));
+
+		return sheet;
 	},
 
 	makeButtons: function(){

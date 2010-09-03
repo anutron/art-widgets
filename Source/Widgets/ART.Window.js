@@ -507,27 +507,27 @@ ART.Window = new Class({
 
 	//redraws the instance
 	draw: function(newSheet){
-		if (this.getState('destroyed')) return;
+		var sheet = this.parent(newSheet);
+		if (this.getState('destroyed')) return sheet;
 		var cs = this.currentSheet;
-		var style = this.parent(newSheet);
 		if (cs.display == "none") {
 			document.id(this).setStyle('display', 'none');
-			return;
-		} else if (style.display) {
+			return sheet;
+		} else if (sheet.display) {
 			document.id(this).setStyle(cs.display);
 		}
-		if (style.height == undefined || style.width == undefined) {
-			style.height = this.currentHeight || cs.height;
-			style.width = this.currentWidth || cs.width;
+		if (sheet.height == undefined || sheet.width == undefined) {
+			sheet.height = this.currentHeight || cs.height;
+			sheet.width = this.currentWidth || cs.width;
 		}
-		var sizeChanged = style.width != this.currentWidth || style.height != this.currentHeight;
+		var sizeChanged = sheet.width != this.currentWidth || sheet.height != this.currentHeight;
 		if (sizeChanged) {
 			// compute the height and width for the instance
 			var ranges = this.getSizeRange();
-			if (style.height != null && style.width != null) {
+			if (sheet.height != null && sheet.width != null) {
 				if (window.paused) debugger;
-				cs.height = style.height.limit(ranges.minHeight, ranges.maxHeight < ranges.minHeight ? ranges.minHeight : ranges.maxHeight);
-				cs.width = style.width.limit(ranges.minWidth, ranges.maxWidth < ranges.minWidth ? ranges.minWidth : ranges.maxWidth);
+				cs.height = sheet.height.limit(ranges.minHeight, ranges.maxHeight < ranges.minHeight ? ranges.minHeight : ranges.maxHeight);
+				cs.width = sheet.width.limit(ranges.minWidth, ranges.maxWidth < ranges.minWidth ? ranges.minWidth : ranges.maxWidth);
 				if (cs.height < cs.headerHeight + cs.footerHeight) cs.height = cs.headerHeight + cs.footerHeight;
 				if (cs.width < cs.headerWidth + cs.footerWidth) cs.width = cs.headerWidth + cs.footerWidth;
 
@@ -551,8 +551,8 @@ ART.Window = new Class({
 		}
 
 		//render the content, header, and resize
-		this.renderContent(style);
-		this.renderHeaderText(style);
+		this.renderContent(sheet);
+		this.renderHeaderText(sheet);
 		this.renderResize();
 		document.id(this.canvas).setStyles({top: -1, left: -1});
 		if (this.shim) this.shim.position();

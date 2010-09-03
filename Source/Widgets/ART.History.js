@@ -335,7 +335,7 @@ ART.History = new Class({
 		var sheet = this.parent(newSheet);
 		var cs = this.currentSheet;
 
-		if (this.current_selector == this.toString()) return;
+		if (this.current_selector == this.toString()) return sheet;
 		this.current_selector = this.toString();
 		this.element.setStyles({
 			height: cs.height,
@@ -358,7 +358,7 @@ ART.History = new Class({
 		this.editor.setStyles(ART.Sheet.lookup(this.toString() + (this.history.length ? ' input': ' input:disabled'), 'css'));
 		this.resize(cs.width);
 		this.element.setStyles(ART.Sheet.lookup(this.toString(), 'css'));
-		
+		return sheet;
 	},
 	
 	destroy: function(){

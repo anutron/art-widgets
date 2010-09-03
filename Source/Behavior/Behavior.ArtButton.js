@@ -34,9 +34,9 @@ ART.Button.Icon = new Class({
 	},
 
 	draw: function(){
-		this.parent.apply(this, arguments);
+		var sheet = this.parent.apply(this, arguments);
 		if (this.iconDiv) this.iconDiv.setStyle('opacity', this.currentSheet.iconOpacity);
-		return this;
+		return sheet;
 	}
 
 });

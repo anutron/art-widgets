@@ -163,7 +163,7 @@ ART.FunkyGlass = new Class({
 		
 		path.move(width, -tl + height);
 		
-		this.parent(path);
+		return this.parent(path);
 		
 	}
 	

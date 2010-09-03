@@ -134,7 +134,7 @@ var Input = ART.Input = new Class({
 		
 		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(cs.glyphColor));
 
-		return this;
+		return sheet;
 		
 	}
 	

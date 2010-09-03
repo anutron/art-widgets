@@ -101,7 +101,7 @@ var Button = ART.Button = new Class({
 		if (sheet.display) {
 			if (cs.display == "none") {
 				document.id(this).setStyle('display', 'none');
-				return this;
+				return sheet;
 			} else {
 				document.id(this).setStyle('display', cs.display);
 			}
@@ -136,7 +136,7 @@ var Button = ART.Button = new Class({
 		if (sheet.glyphColor && this.glyphLayer) this.glyphLayer.fill.apply(this.glyphLayer, $splat(cs.glyphColor));
 		else if (sheet.fontColor && this.textLayer) this.textLayer.fill.apply(this.textLayer, $splat(cs.fontColor));
 
-		return this;
+		return sheet;
 		
 	},
 	

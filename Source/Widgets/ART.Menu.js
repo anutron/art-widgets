@@ -211,6 +211,7 @@ var Menu = ART.Menu = new Class({
 		
 		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(cs.borderColor));
 		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(cs.backgroundColor));
+		return sheet;
 	},
 
 	position: function(x, y){

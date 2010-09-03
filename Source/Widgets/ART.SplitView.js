@@ -201,7 +201,7 @@ var splitter = {
 			this._resizeSide(side, this[dim] != null ? this[dim] : cs['fixed' + cap]);
 		}
 		
-		return this;
+		return sheet;
 	},
 	
 	resize: function(w, h){
