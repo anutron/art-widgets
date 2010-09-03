@@ -1,9 +1,64 @@
+<style type="text/css">
+	
+	.menu {
+		font-family: Arial;
+		font-size: 13px;
+		list-style: none;
+		margin: 0;
+		padding: 5px 1px;
+	}
+	
+	.menu li {
+		padding: 0;
+		margin: 0;
+	}
+	
+	.menu a {
+		outline: none;
+		margin: 0;
+		display: block;
+		padding: 2px 16px;
+		text-decoration: none;
+		color: #222;
+	}
+	
+	.menu a.selected {
+		color: #fff;
+		background: url(/asset/widgets/bg.png);
+		text-shadow: 0px 1px 1px #0e4f9c;
+	}
+	
+	.menu li.menu-separator {
+		height: 4px;
+		border-bottom: 1px solid #ddd;
+		margin-bottom: 4px;
+	}
+	.menu li.menu-separator a {
+		display: none;
+	}
+	
+	.overTxtLabel {
+		color: #999;
+		font-size: 10px;
+	}
+	
+</style>
+
 <p>
 	The inputs below should be drawn by ART, not your browser, and have a blue outline when they are focused. There should be text on top of them. The second one should have rounded edges and a search icon (magnifying glass).
 </p>
 
 <input type="text" data-filters="ArtInput, OverText" title="overtext text..."/>
 <input type="text" data-filters="ArtInput, OverText" data-art-input-type="search" title="overtext text..."/>
+
+<input type="text" data-filters="ArtInput, OverText" data-art-input-type="search" data-art-input-menu="#search-menu" title="overtext text..."/>
+<select id="search-menu" class="menu">
+	<option class="menu-item">Google</option>
+	<option class="menu-item">Google Images</option>
+	<option class="menu-separator">------------</option>
+	<option class="menu-item">Yahoo</option>
+	<option class="menu-item">Yahoo Images</option>
+</select>
 
 <script src="/depender/build?require=Widgets/Behavior.OverText,Widgets/Behavior.ArtInput"></script>
 <script>
