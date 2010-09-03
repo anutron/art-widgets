@@ -16,6 +16,11 @@ Behavior.addGlobalFilter('ArtInput', function(element){
 	//get the parent widget of the element, if any
 	var parent = element.get('parentWidget');
 
+	var menu = element.get('data', 'art-input-menu');
+	if (menu) menu = element.getParent().getElement(menu);
+	var styles = {};
+	if (menu) styles.glyph = ART.Glyphs.searchArrow;
+
 	//make a new instance of ART.Input or ART.Search (bad values will throw an error here)
 	var widget = new ART[type ? type.capitalize() : 'Input']({
 		//the input is the input element passed in.
@@ -25,8 +30,9 @@ Behavior.addGlobalFilter('ArtInput', function(element){
 		//when the ART.Input/Search instance fires its change event, pass it through to the input element
 		onChange: function() {
 			element.fireEvent('change');
-		}
-	});
+		},
+		styles: styles
+	}, menu);
 
 	//inject our new widget into the DOM and the widget tree (if there is a parent widget)
 	if (parent) widget.inject(parent, temp, 'after');
