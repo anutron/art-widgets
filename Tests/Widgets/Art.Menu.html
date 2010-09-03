@@ -33,6 +33,9 @@
 		border-bottom: 1px solid #ddd;
 		margin-bottom: 4px;
 	}
+	.menu li.menu-separator a {
+		display: none;
+	}
 	
 </style>
 
@@ -56,6 +59,13 @@
 	<li class="menu-item"><a href="#">Yahoo</a></li>
 	<li class="menu-item"><a href="#">Yahoo Images</a></li>
 </ul>
+<select id="search-menu2" class="menu">
+	<option class="menu-item">Google</option>
+	<option class="menu-item">Google Images</option>
+	<option class="menu-separator">------------</option>
+	<option class="menu-item">Yahoo</option>
+	<option class="menu-item">Yahoo Images</option>
+</select>
 
 <script src="/depender/build?require=Widgets/ART.Search"></script>
 <script>
@@ -66,6 +76,14 @@
 		}
 	}, $('search-menu'));
 	search.inject($('container'));
+
+	var search2 = new ART.Search({
+		tabIndex: 10, 
+		styles: {
+			glyph: ART.Glyphs.searchArrow
+		}
+	}, $('search-menu2'));
+	search2.inject($('container'));
 
 	var menu = new ART.Menu({tabIndex: 10}, $('file-menu'), $('file-button'));
 	menu.inject($('container'));

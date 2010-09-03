@@ -48,6 +48,10 @@ var Menu = ART.Menu = new Class({
 		this.borderLayer = new ART.Rectangle;
 		this.backgroundLayer = new ART.Rectangle;
 		this.canvas.grab(this.borderLayer, this.backgroundLayer);
+		if (document.id(menu).get('tag') == 'select') {
+			this._selectMenu = menu.setStyle('display','none');
+			menu = this.convertSelectToList(menu);
+		}
 		this.menu = menu.setStyles({
 			position: 'absolute',
 			top: 0,
@@ -62,6 +66,25 @@ var Menu = ART.Menu = new Class({
 		this._handlers = $$(handlers);
 		this.attach();
 		this.hide();
+	},
+
+	convertSelectToList: function(select){
+		menu = new Element('ul', {'class':select.get('class')});
+		select.getElements('option').each(function(option){
+			new Element('li', {
+				'class': option.get('class')
+			}).adopt(
+				new Element('a', {
+					text: option.get('text') || option.get('value'),
+					events: {
+						mouseup: function(){
+							option.selected = true;
+						}
+					}
+				})
+			).inject(menu);
+		});
+		return menu;
 	},
 
 	_selectedIndex: -1,
