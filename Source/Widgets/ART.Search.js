@@ -57,7 +57,7 @@ var Search = ART.Search = new Class({
 			
 			if (this.options.updatePlaceholderWithMenuValue){
 				this.menu.addEvent('press', function(element){
-					self.updatePlaceholder(element.get('value') || element.get('text'));
+					self.updatePlaceholder(element.get('text') || element.get('value'));
 				});
 			}
 			
