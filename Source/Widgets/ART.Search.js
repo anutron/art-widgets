@@ -44,7 +44,7 @@ var Search = ART.Search = new Class({
 			var self = this, sheet = this.getSheet();
 			
 			this.menuHandler = new Element('div').setStyles({
-				height: 22, width: 22, position: 'absolute', top: 1, left: 1, background: 'red'
+				height: 22, width: 22, position: 'absolute', top: 1, left: 1, background: 'red', cursor: 'pointer'
 			}).inject(this.element).set('opacity', 0, true);
 
 			this.menu = new ART.Menu({
@@ -63,7 +63,7 @@ var Search = ART.Search = new Class({
 			
 		}
 	},
-	
+
 	inject: function(wi, el, wh){
 		this.parent(wi, el, wh);
 		if (this.menu && this.element.parentNode) this.menu.inject(this, this.element.parentNode);
