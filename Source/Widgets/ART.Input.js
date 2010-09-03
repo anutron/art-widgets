@@ -99,6 +99,7 @@ var Input = ART.Input = new Class({
 	updatePlaceholder: function(placeholder){
 		this.options.placeholder = placeholder;
 		this._holdPlace();
+		this.fireEvent('updatePlaceholder', placeholder);
 		return this;
 	},
 	
