@@ -27,6 +27,7 @@ Behavior.addGlobalFilter('ArtInput', function(element){
 		inputElement: element,
 		//no placeholder; use the OverText filter if you want that
 		placeholder: null,
+		updatePlaceholderWithMenuValue: false,
 		//when the ART.Input/Search instance fires its change event, pass it through to the input element
 		onChange: function() {
 			element.fireEvent('change');
@@ -46,8 +47,19 @@ Behavior.addGlobalFilter('ArtInput', function(element){
 	//draw the widget
 	widget.draw();
 	//if there's a pre-existing OverText instance, update its position
-	var ot = element.retrieve('OverText');
-	if (ot) ot.reposition.delay(10, ot);
+	if (element.hasDataFilter('OverText')) {
+		(function(){
+			var ot = element.retrieve('OverText');
+			if (ot) {
+				ot.reposition.delay(10, ot);
+				if (menu) {
+					widget.menu.addEvent('press', function(el){
+						ot.text.set('html', el.get('text') || el.get('value'));
+					});
+				}
+			}
+		}).delay(10);
+	}
 	//remove our temporary placeholder
 	temp.dispose();
 
