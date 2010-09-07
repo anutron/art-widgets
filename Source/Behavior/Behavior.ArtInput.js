@@ -33,7 +33,7 @@ Behavior.addGlobalFilter('ArtInput', function(element){
 			element.fireEvent('change');
 		},
 		styles: styles
-	}, menu);
+	}, menu).addClass(element.get('class'));
 
 	//inject our new widget into the DOM and the widget tree (if there is a parent widget)
 	if (parent) widget.inject(parent, temp, 'after');
