@@ -25,7 +25,7 @@ Behavior.addGlobalFilters({
 			allowMultiSelect: multiselectable,
 			useKeyboard: !element.hasClass('noKeyboard'),
 			enableTree: element.hasClass('treeView'),
-			noBuild: !element.hasClass('buildTree')
+			build: element.hasClass('buildTree')
 		});
 	}
 
