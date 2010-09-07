@@ -17,7 +17,7 @@ Behavior.addGlobalFilters({
 			if (th.hasClass('defaultSort')) firstSort = i;
 		});
 		var multiselectable = element.hasClass('multiselect');
-		new HtmlTable(element, {
+		var table = new HtmlTable(element, {
 			sortIndex: firstSort,
 			sortable: element.hasClass('sortable') && !element.hasClass('treeview'),
 			classNoSort: 'noSort',
@@ -26,6 +26,9 @@ Behavior.addGlobalFilters({
 			useKeyboard: !element.hasClass('noKeyboard'),
 			enableTree: element.hasClass('treeView'),
 			build: element.hasClass('buildTree')
+		});
+		this.markForCleanup(table, function(){
+			table.keyboard.relinquish();
 		});
 	}
 
