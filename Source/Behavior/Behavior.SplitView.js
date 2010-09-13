@@ -80,7 +80,8 @@ Behavior.addGlobalFilters({
 			splitterContent: element.getElement('.splitter_col'),
 			styles: styles,
 			fixed: conf.fixed || 'left'
-		}).inject(parent || element, element, 'after').draw();
+		}).inject(parent || element, element, 'after');
+		splitview.draw();
 		addLinkers(document.id(splitview));
 		var sized;
 		conf.sides.each(function(side) {
