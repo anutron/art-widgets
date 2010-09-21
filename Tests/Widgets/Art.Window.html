@@ -1,0 +1,40 @@
+<style type="text/css">
+	
+	.button {
+		margin: 5px;
+		float: left;
+	}
+	
+	a {
+		cursor: pointer;
+		color: #855;
+		font-family: Verdana;
+	}
+	
+</style>	
+
+<a id="maker">Make a window</a>
+
+<script src="/depender/build?require=Widgets/ART.Window"></script>
+<script type="text/javascript">
+	UI.Sheet.define('window.art button.art.wincontrol', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+	
+	var makeWindow = function(){
+		var count = 0;
+		return function(caption, content){
+			return new ART.Window({
+				caption: caption || '',
+				content: content || ''
+			}).inject($('mt-content'));
+		};
+	}();
+	
+	window.win = makeWindow('Window');
+	$('maker').addEvent('click', makeWindow.pass('Window'));
+</script>

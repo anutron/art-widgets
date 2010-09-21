@@ -1,0 +1,65 @@
+<style type="text/css">
+	
+	.button {
+		margin: 5px;
+		float: left;
+	}
+	
+	a {
+		cursor: pointer;
+		color: #855;
+		font-family: Verdana;
+	}
+	
+</style>	
+
+<a id="maker">Make a window</a>
+
+<div id="content" style="display: none">
+	<p>some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+		some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+		some content. some content. some content. some content. some content. some content. some content. some content. some content.</p>
+		
+	<p>some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+		some content. some content. some content. some content. some content. some content. some content. some content. some content. 
+		some content. some content. some content. some content. some content. some content. some content. some content. some content.</p>
+</div>
+<script src="/depender/build?require=Widgets/ART.Browser"></script>
+<script type="text/javascript">
+	UI.Sheet.define('window.art button.art.wincontrol', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+
+	var makeWindow = function(){
+		var count = 0;
+		return function(caption, content){
+			return new ART.Browser({
+				caption: caption || '',
+				content: content || $('content').get('html'),
+				historyOptions: {
+					editable: true,
+					history: [
+						{
+							title: '/a',
+							path: '/a'
+						},
+						{
+							title: '/b',
+							path: '/b'
+						},
+						{
+							title: '/c',
+							path: '/c'
+						}
+					]
+				}
+			}).inject($('mt-content'));
+		};
+	}();
+	window.win = makeWindow('Browser');
+	$('maker').addEvent('click', makeWindow.pass('Browser'));
+</script>
