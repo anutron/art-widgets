@@ -3,7 +3,7 @@
 name: UI.Sheet
 description: StyleSheet cascading emulator
 author: Jan Kassens
-requires: [UI, Core/Array, Core/String, Slick/Slick.Parser]
+requires: [UI, Core/Array, Core/String, Core/Slick.Parser]
 provides: UI.Sheet
 ...
 */
