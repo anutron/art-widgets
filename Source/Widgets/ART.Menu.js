@@ -2,7 +2,7 @@
 ---
 name: ART.Menu
 description: Menu PseudoClass
-requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART.Keyboard, More/Element.Measure]
+requires: [ART.Sheet, ART.Widget, ART/ART.Rectangle, ART.Keyboard, More/Element.Measure, More/Element.Delegation]
 provides: ART.Menu
 ...
 */
@@ -22,11 +22,12 @@ ART.Sheet.define('menu.art', {
 	'font-color': 'hsb(0, 0, 5)',
 	
 	'padding': [5, 0, 5, 0],
-	'item-padding': [2, 10, 2, 10]
+	'item-padding': [2, 10, 2, 10],
+	'z-index': 1
 });
 
 (function(){
-	
+
 var Menu = ART.Menu = new Class({
 	
 	Extends: ART.Widget,
@@ -39,7 +40,8 @@ var Menu = ART.Menu = new Class({
 			x: 0,
 			y: 0
 		},
-		autosize: true
+		autosize: true,
+		startEvent: 'mousedown'
 	},
 	
 	initialize: function(options, menu, handlers){
@@ -64,6 +66,8 @@ var Menu = ART.Menu = new Class({
 		this.element.setStyles({'position': 'absolute', top: 0, left: 0});
 		
 		this._handlers = $$(handlers);
+		new ART.Keyboard(this, this.options.keyboardOptions);
+		
 		this.attach();
 		this.hide();
 	},
@@ -92,32 +96,36 @@ var Menu = ART.Menu = new Class({
 	attach: function(_detach) {
 		var self = this;
 		if (!this._elementEvents) {
-			this._handlerEvents = {
-				'mousedown': function(e){
-					e.stopPropagation().preventDefault();
-					self.show(e.page.x, e.page.y);
-				}
+			this._handlerEvents = {};
+			this._handlerEvents[this.options.startEvent] = function(e){
+				e.stopPropagation().preventDefault();
+				self.show(e.page.x, e.page.y);
 			};
 			this._elementEvents = {
 				blur: this.hide.bind(this)
 			};
+			var down = false;
 			this._listEvents = {
 
-				mouseup: function(e){
-					self.fireEvent('press', this);
-					self.hide();
+				'mouseup:relay(a)': function(e){
+					if (down) {
+						self.fireEvent('press', this);
+						self.hide();
+						e.stopPropagation().preventDefault();
+						down = false;
+					}
+				},
+
+				'mousedown:relay(a)': function(e){
+					down = true;
 					e.stopPropagation().preventDefault();
 				},
 
-				mousedown: function(e){
-					e.stopPropagation().preventDefault();
-				},
-
-				mouseenter: function(){
+				'mouseover:relay(a)': function(){
 					self._selectLink(this);
 				},
 
-				mouseleave: function(){
+				'mouseout:relay(a)': function(){
 					self.removeClass('selected');
 				}
 
@@ -125,8 +133,10 @@ var Menu = ART.Menu = new Class({
 			
 			var keySend = function(e){
 				Keyboard.stop(e.preventDefault());
-				var link = self.links[self._selectedIndex];
+				var link = self.element.getElements('a')[self._selectedIndex];
+				self.fireEvent('press', link);
 				if (link) link.fireEvent('mouseup', e);
+				self.hide();
 			};
 			
 			this._keyboardKeys = {
@@ -137,12 +147,12 @@ var Menu = ART.Menu = new Class({
 
 				'keydown:down': function(e){
 					Keyboard.stop(e.preventDefault());
-					self._selectLink(self.links[self._selectedIndex + 1]);
+					self._selectLink(self.element.getElements('a')[self._selectedIndex + 1]);
 				},
 
 				'keydown:up': function(e){
 					Keyboard.stop(e.preventDefault());
-					self._selectLink(self.links[self._selectedIndex - 1]);
+					self._selectLink(self.element.getElements('a')[self._selectedIndex - 1]);
 				},
 
 				'keyup:space': keySend,
@@ -150,15 +160,13 @@ var Menu = ART.Menu = new Class({
 				'keyup:enter': keySend
 
 			};
-			new ART.Keyboard(this, this.options.keyboardOptions);
-			
 		}
 		
 		var method = _detach ? 'removeEvents' : 'addEvents';
 		this._handlers[method](this._handlerEvents);
 		this.element[method](this._elementEvents);
 		
-		this.links = this.menu.getElements('a')[method](this._listEvents);
+		this.menu[method](this._listEvents);
 
 		this[ _detach ? 'detachKeys' : 'attachKeys'](this._keyboardKeys);
 		
@@ -171,9 +179,10 @@ var Menu = ART.Menu = new Class({
 
 	_selectLink: function(link){
 		if (!link) return;
-		this.links.removeClass('selected');
+		var links = this.element.getElements('a');
+		links.removeClass('selected');
 		link.addClass('selected');
-		this._selectedIndex = this.links.indexOf(link);
+		this._selectedIndex = links.indexOf(link);
 	},
 
 	blur: function(){
@@ -211,6 +220,7 @@ var Menu = ART.Menu = new Class({
 		
 		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(cs.borderColor));
 		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(cs.backgroundColor));
+		if (sheet.zIndex) this.element.setStyle('z-index', sheet.zIndex);
 		return sheet;
 	},
 
@@ -247,8 +257,9 @@ var Menu = ART.Menu = new Class({
 	},
 	
 	hide: function(){
+		this.getKeyboard().relinquish();
 		this.element.setStyle('display', 'none');
-		this.links.removeClass('selected');
+		this.element.getElements('a.selected').removeClass('selected');
 		this.disable();
 		return this;
 	}
