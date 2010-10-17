@@ -88,7 +88,12 @@ ART.Keyboard = new Class({
 
 			getShortcuts: function() {
 				return keyboard.getShortcuts();
+			},
+
+			getKeyboard: function(){
+				return keyboard;
 			}
+
 		});
 	},
 
@@ -99,10 +104,6 @@ ART.Keyboard = new Class({
 			'removeShortcuts', 'getShortcut', 'getShortcuts', 'keyboard'].each(function(method){
 			delete this.wigdet[method];
 		}, this);
-	},
-
-	getKeyboard: function(){
-		return this._keyboard;
 	}
 
 });

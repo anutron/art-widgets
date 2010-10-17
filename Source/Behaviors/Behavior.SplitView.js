@@ -2,7 +2,7 @@
 ---
 description: Creates a SplitView instances for all elements that have the css class .splitview (and children with .left_col and .right_col).
 provides: [Behavior.SplitView]
-requires: [/Behavior, Widgets/ART.SplitView, More/Element.Delegation]
+requires: [Behavior/Behavior, Widgets/ART.SplitView, More/Element.Delegation]
 script: Behavior.SplitView.js
 
 ...

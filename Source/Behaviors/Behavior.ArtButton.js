@@ -2,7 +2,7 @@
 ---
 description: Converts any element with the ArtButton data-filter into an ART button widget.
 provides: [Behavior.ArtButton]
-requires: [/Behavior, /ART.Button, /Element.Data, More/String.Extras]
+requires: [Behavior/Behavior, /ART.Button, /Element.Data, More/String.Extras]
 script: Behavior.ArtButton.js
 
 ...
