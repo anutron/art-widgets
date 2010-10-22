@@ -65,6 +65,10 @@ var splitter = {
 		return sides;
 	},
 
+        getOrientation: function(){
+                return this.options.orientation;
+        },
+
 	_build: function(){
 		document.id(this.canvas).dispose();
 		var sheet = this.setSheet();
@@ -128,7 +132,7 @@ var splitter = {
 				}
 			});
 		}
-		
+
 		this.deferDraw();
 	},
 
