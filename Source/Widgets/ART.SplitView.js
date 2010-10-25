@@ -141,15 +141,23 @@ var splitter = {
 	moveSplitter: function(dx, dy){
 		var cs = this.currentSheet;
 		var o = this._orientations;
-		var targetSize = this.startFixSize + (this.options.orientation == "horizontal" ? dx : -dy);
-		if (targetSize < 0) targetSize = 0;
-		if (targetSize > cs[o.dimension] - cs['splitter' + o.dimension.capitalize()]) {
-			targetSize = cs[o.dimension] - cs['splitter' + o.dimension.capitalize()];
+		var targetSize = this.startFixSize;
+		var delta = 0;
+		if (this.options.orientation == "horizontal"){
+			delta = dx;
+		} else {
+			delta = dy;
 		}
 		var fix = {
 			'top': 'left',
 			'bottom': 'right'
 		}[this.options.fixed] || this.options.fixed;
+		if (fix == 'right' || fix == 'bottom') delta = delta*-1;
+		targetSize += delta;
+		if (targetSize < 0) targetSize = 0;
+		if (targetSize > cs[o.dimension] - cs['splitter' + o.dimension.capitalize()]) {
+			targetSize = cs[o.dimension] - cs['splitter' + o.dimension.capitalize()];
+		}
 		this._resizeSide(fix, targetSize);
 	},
 
@@ -219,7 +227,7 @@ var splitter = {
 		
 		this[o[otherSide]].setStyle(o.dimension, sizes.otherSideWidth);
 		this[sizes.otherSide + o.dimension.capitalize()] = sizes.otherSideWidth;
-		this.fireEvent('resizeSide', [side, sizes.sideWidth]);
+		this.fireEvent('resizeSide', sizes);
 	},
 	
 	_getWidthsForSizing: function(side, width) {
