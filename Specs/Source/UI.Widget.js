@@ -101,20 +101,21 @@ test('should return the css "selector" string', function(){
 
 // sheets
 
-UI.Sheet.define("button#buttonID", {
-	backgroundColor: "gray",
-	color: "black"
-});
-
-UI.Sheet.define("button#buttonID:disabled", {
-	color: "white"
-});
-
-UI.Sheet.define("button#buttonID:focused", {
-	color: "pink"
-});
-
 test('should return the defined sheet, based on the states', function(){
+	UI.Sheet.define("button#buttonID", {
+		backgroundColor: "gray",
+		color: "black"
+	});
+
+	UI.Sheet.define("button#buttonID:disabled", {
+		color: "white"
+	});
+
+	UI.Sheet.define("button#buttonID:focused", {
+		color: "pink"
+	});
+	UI.Sheet.define("*", {base: 1, asterix: 1});
+
 	same(g.widget.getSheet(), {backgroundColor: "gray", color: "black", base: 1, asterix: 1});
 	g.widget.disable();
 	same(g.widget.getSheet(), {backgroundColor: "gray", color: "white", base: 1, asterix: 1});
