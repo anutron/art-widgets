@@ -111,3 +111,19 @@ test('should match pseudos', function(){
 	same(UI.Sheet.lookup('rule:somePseudo'), {base: 2, asterix: 2});
 	teardown();
 });
+
+test('should match id', function(){
+	teardown();
+	var s = UI.Sheet
+	s.define('tag', {'tag':1});
+	s.define('#id', {'#id':1});
+	s.define('tag#id', {'tag#id':1});
+	
+	same(s.lookup('tag'), {'tag':1});
+	same(s.lookup('#id'), {'#id':1});
+	same(s.lookup('null#id'), {'#id':1});
+	same(s.lookup('tag#id'), {'tag':1,'#id':1,'tag#id':1});
+	
+	teardown();
+});
+
