@@ -143,4 +143,10 @@ Sheet.lookup = function(selector, namespace){
 	return getStyles(selector, getRules(namespace));
 };
 
+//clear all rules
+Sheet.empty = function(){
+	rules = {};
+	return Sheet;
+}
+
 })();
