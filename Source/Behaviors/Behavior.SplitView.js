@@ -169,8 +169,15 @@ var addLinkers = function(element){
 			if (!resize) return;
 			widget.toggle(resize.side, resize.hideSplitter).chain(function(){
 				widget.fireEvent('postFold', [resize, e, link]);
+                                if (widget[resize.side + "Height"] == 0) {
+                                        link.getElements('.toggle-shown').hide();
+                                        link.getElements('.toggle-hidden').show();
+                                } else {
+                                        link.getElements('.toggle-shown').show();
+                                        link.getElements('.toggle-hidden').hide();
+                                } 
 			});
-		}
+                }
 	});
 };
 
