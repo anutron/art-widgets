@@ -119,6 +119,9 @@ Behavior.addGlobalFilters({
 				splitview.resizer.delay(1);
 			}
 		}.bind(this);
+                splitview.element.getElements('[data-splitview-toggle]').each(function(toggle){
+                        manageToggleState(splitview, toggle);
+                });
 		methods.addEvents({
 			resize: splitview.resizer,
 			show: function(){
@@ -142,6 +145,28 @@ var getWidget = function(link) {
 	if (!splitview) return;
 	return splitview.get('widget');
 };
+
+var getWidthStr = function(side) {
+			return {
+				'left': 'leftWidth',
+				'right': 'rightWidth',
+				'top':'topHeight',
+				'bottom':'bottomHeight'
+			}[side];
+		};
+
+var manageToggleState = function(widget, toggle) {
+        var params = toggle.get('data', 'splitview-toggle', true);
+        if (widget[getWidthStr(params.side)] == 0) {
+                toggle.getElements('.toggle-shown').hide();
+                toggle.getElements('.toggle-hidden').show();
+        } else {
+                toggle.getElements('.toggle-shown').show();
+                toggle.getElements('.toggle-hidden').hide();
+        }
+};
+
+
 
 var addLinkers = function(element){
 	element.addEvents({
@@ -169,14 +194,8 @@ var addLinkers = function(element){
 			if (!resize) return;
 			widget.toggle(resize.side, resize.hideSplitter).chain(function(){
 				widget.fireEvent('postFold', [resize, e, link]);
-                                if (widget[resize.side + "Height"] == 0) {
-                                        link.getElements('.toggle-shown').hide();
-                                        link.getElements('.toggle-hidden').show();
-                                } else {
-                                        link.getElements('.toggle-shown').show();
-                                        link.getElements('.toggle-hidden').hide();
-                                } 
-			});
+                                manageToggleState(widget, link);
+                        });
                 }
 	});
 };
