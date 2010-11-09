@@ -106,12 +106,12 @@ var splitter = {
 		}).inject(this.element).setStyles(styles);
 		
 		this.fx = new Fx.Elements([this[o.left], this.splitter, this[o.right]]);
-		this.touch = new Touch(this.splitter);
 		var self = this;
 		var fix = self.options.fixed;
 		var Fix = fix.capitalize();
 		
 		if (this.options.resizable || this.options.foldable){
+	        	this.touch = new Touch(this.splitter);
 			this.touch.addEvent('start', function(){
 				self.startFixSize = self[fix + o.dimension.capitalize()];
 			});
