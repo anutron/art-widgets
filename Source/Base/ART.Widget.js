@@ -12,6 +12,7 @@ provides: ART.Widget
 var Widget = ART.Widget = new Class({
 	Extends: UI.Widget,
 	options: {
+		makeCanvas: true,
 		className: 'art',
 		tabIndex: -1,
 		blurOnElementBlur: false,
@@ -25,8 +26,8 @@ var Widget = ART.Widget = new Class({
 
 	initialize: function(options){
 		this._createElement(options);
-		this.canvas = new ART;
-		document.id(this.canvas).setStyles({position: 'absolute', top: 0, left: 0}).inject(this.element);
+		if (this.options.makeCanvas) this.canvas = new ART;
+		if (this.canvas) document.id(this.canvas).setStyles({position: 'absolute', top: 0, left: 0}).inject(this.element);
 		
 		this.currentSheet = {};
 		
@@ -84,7 +85,7 @@ var Widget = ART.Widget = new Class({
 	
 	resize: function(width, height){
 		this.element.setStyles({width: width, height: height});
-		this.canvas.resize(width, height);
+		if (this.canvas) this.canvas.resize(width, height);
 		return this;
 	},
 
