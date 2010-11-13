@@ -31,8 +31,8 @@
 		'cornerRadius': 7,
 		'cursor': 'pointer',
 		'glyph-color': hsb(0, 0, 0, 0.6),
-		'glyph-height': 4,
-		'glyph-width': 4,
+		'glyph-height': 12,
+		'glyph-width': 12,
 		'glyph-top': 1,
 		'glyph-left': 1
 	});
@@ -41,6 +41,25 @@
 		window.gs = new ART.Button({text: 'Google Search', className: 'button art', id: 'GoogleSearch', tabIndex: 1});
 		
 		gs.inject($('container'));
+
+		window.tri = new ART.Button({
+			glyph: ART.Glyphs.triangleLeft,
+			className: 'button art',
+			tabIndex: 1,
+			styles: {
+				width: 24,
+				height: 24,
+				'glyph-width': 10,
+				'glyph-height': 10,
+				'glyph-top': 7,
+				'glyph-left': 7
+			}
+		});
+		
+		tri.inject($('container'));
+		
+		gs.inject($('container'));
+		
 		
 		var x = 0;
 		gs.addEvent('press', function(){

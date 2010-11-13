@@ -110,7 +110,9 @@ var Button = ART.Button = new Class({
 		var fontChanged = !!(sheet.fontFamily || sheet.fontVariant || sheet.fontSize || sheet.text);
 		var boxChanged = !!(sheet.width || sheet.height || sheet.padding || sheet.borderRadius || fontChanged || sheet.pill);
 
+		var createdGlyph;
 		if (sheet.glyph || ((this.options.glyph || cs.glyph) && !this.glyphLayer)){
+			createdGlyph = true;
 			this.options.glyph = sheet.glyph || this.options.glyph || cs.glyph;
 			if (!this.glyphLayer) this.glyphLayer = new ART.Shape;
 			this.makeGlyph(this.options.glyph, true);
@@ -124,7 +126,10 @@ var Button = ART.Button = new Class({
 			}
 			if (fontChanged) this.setText(sheet.text || this.options.text, true);
 		}
-		
+		if (!createdGlyph && (sheet.glyphWidth || sheet.glyphHeight) && this.glyphLayer){
+			var glyphBounds = this.glyphLayer.measure();
+			this.glyphLayer.scale(cs.glyphWidth / glyphBounds.width, cs.glyphHeight / glyphBounds.height);
+		}
 		if (boxChanged){
 			this.resize(cs.width, cs.height + 1);
 			this._drawBox(cs);
@@ -156,6 +161,10 @@ var Button = ART.Button = new Class({
 		var cs = this.currentSheet;
 		if (!this.glyphLayer) return;
 		this.glyphLayer.draw(glyph);
+		var glyphBounds = this.glyphLayer.measure();
+		if (cs.glyphWidth && cs.glyphHeight) {
+			this.glyphLayer.scale(cs.glyphWidth / glyphBounds.width, cs.glyphHeight / glyphBounds.height);
+		}
 		this.glyphBounds = this.glyphLayer.measure();
 		if (!cs.width) cs.width = (this.glyphBounds.right + cs.glyphLeft + cs.glyphRight).round();
 		if (!cs.height) cs.height = (this.glyphBounds.bottom + cs.glyphTop + cs.glyphBottom).round();
