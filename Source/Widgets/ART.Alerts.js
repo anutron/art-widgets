@@ -314,13 +314,15 @@ ART.Window.AlertTools = new Class({
 			win.alertManager.setLayer('alerts', 99);
 		}
 		var winsize = win.getSize();
+		var relativeTo = document.id(win) || document.id(this);
 		options = $merge({
-			relativeTo: document.id(win) || document.id(this),
+			relativeTo: relativeTo,
 			mask: true,
 			maskOptions: {
+				zIndex: win.alertManager.getLayer('alerts').zIndex -1,
 				inject: {
 					target: document.id(this.getWindow().content),
-					where: 'after'
+					where: relativeTo == document.body ? 'bottom' : 'after'
 				}
 			},
 			constrainToContainer: true,
