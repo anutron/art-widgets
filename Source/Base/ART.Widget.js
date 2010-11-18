@@ -123,8 +123,10 @@ var Widget = ART.Widget = new Class({
 	/* classNames */
 	
 	addClass: function(className){
-		this.parent(className);
-		this.element.addClass(className);
+		className.split(' ').each(function(kls){
+			this.parent(kls);
+			this.element.addClass(kls);
+		}, this);
 		this.deferDraw();
 		return this;
 	},
