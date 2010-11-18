@@ -106,8 +106,8 @@ ART.Sheet.define('window.art button.art.wincontrol:active', {
 ART.Sheet.define('window.art button.art.close', {
 	'glyph': ART.Glyphs.smallCross,
 	
-	'glyph-height': 4,
-	'glyph-width': 4,
+	'glyph-height': 12,
+	'glyph-width': 12,
 	'glyph-top': 1,
 	'glyph-left': 1
 });
@@ -115,8 +115,8 @@ ART.Sheet.define('window.art button.art.close', {
 ART.Sheet.define('window.art button.help', {
 	'glyph': ART.Glyphs.help,
 	
-	'glyph-height': 4,
-	'glyph-width': 4,
+	'glyph-height': 12,
+	'glyph-width': 12,
 	'glyph-top': 3,
 	'glyph-left': 4
 });
@@ -124,8 +124,8 @@ ART.Sheet.define('window.art button.help', {
 ART.Sheet.define('window.art button.art.minimize', {
 	'glyph': ART.Glyphs.smallMinus,
 
-	'glyph-height': 6,
-	'glyph-width': 6,
+	'glyph-height': 12,
+	'glyph-width': 12,
 	'glyph-top': 1,
 	'glyph-left': 1
 });
@@ -133,8 +133,8 @@ ART.Sheet.define('window.art button.art.minimize', {
 ART.Sheet.define('window.art button.art.maximize', {
 	'glyph': ART.Glyphs.smallPlus,
 
-	'glyph-height': 6,
-	'glyph-width': 6,
+	'glyph-height': 12,
+	'glyph-width': 12,
 	'glyph-top': 1,
 	'glyph-left': 1
 });
