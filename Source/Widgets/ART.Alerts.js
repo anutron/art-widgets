@@ -91,6 +91,7 @@ ART.Alert = new Class({
 		this.attachKeys({
 			'keyup:esc': function(e) {
 				this.hide();
+				this.fireEvent('cancel');
 			}.bind(this)
 		});
 	},
@@ -185,7 +186,10 @@ ART.Confirm = new Class({
 		resizable: false,
 		buttons: [
 			{
-				text: 'Cancel'
+				text: 'Cancel',
+				onPress: function(){
+					this.parentWidget.fireEvent('cancel');
+				}
 			},
 			{
 				text: 'Ok',
@@ -220,7 +224,10 @@ ART.Prompt = new Class({
 	options: {
 		buttons: [
 			{
-				text: 'Cancel'
+				text: 'Cancel',
+				onPress: function(){
+					this.parentWidget.fireEvent('cancel');
+				}
 			},
 			{
 				text: 'Ok',
