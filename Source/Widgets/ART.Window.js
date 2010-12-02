@@ -115,9 +115,9 @@ ART.Sheet.define('window.art button.art.close', {
 ART.Sheet.define('window.art button.help', {
 	'glyph': ART.Glyphs.help,
 	
-	'glyph-height': 12,
-	'glyph-width': 12,
-	'glyph-top': 3,
+	'glyph-height': 6,
+	'glyph-width': 6,
+	'glyph-top': 4,
 	'glyph-left': 4
 });
 
