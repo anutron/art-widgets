@@ -2,7 +2,7 @@
 ---
 description: Turns any input with the filter "ArtInput" into Art.Input elements. Elements can optionaly specify a data-art-input-type value as either "Input" or "Search" - if none is defined "Input is used". This is a global filter
 provides: [Behavior.ArtInput]
-requires: [Behavior/Behavior, /ART.Input, /ART.Search]
+requires: [Behavior/Behavior, /ART.Input, /ART.Search, /ART.Check, /ART.Radio]
 script: Behavior.ArtInput.js
 ...
 */
