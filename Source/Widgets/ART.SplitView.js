@@ -65,9 +65,9 @@ var splitter = {
 		return sides;
 	},
 
-        getOrientation: function(){
-                return this.options.orientation;
-        },
+	getOrientation: function(){
+		return this.options.orientation;
+	},
 
 	_build: function(){
 		document.id(this.canvas).dispose();
@@ -111,7 +111,7 @@ var splitter = {
 		var Fix = fix.capitalize();
 		
 		if (this.options.resizable || this.options.foldable){
-	        	this.touch = new Touch(this.splitter);
+			this.touch = new Touch(this.splitter);
 			this.touch.addEvent('start', function(){
 				self.startFixSize = self[fix + o.dimension.capitalize()];
 			});

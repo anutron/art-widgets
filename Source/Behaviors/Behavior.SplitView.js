@@ -12,7 +12,7 @@ script: Behavior.SplitView.js
 
 Behavior.addGlobalFilters({
 
-	SplitView: function(element, methods) {
+	SplitView: function(element, behaviorAPI) {
 		//get the left and right column and instantiate an ART.SplitView
 		//if the container has the class "resizable" then make it so
 		//ditto for the foldable option
@@ -27,7 +27,7 @@ Behavior.addGlobalFilters({
 		if (!originalSize.y && element.getStyle('height') != "auto") originalSize.y = element.getStyle('height').toInt();
 
 		if (!(left && right) && !(top && bottom)) {
-			methods.error('found split view element, but could not find top/botom or left/right; exiting');
+			behaviorAPI.error('found split view element, but could not find top/botom or left/right; exiting');
 			return;
 		}
 		element.getParent().setStyle('overflow', 'hidden');
@@ -119,21 +119,21 @@ Behavior.addGlobalFilters({
 				splitview.resizer.delay(1);
 			}
 		}.bind(this);
-                splitview.element.getElements('[data-splitview-toggle]').each(function(toggle){
-                        manageToggleState(splitview, toggle);
-                });
-		methods.addEvents({
+		splitview.element.getElements('[data-splitview-toggle]').each(function(toggle){
+			manageToggleState(splitview, toggle);
+		});
+		behaviorAPI.addEvents({
 			resize: splitview.resizer,
 			show: function(){
-				var size = methods.getContainerSize();
+				var size = behaviorAPI.getContainerSize();
 				if (!size) size = originalSize;
 				splitview.resizer(size.x, size.y);
 			}
 		});
-		var size = methods.getContainerSize() || element.getSize();
+		var size = behaviorAPI.getContainerSize() || element.getSize();
 		if (size.x || size.y) splitview.resizer(size.x, size.y);
 		this.markForCleanup(element, function(){
-			methods.removeEvent('resize', splitview.resizer);
+			behaviorAPI.removeEvent('resize', splitview.resizer);
 			splitview.eject();
 		}.bind(this));
 	}
@@ -156,14 +156,14 @@ var getWidthStr = function(side) {
 		};
 
 var manageToggleState = function(widget, toggle) {
-        var params = toggle.get('data', 'splitview-toggle', true);
-        if (widget[getWidthStr(params.side)] == 0) {
-                toggle.getElements('.toggle-shown').hide();
-                toggle.getElements('.toggle-hidden').show();
-        } else {
-                toggle.getElements('.toggle-shown').show();
-                toggle.getElements('.toggle-hidden').hide();
-        }
+	var params = toggle.get('data', 'splitview-toggle', true);
+	if (widget[getWidthStr(params.side)] == 0) {
+		toggle.getElements('.toggle-shown').hide();
+		toggle.getElements('.toggle-hidden').show();
+	} else {
+		toggle.getElements('.toggle-shown').show();
+		toggle.getElements('.toggle-hidden').hide();
+	}
 };
 
 
@@ -194,9 +194,9 @@ var addLinkers = function(element){
 			if (!resize) return;
 			widget.toggle(resize.side, resize.hideSplitter).chain(function(){
 				widget.fireEvent('postFold', [resize, e, link]);
-                                manageToggleState(widget, link);
-                        });
-                }
+				manageToggleState(widget, link);
+			});
+		}
 	});
 };
 
