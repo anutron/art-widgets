@@ -59,8 +59,14 @@ var Widget = ART.Widget = new Class({
 		this.element.store('widget', this);
 	},
 	
-	setState: function(state, value, nodraw){
-		this.parent.apply(this, arguments);
+	setState: function(name, state, nodraw){
+		var element = this.element;
+		var nameCap = name.capitalize();
+		if (element) {
+			element.removeClass((this.getState(name) ? 'is' : 'not') + nameCap)
+			  .addClass((state ? 'is' : 'not') + nameCap);
+		}
+		this.parent(name, state);
 		if (!nodraw) this.deferDraw();
 		return this;
 	},
