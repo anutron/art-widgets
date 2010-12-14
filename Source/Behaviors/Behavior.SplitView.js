@@ -71,21 +71,27 @@ Behavior.addGlobalFilters({
 			if (left) styles['splitter-width'] = splitter.getSize().x;
 			else styles['splitter-height'] = splitter.getSize().y;
 		}
-		
+
 		var whichSplit = left ? ART.SplitView : ART.SplitView.Vertical;
 		var parent = element.get('parentWidget');
-		var splitview = new whichSplit({
+		var splitviewContent = {}; 
+		conf.sides.each(function(side) {
+			splitviewContent[side + 'Content'] = conf.elements[side];
+		});
+
+		var splitview = new whichSplit($merge(splitviewContent, {
 			resizable: element.hasClass("resizable"),
 			foldable: element.hasClass("foldable"),
 			splitterContent: element.getChildren('.splitter_col')[0],
 			styles: styles,
 			fixed: conf.fixed || 'left'
-		}).inject(parent || element, element, 'after');
+		})).inject(parent || element, element, 'after');
 		splitview.draw();
+
 		addLinkers(document.id(splitview));
+
 		var sized;
 		conf.sides.each(function(side) {
-			splitview['set' + side.capitalize() + 'Content'](conf.elements[side]);
 			splitview[side].addClass('save_scroll');
 			if (sized) return;
 			if (conf.elements[side].getStyle('display') == 'none') {
@@ -97,6 +103,7 @@ Behavior.addGlobalFilters({
 				sized = true;
 			}
 		});
+
 		var classes = element.get('class').split(' ');
 		var filters = element.getDataFilters();
 		element.dispose().store('SplitView', splitview);
