@@ -83,28 +83,26 @@ var splitter = {
 			     {'float': 'left', 'overflow-x': 'auto'} : 
 			     {'overflow-y': 'auto'};
 		var o = this._orientations;
-		this[o.left] = new Element('div', {
-			'class': 'art-splitview-' + o.left,
-			styles: {
-				'background-color': sheet[o.left + 'BackgroundColor']
-			}
-		}).inject(this.element).setStyles(styles);
-		this.splitter = new Element('div', {
-			'class': 'art-splitview-splitter',
-			styles: {
-				'background-color': sheet.splitterBackgroundColor,
-				'height': sheet['splitter' + o.dimension.capitalize()]
-			}
-		}).inject(this.element).setStyles(styles).setStyle('overflow','hidden')
-			.setStyle(o.dimension, sheet['splitter' + o.dimension.capitalize()]);
-		if (this.options.splitterContent) this.setSplitterContent(this.options.splitterContent);
-		this[o.right] = new Element('div', {
-			'class': 'art-splitview-' + o.right,
-			styles: {
-				'background-color': sheet[o.right + 'BackgroundColor']
-			}
-		}).inject(this.element).setStyles(styles);
 		
+                [o.left, 'splitter', o.right].each(function(side) {
+                        if (side != 'splitter' && this.options[side + 'Content']) this[side] = this.options[side + 'Content'].inject(this.element);
+                        else this[side] = new Element('div').inject(this.element);
+
+                        this[side].set({
+                                styles: {
+                                        'background-color': sheet[side + 'BackgroundColor']
+                                }
+                        });
+                        this[side].addClass('art-splitview-' + side);
+                        this[side].setStyles(styles);
+                }.bind(this));
+                this.splitter.setStyles({
+                        'overflow': 'hidden'
+                });
+                this.splitter.setStyle(o.dimension, sheet['splitter' + o.dimension.capitalize()]);
+		if (this.options.splitterContent) this.setSplitterContent(this.options.splitterContent);
+                if (this.right) this.right.setStyle('float', 'none');
+
 		this.fx = new Fx.Elements([this[o.left], this.splitter, this[o.right]]);
 		var self = this;
 		var fix = self.options.fixed;
