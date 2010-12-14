@@ -18,10 +18,10 @@ Behavior.addGlobalFilters({
 		//ditto for the foldable option
 		//if the left or right columns have explicit style="width: Xpx" assignments
 		//resize the side to match that statement; if both have it, the right one wins
-		var left = element.getElement('.left_col');
-		var right = element.getElement('.right_col');
-		var top = element.getElement('.top_col');
-		var bottom = element.getElement('.bottom_col');
+		var left = element.getChildren('.left_col')[0];
+		var right = element.getChildren('.right_col')[0];
+		var top = element.getChildren('.top_col')[0];
+		var bottom = element.getChildren('.bottom_col')[0];
 		var originalSize = element.getSize();
 		if (!originalSize.x && element.getStyle('width') != "auto") originalSize.x = element.getStyle('width').toInt();
 		if (!originalSize.y && element.getStyle('height') != "auto") originalSize.y = element.getStyle('height').toInt();
@@ -62,7 +62,7 @@ Behavior.addGlobalFilters({
 		});
 		
 		var styles = {}, splitterHidden;
-		var splitter = element.getElement('.splitter_col');
+		var splitter = element.getChildren('.splitter_col')[0];
 		if (splitter) {
 			if (splitter.getStyle('display', 'none')) {
 				splitterHidden = true;
@@ -77,7 +77,7 @@ Behavior.addGlobalFilters({
 		var splitview = new whichSplit({
 			resizable: element.hasClass("resizable"),
 			foldable: element.hasClass("foldable"),
-			splitterContent: element.getElement('.splitter_col'),
+			splitterContent: element.getChildren('.splitter_col')[0],
 			styles: styles,
 			fixed: conf.fixed || 'left'
 		}).inject(parent || element, element, 'after');
