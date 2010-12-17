@@ -73,25 +73,20 @@ Behavior.addGlobalFilters({
 
 		var whichSplit = left ? ART.SplitView : ART.SplitView.Vertical;
 		var parent = element.get('parentWidget');
-		var splitviewContent = {}; 
-		conf.sides.each(function(side) {
-			splitviewContent[side + 'Content'] = conf.elements[side];
-		});
-
-		var splitview = new whichSplit($merge(splitviewContent, {
-			resizable: element.hasClass("resizable"),
+		var splitviewContent = {
+                        resizable: element.hasClass("resizable"),
 			foldable: element.hasClass("foldable"),
 			splitterContent: element.getChildren('.splitter_col')[0],
 			styles: styles,
 			fixed: conf.fixed || 'left',
-            element: element,
-            parentWidget: parent
-		}; 
-        conf.sides.each(function(side) {
-                splitviewContent[side + 'Content'] = conf.elements[side];       
-        });
+                        element: element,
+                        parentWidget: parent
+                }; 
+                conf.sides.each(function(side) {
+                        splitviewContent[side + 'Content'] = conf.elements[side];       
+                });
 		var splitview = new whichSplit(splitviewContent);
-        splitview.register(parent);
+                splitview.register(parent);
 		splitview.draw();
 
 		addLinkers(document.id(splitview));
