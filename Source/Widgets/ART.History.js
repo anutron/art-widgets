@@ -186,6 +186,7 @@ ART.History = new Class({
 		onRefresh: $empty,
 		keyboardOptions: {},
 		*/
+		makeCanvas: false,
 		pathFilter: function(val){ return val;},
 		pathBuilder: function(val){ return val; },
 		maxToShow: 4,
