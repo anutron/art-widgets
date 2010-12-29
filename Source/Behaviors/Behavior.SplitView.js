@@ -127,19 +127,20 @@ Behavior.addGlobalFilters({
 			manageToggleState(splitview, toggle);
 		});
 		splitview.getParentSize = function() {
-				return splitview.element.getParent().getSize();
+			return splitview.element.getParent().getSize();
 		};
 		var resizeSplitview = function() {
-				var size = splitview.getParentSize();
-				splitview.resizer(size.x, size.y);
+			var size = splitview.getParentSize();
+			splitview.resizer(size.x, size.y);
 		};
 		behaviorAPI.addEvents({
 			show: resizeSplitview
 		});
 		var size = splitview.getParentSize();
 		if (size.x || size.y) splitview.resizer(size.x, size.y);
+		resizeSplitview.delay(1);
 		this.markForCleanup(element, function(){
-						behaviorAPI.removeEvent('show',  resizeSplitview);
+			behaviorAPI.removeEvent('show',  resizeSplitview);
 			splitview.eject();
 		}.bind(this));
 	}
@@ -147,42 +148,43 @@ Behavior.addGlobalFilters({
 });
 
 Behavior.addGlobalPlugin('SplitView', 'ResizeOnContainingSplitView', function(element, methods) {
-		if (element.hasClass('resizeOnContain')) {
-				var localSplitview = element.retrieve('SplitView');
-				var localSvElem = localSplitview.element;
-				var containingSplitview = null;
-				do {
-				containingSplitview = localSvElem.getParent(":widget").get("widget");
-				} while (containingSplitview && containingSplitview.name != "splitview");
-				//Make sure you actually found a splitview.
-				if (containingSplitview.name == "splitview") {
-						var otherSide = null, thisSide = null;
-						//Find opposite side...that being the side that the splitview is not in.
-						var containingOrientation = containingSplitview.getOrientation();
-						var containingSvSides = containingSplitview.getSides();
-						var left = containingSvSides['left'];
-						var right = containingSvSides['right'];
-						if (left.hasChild(element)) {
-								thisSide = left;
-								otherSide = right;
-						} else if (right.hasChild(element)) {
-								//The check above isn't expressly necessary, but it seems like the safe thing to do.
-								thisSide = right;
-								otherSide = left;
-						}
-						var localSvSides = localSplitview.getSides();
-						var splitviewLayoutChange = function() {
-								localSplitview.resizer(localSplitview.getParentSize().x, localSplitview.getParentSize().y);
-								methods.fireEvent('layoutChangeEnd');
-						};
-						containingSplitview.addEvent('resizeSide', splitviewLayoutChange);
-						containingSplitview.addEvent('fold', splitviewLayoutChange);
-						this.markForCleanup(element, function() {
-								containingSplitview.removeEvent('resizeSide', splitviewLayoutChange);
-								containingSplitview.removeEvent('fold', splitviewLayoutChange);
-						});
-				}
+
+	if (element.hasClass('resizeOnContain')) {
+		var localSplitview = element.retrieve('SplitView');
+		var localSvElem = localSplitview.element;
+		var containingSplitview = null;
+		do {
+			containingSplitview = localSvElem.getParent(":widget").get("widget");
+		} while (containingSplitview && containingSplitview.name != "splitview");
+		//Make sure you actually found a splitview.
+		if (containingSplitview.name == "splitview") {
+			var otherSide = null, thisSide = null;
+			//Find opposite side...that being the side that the splitview is not in.
+			var containingOrientation = containingSplitview.getOrientation();
+			var containingSvSides = containingSplitview.getSides();
+			var left = containingSvSides['left'];
+			var right = containingSvSides['right'];
+			if (left.hasChild(element)) {
+				thisSide = left;
+				otherSide = right;
+			} else if (right.hasChild(element)) {
+				//The check above isn't expressly necessary, but it seems like the safe thing to do.
+				thisSide = right;
+				otherSide = left;
+			}
+			var localSvSides = localSplitview.getSides();
+			var splitviewLayoutChange = function() {
+				localSplitview.resizer(localSplitview.getParentSize().x, localSplitview.getParentSize().y);
+				methods.fireEvent('layoutChangeEnd');
+			};
+			containingSplitview.addEvent('resizeSide', splitviewLayoutChange);
+			containingSplitview.addEvent('fold', splitviewLayoutChange);
+			this.markForCleanup(element, function() {
+				containingSplitview.removeEvent('resizeSide', splitviewLayoutChange);
+				containingSplitview.removeEvent('fold', splitviewLayoutChange);
+			});
 		}
+	}
 
 });
 
