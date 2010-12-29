@@ -74,19 +74,19 @@ Behavior.addGlobalFilters({
 		var whichSplit = left ? ART.SplitView : ART.SplitView.Vertical;
 		var parent = element.get('parentWidget');
 		var splitviewContent = {
-                        resizable: element.hasClass("resizable"),
+			resizable: element.hasClass("resizable"),
 			foldable: element.hasClass("foldable"),
 			splitterContent: element.getChildren('.splitter_col')[0],
 			styles: styles,
 			fixed: conf.fixed || 'left',
-                        element: element,
-                        parentWidget: parent
-                }; 
-                conf.sides.each(function(side) {
-                        splitviewContent[side + 'Content'] = conf.elements[side];       
-                });
+			element: element,
+			parentWidget: parent
+		};
+		conf.sides.each(function(side) {
+			splitviewContent[side + 'Content'] = conf.elements[side];
+		});
 		var splitview = new whichSplit(splitviewContent);
-                splitview.register(parent);
+				splitview.register(parent);
 		splitview.draw();
 
 		addLinkers(document.id(splitview));
@@ -126,20 +126,20 @@ Behavior.addGlobalFilters({
 		splitview.element.getElements('[data-splitview-toggle]').each(function(toggle){
 			manageToggleState(splitview, toggle);
 		});
-        splitview.getParentSize = function() {
-                return splitview.element.getParent().getSize();
-        };
-        var resizeSplitview = function() {
-                var size = splitview.getParentSize();
-                splitview.resizer(size.x, size.y);
-        };
+		splitview.getParentSize = function() {
+				return splitview.element.getParent().getSize();
+		};
+		var resizeSplitview = function() {
+				var size = splitview.getParentSize();
+				splitview.resizer(size.x, size.y);
+		};
 		behaviorAPI.addEvents({
 			show: resizeSplitview
 		});
-        var size = splitview.getParentSize();
+		var size = splitview.getParentSize();
 		if (size.x || size.y) splitview.resizer(size.x, size.y);
 		this.markForCleanup(element, function(){
-                        behaviorAPI.removeEvent('show',  resizeSplitview);
+						behaviorAPI.removeEvent('show',  resizeSplitview);
 			splitview.eject();
 		}.bind(this));
 	}
@@ -147,44 +147,44 @@ Behavior.addGlobalFilters({
 });
 
 Behavior.addGlobalPlugin('SplitView', 'ResizeOnContainingSplitView', function(element, methods) {
-        if (element.hasClass('resizeOnContain')) {
-                var localSplitview = element.retrieve('SplitView');
-                var localSvElem = localSplitview.element;
-                var containingSplitview = null;
-                do {
-                containingSplitview = localSvElem.getParent(":widget").get("widget");
-                } while (containingSplitview && containingSplitview.name != "splitview");
-                //Make sure you actually found a splitview.
-                if (containingSplitview.name == "splitview") {
-                        var otherSide = null, thisSide = null;
-                        //Find opposite side...that being the side that the splitview is not in.
-                        var containingOrientation = containingSplitview.getOrientation();
-                        var containingSvSides = containingSplitview.getSides();
-                        var left = containingSvSides['left'];
-                        var right = containingSvSides['right'];
-                        if (left.hasChild(element)) {
-                                thisSide = left;
-                                otherSide = right;
-                        } else if (right.hasChild(element)) {
-                                //The check above isn't expressly necessary, but it seems like the safe thing to do.
-                                thisSide = right;
-                                otherSide = left;
-                        }
-                        var localSvSides = localSplitview.getSides();
-                        var splitviewLayoutChange = function() {
-                                localSplitview.resizer(localSplitview.getParentSize().x, localSplitview.getParentSize().y);
-                                methods.fireEvent('layoutChangeEnd');
-                        };
-                        containingSplitview.addEvent('resizeSide', splitviewLayoutChange); 
-                        containingSplitview.addEvent('fold', splitviewLayoutChange); 
-                        this.markForCleanup(element, function() {
-                                containingSplitview.removeEvent('resizeSide', splitviewLayoutChange);
-                                containingSplitview.removeEvent('fold', splitviewLayoutChange);
-                        });
-                }
-        }
+		if (element.hasClass('resizeOnContain')) {
+				var localSplitview = element.retrieve('SplitView');
+				var localSvElem = localSplitview.element;
+				var containingSplitview = null;
+				do {
+				containingSplitview = localSvElem.getParent(":widget").get("widget");
+				} while (containingSplitview && containingSplitview.name != "splitview");
+				//Make sure you actually found a splitview.
+				if (containingSplitview.name == "splitview") {
+						var otherSide = null, thisSide = null;
+						//Find opposite side...that being the side that the splitview is not in.
+						var containingOrientation = containingSplitview.getOrientation();
+						var containingSvSides = containingSplitview.getSides();
+						var left = containingSvSides['left'];
+						var right = containingSvSides['right'];
+						if (left.hasChild(element)) {
+								thisSide = left;
+								otherSide = right;
+						} else if (right.hasChild(element)) {
+								//The check above isn't expressly necessary, but it seems like the safe thing to do.
+								thisSide = right;
+								otherSide = left;
+						}
+						var localSvSides = localSplitview.getSides();
+						var splitviewLayoutChange = function() {
+								localSplitview.resizer(localSplitview.getParentSize().x, localSplitview.getParentSize().y);
+								methods.fireEvent('layoutChangeEnd');
+						};
+						containingSplitview.addEvent('resizeSide', splitviewLayoutChange);
+						containingSplitview.addEvent('fold', splitviewLayoutChange);
+						this.markForCleanup(element, function() {
+								containingSplitview.removeEvent('resizeSide', splitviewLayoutChange);
+								containingSplitview.removeEvent('fold', splitviewLayoutChange);
+						});
+				}
+		}
 
-}); 
+});
 
 var getWidget = function(link) {
 	var splitview = link.getParent('[data-filters*=SplitView]');
@@ -193,13 +193,13 @@ var getWidget = function(link) {
 };
 
 var getWidthStr = function(side) {
-			return {
-				'left': 'leftWidth',
-				'right': 'rightWidth',
-				'top':'topHeight',
-				'bottom':'bottomHeight'
-			}[side];
-		};
+	return {
+		'left': 'leftWidth',
+		'right': 'rightWidth',
+		'top':'topHeight',
+		'bottom':'bottomHeight'
+	}[side];
+};
 
 var manageToggleState = function(widget, toggle) {
 	var params = toggle.get('data', 'splitview-toggle', true);
