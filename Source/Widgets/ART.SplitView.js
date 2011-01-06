@@ -83,25 +83,25 @@ var splitter = {
 			     {'float': 'left', 'overflow-x': 'auto'} : 
 			     {'overflow-y': 'auto'};
 		var o = this._orientations;
-		
-                [o.left, 'splitter', o.right].each(function(side) {
-                        if (side != 'splitter' && this.options[side + 'Content']) this[side] = this.options[side + 'Content'].inject(this.element);
-                        else this[side] = new Element('div').inject(this.element);
 
-                        this[side].set({
-                                styles: {
-                                        'background-color': sheet[side + 'BackgroundColor']
-                                }
-                        });
-                        this[side].addClass('art-splitview-' + side);
-                        this[side].setStyles(styles);
-                }.bind(this));
-                this.splitter.setStyles({
-                        'overflow': 'hidden'
-                });
-                this.splitter.setStyle(o.dimension, sheet['splitter' + o.dimension.capitalize()]);
+		[o.left, 'splitter', o.right].each(function(side) {
+			if (side != 'splitter' && this.options[side + 'Content']) this[side] = this.options[side + 'Content'].inject(this.element);
+			else this[side] = new Element('div').inject(this.element);
+
+			this[side].set({
+				styles: {
+					'background-color': sheet[side + 'BackgroundColor']
+				}
+			});
+			this[side].addClass('art-splitview-' + side);
+			this[side].setStyles(styles);
+		}.bind(this));
+		this.splitter.setStyles({
+			'overflow': 'hidden'
+		});
+		this.splitter.setStyle(o.dimension, sheet['splitter' + o.dimension.capitalize()]);
 		if (this.options.splitterContent) this.setSplitterContent(this.options.splitterContent);
-                if (this.right) this.right.setStyle('float', 'none');
+		if (this.right) this.right.setStyle('float', 'none');
 
 		this.fx = new Fx.Elements([this[o.left], this.splitter, this[o.right]]);
 		var self = this;
