@@ -69,6 +69,7 @@ var splitter = {
 		return this.options.orientation;
 	},
 
+	_paddings: {},
 	_build: function(){
 		document.id(this.canvas).dispose();
 		var sheet = this.setSheet();
@@ -85,8 +86,13 @@ var splitter = {
 		var o = this._orientations;
 
 		[o.left, 'splitter', o.right].each(function(side) {
-			if (side != 'splitter' && this.options[side + 'Content']) this[side] = this.options[side + 'Content'].inject(this.element);
-			else this[side] = new Element('div').inject(this.element);
+			if (side != 'splitter' && this.options[side + 'Content']) {
+				this[side] = this.options[side + 'Content'].inject(this.element);
+				this._paddings[side] = this._getPadding(this[side]);
+			} else {
+				this[side] = new Element('div').inject(this.element);
+				this._paddings[side] = [0,0,0,0];
+			}
 
 			this[side].set({
 				styles: {
@@ -218,16 +224,32 @@ var splitter = {
 		if (this.isDestroyed()) return;
 		return this.draw({'height': h, 'width': w});
 	},
-	
+
+	_getPadding: function(el){
+		return ['top', 'right', 'bottom', 'left'].map(function(){
+			return el.getStyle('padding').toInt();
+		});
+	},
+
+	_getPaddingValues: function(side, values){
+		var sum = 0;
+		for (var i = 0; i < values.length; i++) {
+			sum += this._paddings[side][{'top':0, 'right':1, 'bottom':2, 'left':3}[values[i]]];
+		}
+		return sum;
+	},
+
 	_resizeSide: function(side, width){
 		var o = this._orientations;
 		var otherSide = this._getOtherSide(side);
 		var sizes = this._getWidthsForSizing(side, width);
 
-		this[o[side]].setStyle(o.dimension, sizes.sideWidth);
+		var padding = this._getPaddingValues(side, [side, otherSide]);
+		this[o[side]].setStyle(o.dimension, sizes.sideWidth - padding);
 		this[sizes.side + o.dimension.capitalize()] = sizes.sideWidth;
-		
-		this[o[otherSide]].setStyle(o.dimension, sizes.otherSideWidth);
+
+		padding = this._getPaddingValues(otherSide, [side, otherSide]);
+		this[o[otherSide]].setStyle(o.dimension, sizes.otherSideWidth - padding);
 		this[sizes.otherSide + o.dimension.capitalize()] = sizes.otherSideWidth;
 		this.fireEvent('resizeSide', sizes);
 	},

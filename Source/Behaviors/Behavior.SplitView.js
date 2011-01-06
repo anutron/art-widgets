@@ -127,7 +127,8 @@ Behavior.addGlobalFilters({
 			manageToggleState(splitview, toggle);
 		});
 		splitview.getParentSize = function() {
-			return splitview.element.getParent().getSize();
+			var parent = splitview.element.getParent();
+			return parent.measure(function(){ return parent.getSize(); });
 		};
 		var resizeSplitview = function() {
 			var size = splitview.getParentSize();
@@ -138,7 +139,6 @@ Behavior.addGlobalFilters({
 		});
 		var size = splitview.getParentSize();
 		if (size.x || size.y) splitview.resizer(size.x, size.y);
-		resizeSplitview.delay(1);
 		this.markForCleanup(element, function(){
 			behaviorAPI.removeEvent('show',  resizeSplitview);
 			splitview.eject();
