@@ -80,7 +80,7 @@ var Widget = ART.Widget = new Class({
 	/* tab indices */
 	
 	setTabIndex: function(index){
-		if (this.inputElement) this.inputElement.tabIndex = this.tabIndex = index;
+		if (this.inputElement) this.inputElement.tabindex = this.tabIndex = index;
 	},
 	
 	getTabIndex: function(){
