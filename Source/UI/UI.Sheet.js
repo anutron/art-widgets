@@ -3,7 +3,7 @@
 name: UI.Sheet
 description: StyleSheet cascading emulator
 author: Jan Kassens
-requires: [UI, Core/Array, Core/String, Slick/Slick.Parser]
+requires: [UI, Core/Array, Core/String, Core/Slick.Parser]
 provides: UI.Sheet
 ...
 */
@@ -27,7 +27,7 @@ var parseSelector = function(selector){
 		if (chunk.pseudos) chunk.pseudos.each(function(pseudo){
 			result.push(':' + pseudo.key);
 		});
-		if (chunk.classes) chunk.classes.each(function(klass){
+		if (chunk.classList) chunk.classList.each(function(klass){
 			result.push('.' + klass);
 		});
 		return result;
@@ -42,7 +42,7 @@ var getSpecificity = function(selector){
 		if (chunk.id) specificity += 10000;
 		if (chunk.tag && chunk.tag != '*') specificity++;
 		specificity += (chunk.pseudos || []).length;
-		specificity += (chunk.classes || []).length * 100;
+		specificity += (chunk.classList || []).length * 100;
 	});
 	return specificity;
 };
@@ -142,5 +142,11 @@ Sheet.define = function(selectors, style, namespace){
 Sheet.lookup = function(selector, namespace){
 	return getStyles(selector, getRules(namespace));
 };
+
+//clear all rules
+Sheet.empty = function(){
+	rules = {};
+	return Sheet;
+}
 
 })();
